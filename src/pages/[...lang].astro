@@ -1,0 +1,119 @@
+---
+import BaseHead from '../components/BaseHead.astro';
+import Footer from '../components/Footer.astro';
+import Header from '../components/Header.astro';
+import { SITE_DESCRIPTION, SITE_TITLE } from '../consts';
+import { getCollection } from 'astro:content';
+import FormattedDate from '../components/FormattedDate.astro';
+
+export async function getStaticPaths() {
+	return [
+		{ params: { lang: undefined } },
+		{ params: { lang: 'pt' } },
+	];
+}
+
+const { lang } = Astro.params;
+const currentLang = lang || 'en';
+
+const posts = (await getCollection('blog'))
+	.filter((post) => post.id.startsWith(currentLang + '/'))
+	.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+const latestPosts = posts.slice(0, 3);
+
+const content = {
+	en: {
+		title: 'Engineering Insights & System Design',
+		bio: 'Welcome. I am <strong>Dássone J. Yotamo</strong>, a software engineer specializing in the development of distributed systems, code architecture, and Unix-based environments. My work is defined by a rigorous exploration of programming paradigms and a commitment to building robust, scalable infrastructure.',
+		platform: 'This platform serves as a didactic resource where I document technical challenges, share architectural insights, and discuss the evolution of modern software engineering practices. My objective is to translate complex system design experiences into clear, actionable knowledge for the developer community.',
+		explore: 'Explore the <a href="/blog">technical publications</a> to delve into specific topics or follow my latest research below.',
+		latest: 'Latest Posts',
+		noPosts: 'No posts yet. Stay tuned!',
+	},
+	pt: {
+		title: 'Engenharia & Design de Sistemas',
+		bio: 'Bem-vindo. Eu sou o <strong>Dássone J. Yotamo</strong>, um engenheiro de software especializado no desenvolvimento de sistemas distribuídos, arquitetura de código e ambientes baseados em Unix. O meu trabalho é definido por uma exploração rigorosa de paradigmas de programação e pelo compromisso em construir infraestruturas robustas e escaláveis.',
+		platform: 'Esta plataforma serve como um recurso didático onde documento desafios técnicos, partilho conhecimentos de arquitetura e discuto a evolução das práticas modernas de engenharia de software. O meu objetivo é traduzir experiências complexas de design de sistemas em conhecimento claro e prático para a comunidade de programadores.',
+		explore: 'Explore as <a href="/pt/blog">publicações técnicas</a> para aprofundar tópicos específicos ou acompanhe as minhas últimas pesquisas abaixo.',
+		latest: 'Últimas Publicações',
+		noPosts: 'Ainda não há publicações. Fique atento!',
+	},
+};
+
+const t = content[currentLang as keyof typeof content];
+---
+
+<!doctype html>
+<html lang={currentLang}>
+	<head>
+		<BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
+	</head>
+	<body>
+		<Header />
+		<main>
+			<h1>{t.title}</h1>
+			<p set:html={t.bio} />
+			<p>{t.platform}</p>
+			<p set:html={t.explore} />
+
+			{latestPosts.length > 0 ? (
+				<section class="latest-posts">
+					<h2>{t.latest}</h2>
+					{latestPosts.map((post) => {
+						const slug = post.id.split('/').slice(1).join('/');
+						const href = currentLang === 'en' ? `/blog/${slug}/` : `/pt/blog/${slug}/`;
+						return (
+							<article>
+								<a href={href}>
+									<h3 class="title">{post.data.title}</h3>
+									<p class="date">
+										<FormattedDate date={post.data.pubDate} />
+									</p>
+								</a>
+								<p>{post.data.description}</p>
+							</article>
+						);
+					})}
+				</section>
+			) : (
+				<section class="latest-posts">
+					<p>{t.noPosts}</p>
+				</section>
+			)}
+		</main>
+		<Footer />
+	</body>
+</html>
+
+<style>
+	.latest-posts {
+		margin-top: 3rem;
+		padding-top: 2rem;
+		border-top: 1px solid rgb(var(--gray-light));
+	}
+	.latest-posts article {
+		margin-top: 2rem;
+	}
+	.latest-posts article:not(:last-child) {
+		margin-bottom: 3rem;
+	}
+	.latest-posts a {
+		text-decoration: none;
+		color: inherit;
+		display: block;
+	}
+	.latest-posts .title {
+		margin: 0;
+		color: rgb(var(--black));
+		line-height: 1.2;
+		font-size: 1.5rem;
+	}
+	.latest-posts .date {
+		margin: 0;
+		color: rgb(var(--gray));
+		font-size: 0.9rem;
+	}
+	.latest-posts a:hover .title {
+		color: var(--accent);
+	}
+</style>

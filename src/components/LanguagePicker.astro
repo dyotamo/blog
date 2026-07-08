@@ -1,0 +1,39 @@
+---
+const { pathname } = Astro.url;
+
+const isPt = pathname.startsWith('/pt/') || pathname === '/pt';
+
+const getTargetUrl = () => {
+  if (isPt) {
+    return pathname.replace(/^\/pt/, '') || '/';
+  } else {
+    return `/pt${pathname === '/' ? '' : pathname}`;
+  }
+};
+
+const targetUrl = getTargetUrl();
+const label = isPt ? 'EN' : 'PT';
+---
+
+<a href={targetUrl} class="lang-picker">
+  {label}
+</a>
+
+<style>
+  .lang-picker {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.4rem 0.8rem;
+    border-radius: 4px;
+    background: rgb(var(--gray-light));
+    color: rgb(var(--gray-dark));
+    text-decoration: none;
+    font-size: 0.8rem;
+    font-weight: 700;
+    transition: all 0.2s ease;
+  }
+  .lang-picker:hover {
+    background: var(--accent);
+    color: white;
+  }
+</style>

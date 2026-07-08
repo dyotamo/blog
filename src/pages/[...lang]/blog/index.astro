@@ -1,0 +1,90 @@
+---
+import { getCollection } from 'astro:content';
+import BaseHead from '../../../components/BaseHead.astro';
+import Footer from '../../../components/Footer.astro';
+import FormattedDate from '../../../components/FormattedDate.astro';
+import Header from '../../../components/Header.astro';
+import { SITE_DESCRIPTION, SITE_TITLE } from '../../../consts';
+
+export async function getStaticPaths() {
+	return [
+		{ params: { lang: undefined } },
+		{ params: { lang: 'pt' } },
+	];
+}
+
+const { lang } = Astro.params;
+const currentLang = lang || 'en';
+
+const posts = (await getCollection('blog'))
+	.filter((post) => post.id.startsWith(currentLang + '/'))
+	.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+
+const title = currentLang === 'en' ? 'Technical Publications' : 'Publicações Técnicas';
+const noPosts = currentLang === 'en' ? 'No posts available at the moment.' : 'Nenhuma publicação disponível de momento.';
+---
+
+<!doctype html>
+<html lang={currentLang}>
+	<head>
+		<BaseHead title={`${title} | ${SITE_TITLE}`} description={SITE_DESCRIPTION} />
+		<style>
+			section {
+				margin-top: 3rem;
+			}
+			article {
+				margin-top: 2rem;
+			}
+			article:not(:last-child) {
+				margin-bottom: 3rem;
+			}
+			a {
+				text-decoration: none;
+				color: inherit;
+				display: block;
+			}
+			.title {
+				margin: 0;
+				color: rgb(var(--black));
+				line-height: 1.2;
+				font-size: 1.5rem;
+			}
+			.date {
+				margin: 0;
+				color: rgb(var(--gray));
+				font-size: 0.9rem;
+			}
+			a:hover .title {
+				color: var(--accent);
+			}
+		</style>
+	</head>
+	<body>
+		<Header />
+		<main>
+			<h1>{title}</h1>
+			<section>
+				{posts.length > 0 ? (
+					posts.map((post) => {
+						const slug = post.id.split('/').slice(1).join('/');
+						const href = currentLang === 'en' ? `/blog/${slug}/` : `/pt/blog/${slug}/`;
+						return (
+							<article>
+								<a href={href}>
+									<h3 class="title">{post.data.title}</h3>
+									<p class="date">
+										<FormattedDate date={post.data.pubDate} />
+									</p>
+								</a>
+								<p>{post.data.description}</p>
+							</article>
+						);
+					})
+				) : (
+					<p>{noPosts}</p>
+				)}
+			</section>
+		</main>
+		<Footer />
+	</body>
+</html>

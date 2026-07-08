@@ -1,0 +1,80 @@
+---
+import { SITE_TITLE } from '../consts';
+import HeaderLink from './HeaderLink.astro';
+import ThemeIcon from './ThemeIcon.astro';
+import LanguagePicker from './LanguagePicker.astro';
+
+const { pathname } = Astro.url;
+const isPt = pathname.startsWith('/pt/') || pathname === '/pt';
+const langPrefix = isPt ? '/pt' : '';
+---
+
+<header>
+	<nav>
+		<h2><a href={langPrefix || '/'}>{SITE_TITLE}</a></h2>
+		<div class="nav-content">
+			<div class="internal-links">
+				<HeaderLink href={langPrefix || '/'}>{isPt ? 'Início' : 'Home'}</HeaderLink>
+				<HeaderLink href={`${langPrefix}/blog`}>Blog</HeaderLink>
+			</div>
+			<LanguagePicker />
+			<ThemeIcon />
+		</div>
+	</nav>
+</header>
+<style>
+	header {
+		margin: 0;
+		padding: 0;
+		background: rgb(var(--background));
+		border-bottom: 1px solid rgb(var(--border));
+		position: sticky;
+		top: 0;
+		z-index: 10;
+		transition: background-color 0.3s ease, border-color 0.3s ease;
+	}
+	h2 {
+		margin: 0;
+		font-size: 1.1rem;
+		font-weight: 600;
+	}
+
+	h2 a {
+		text-decoration: none;
+		color: rgb(var(--black));
+	}
+	nav {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		max-width: 960px;
+		margin: 0 auto;
+		padding: 0 1.5rem;
+	}
+	.nav-content {
+		display: flex;
+		align-items: center;
+		gap: 1.5rem;
+	}
+	.internal-links {
+		display: flex;
+	}
+	nav a {
+		padding: 1.25rem 0.75rem;
+		color: rgb(var(--gray-dark));
+		text-decoration: none;
+		font-weight: 500;
+		font-size: 0.95rem;
+		border-bottom: 2px solid transparent;
+		transition: all 0.2s ease;
+		display: inline-flex;
+		align-items: center;
+	}
+	nav a.active {
+		color: var(--accent);
+		border-bottom-color: var(--accent);
+	}
+	nav a:hover {
+		color: var(--accent);
+	}
+</style>
