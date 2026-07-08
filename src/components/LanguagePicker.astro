@@ -23,14 +23,17 @@ const label = isPt ? 'EN' : 'PT';
   .lang-picker {
     display: inline-flex;
     align-items: center;
-    padding: 0.4rem 0.8rem;
-    border-radius: 4px;
-    background: rgb(var(--gray-light));
+    padding: 0.4rem 0.75rem;
+    border-radius: 0.5rem;
+    background: rgba(var(--gray-light), 0.5);
     color: rgb(var(--gray-dark));
     text-decoration: none;
     font-size: 0.8rem;
     font-weight: 700;
     transition: all 0.2s ease;
+  }
+  :root.dark .lang-picker {
+    background: rgba(var(--gray-light), 0.1);
   }
   .lang-picker:hover {
     background: var(--accent);

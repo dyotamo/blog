@@ -27,12 +27,15 @@
     align-items: center;
     justify-content: center;
     transition: all 0.2s ease;
-    margin-left: 0.5rem;
   }
 
   #theme-toggle:hover {
-    background: rgb(var(--gray-light));
+    background: rgba(var(--gray-light), 0.5);
     color: var(--accent);
+  }
+
+  :root.dark #theme-toggle:hover {
+    background: rgba(var(--gray-light), 0.1);
   }
 
   .sun { display: block; }

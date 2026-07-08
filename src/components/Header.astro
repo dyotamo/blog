@@ -11,14 +11,17 @@ const langPrefix = isPt ? '/pt' : '';
 
 <header>
 	<nav>
-		<h2><a href={langPrefix || '/'}>{SITE_TITLE}</a></h2>
+		<a href={langPrefix || '/'} class="brand">
+			{isPt ? 'Início' : 'Home'}
+		</a>
 		<div class="nav-content">
 			<div class="internal-links">
-				<HeaderLink href={langPrefix || '/'}>{isPt ? 'Início' : 'Home'}</HeaderLink>
 				<HeaderLink href={`${langPrefix}/blog`}>Blog</HeaderLink>
 			</div>
-			<LanguagePicker />
-			<ThemeIcon />
+			<div class="controls">
+				<LanguagePicker />
+				<ThemeIcon />
+			</div>
 		</div>
 	</nav>
 </header>
@@ -26,22 +29,13 @@ const langPrefix = isPt ? '/pt' : '';
 	header {
 		margin: 0;
 		padding: 0;
-		background: rgb(var(--background));
-		border-bottom: 1px solid rgb(var(--border));
+		background: rgba(var(--background), 0.8);
+		backdrop-filter: blur(12px);
+		border-bottom: 1px solid rgba(var(--border), 0.5);
 		position: sticky;
 		top: 0;
 		z-index: 10;
-		transition: background-color 0.3s ease, border-color 0.3s ease;
-	}
-	h2 {
-		margin: 0;
-		font-size: 1.1rem;
-		font-weight: 600;
-	}
-
-	h2 a {
-		text-decoration: none;
-		color: rgb(var(--black));
+		transition: all 0.3s ease;
 	}
 	nav {
 		display: flex;
@@ -50,6 +44,18 @@ const langPrefix = isPt ? '/pt' : '';
 		max-width: 960px;
 		margin: 0 auto;
 		padding: 0 1.5rem;
+		height: 4rem;
+	}
+	.brand {
+		font-size: 1.25rem;
+		font-weight: 700;
+		text-decoration: none;
+		color: rgb(var(--black));
+		letter-spacing: -0.02em;
+		transition: opacity 0.2s ease;
+	}
+	.brand:hover {
+		opacity: 0.8;
 	}
 	.nav-content {
 		display: flex;
@@ -58,23 +64,38 @@ const langPrefix = isPt ? '/pt' : '';
 	}
 	.internal-links {
 		display: flex;
+		gap: 0.25rem;
 	}
-	nav a {
-		padding: 1.25rem 0.75rem;
+	.controls {
+		display: flex;
+		align-items: center;
+		gap: 0.75rem;
+		border-left: 1px solid rgba(var(--border), 0.5);
+		padding-left: 1.25rem;
+		margin-left: 0.5rem;
+	}
+	nav a:not(.brand) {
+		padding: 0.5rem 0.875rem;
 		color: rgb(var(--gray-dark));
 		text-decoration: none;
 		font-weight: 500;
 		font-size: 0.95rem;
-		border-bottom: 2px solid transparent;
+		border-radius: 0.5rem;
 		transition: all 0.2s ease;
-		display: inline-flex;
-		align-items: center;
+		border-bottom: none;
 	}
-	nav a.active {
+	nav a:not(.brand).active {
 		color: var(--accent);
-		border-bottom-color: var(--accent);
+		background: rgba(var(--gray-light), 0.5);
 	}
-	nav a:hover {
+	:root.dark nav a:not(.brand).active {
+		background: rgba(var(--gray-light), 0.1);
+	}
+	nav a:not(.brand):hover {
 		color: var(--accent);
+		background: rgba(var(--gray-light), 0.3);
+	}
+	:root.dark nav a:not(.brand):hover {
+		background: rgba(var(--gray-light), 0.05);
 	}
 </style>
