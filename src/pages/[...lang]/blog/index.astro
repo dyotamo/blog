@@ -38,7 +38,7 @@ const noPosts = currentLang === 'en' ? 'No posts available at the moment.' : 'Ne
 			article:not(:last-child) {
 				margin-bottom: 3rem;
 			}
-			a {
+			a.post-link {
 				text-decoration: none;
 				color: inherit;
 				display: block;
@@ -54,8 +54,50 @@ const noPosts = currentLang === 'en' ? 'No posts available at the moment.' : 'Ne
 				color: rgb(var(--gray));
 				font-size: 0.9rem;
 			}
-			a:hover .title {
+			a.post-link:hover .title {
 				color: var(--accent);
+			}
+			.post-tags {
+				display: flex;
+				flex-wrap: wrap;
+				gap: 0.4rem;
+				margin: 0.75rem 0 0 0;
+			}
+			.post-tags a {
+				display: inline-block;
+				padding: 0.15rem 0.55rem;
+				font-size: 0.75rem;
+				font-weight: 500;
+				color: var(--accent-dark);
+				background-color: rgb(var(--gray-light));
+				border: 1px solid rgb(var(--border));
+				border-radius: 999px;
+				text-decoration: none;
+				transition: all 0.15s ease;
+			}
+			.post-tags a:hover {
+				color: #fff;
+				background-color: var(--accent);
+				border-color: var(--accent);
+			}
+			.tile-cover {
+				display: block;
+				margin-top: 1rem;
+				border-radius: 10px;
+				overflow: hidden;
+				border: 1px solid rgb(var(--border));
+				background-color: rgb(var(--gray-light));
+				transition: transform 0.2s ease, border-color 0.2s ease;
+			}
+			.tile-cover img {
+				display: block;
+				width: 100%;
+				height: auto;
+				border-radius: 0;
+			}
+			a.post-link:hover ~ .tile-cover {
+				border-color: var(--accent);
+				transform: translateY(-2px);
 			}
 		</style>
 	</head>
@@ -68,15 +110,29 @@ const noPosts = currentLang === 'en' ? 'No posts available at the moment.' : 'Ne
 					posts.map((post) => {
 						const slug = post.id.split('/').slice(1).join('/');
 						const href = currentLang === 'en' ? `/blog/${slug}/` : `/pt/blog/${slug}/`;
+						const tags = post.data.tags || [];
 						return (
 							<article>
-								<a href={href}>
+								<a href={href} class="post-link">
 									<h3 class="title">{post.data.title}</h3>
 									<p class="date">
 										<FormattedDate date={post.data.pubDate} />
 									</p>
 								</a>
+								{post.data.heroImage && (
+									<a href={href} class="tile-cover" aria-hidden="true" tabindex="-1">
+										<img src={post.data.heroImage.src} alt="" width={1200} height={630} loading="lazy" />
+									</a>
+								)}
 								<p>{post.data.description}</p>
+								{tags.length > 0 && (
+									<nav class="post-tags" aria-label="Tags">
+										{tags.map((tag) => {
+											const tagHref = currentLang === 'en' ? `/tags/${tag}/` : `/pt/tags/${tag}/`;
+											return <a href={tagHref}>#{tag}</a>;
+										})}
+									</nav>
+								)}
 							</article>
 						);
 					})

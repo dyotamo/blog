@@ -24,17 +24,17 @@ const latestPosts = posts.slice(0, 3);
 const content = {
 	en: {
 		title: 'Engineering Insights & System Design',
-		bio: 'Welcome. I am <strong>Dássone J. Yotamo</strong>, a software engineer specializing in the development of distributed systems, code architecture, and Unix-based environments. My work is defined by a rigorous exploration of programming paradigms and a commitment to building robust, scalable infrastructure.',
-		platform: 'This platform serves as a didactic resource where I document technical challenges, share architectural insights, and discuss the evolution of modern software engineering practices. My objective is to translate complex system design experiences into clear, actionable knowledge for the developer community.',
-		explore: 'Explore the <a href="/blog">technical publications</a> to delve into specific topics or follow my latest research below.',
+		bio: 'I\'m <strong>Dássone J. Yotamo</strong>, a software developer who likes programming languages, distributed systems, cloud, and Linux environments.',
+		platform: 'On this blog I share thoughts and ideas about the technical things I use every day.',
+		explore: 'Explore the <a href="/blog">posts</a> or check out the latest below.',
 		latest: 'Latest Posts',
 		noPosts: 'No posts yet. Stay tuned!',
 	},
 	pt: {
 		title: 'Engenharia & Design de Sistemas',
-		bio: 'Bem-vindo. Eu sou o <strong>Dássone J. Yotamo</strong>, um engenheiro de software especializado no desenvolvimento de sistemas distribuídos, arquitetura de código e ambientes baseados em Unix. O meu trabalho é definido por uma exploração rigorosa de paradigmas de programação e pelo compromisso em construir infraestruturas robustas e escaláveis.',
-		platform: 'Esta plataforma serve como um recurso didático onde documento desafios técnicos, partilho conhecimentos de arquitetura e discuto a evolução das práticas modernas de engenharia de software. O meu objetivo é traduzir experiências complexas de design de sistemas em conhecimento claro e prático para a comunidade de programadores.',
-		explore: 'Explore as <a href="/pt/blog">publicações técnicas</a> para aprofundar tópicos específicos ou acompanhe as minhas últimas pesquisas abaixo.',
+		bio: 'Sou o <strong>Dássone J. Yotamo</strong>, um desenvolvedor de software que gosta de linguagens de programação, sistemas distribuídos, cloud e ambientes Linux.',
+		platform: 'Neste blog partilho pensamentos e ideias sobre as coisas técnicas que uso no dia a dia.',
+		explore: 'Explore as <a href="/pt/blog">publicações</a> ou veja as últimas abaixo.',
 		latest: 'Últimas Publicações',
 		noPosts: 'Ainda não há publicações. Fique atento!',
 	},
@@ -62,6 +62,7 @@ const t = content[currentLang as keyof typeof content];
 					{latestPosts.map((post) => {
 						const slug = post.id.split('/').slice(1).join('/');
 						const href = currentLang === 'en' ? `/blog/${slug}/` : `/pt/blog/${slug}/`;
+						const tags = post.data.tags || [];
 						return (
 							<article>
 								<a href={href}>
@@ -71,6 +72,14 @@ const t = content[currentLang as keyof typeof content];
 									</p>
 								</a>
 								<p>{post.data.description}</p>
+								{tags.length > 0 && (
+									<nav class="post-tags" aria-label="Tags">
+										{tags.map((tag) => {
+											const tagHref = currentLang === 'en' ? `/tags/${tag}/` : `/pt/tags/${tag}/`;
+											return <a href={tagHref}>#{tag}</a>;
+										})}
+									</nav>
+								)}
 							</article>
 						);
 					})}
@@ -115,5 +124,28 @@ const t = content[currentLang as keyof typeof content];
 	}
 	.latest-posts a:hover .title {
 		color: var(--accent);
+	}
+	.post-tags {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.4rem;
+		margin: 0.5rem 0 0 0;
+	}
+	.post-tags a {
+		display: inline-block;
+		padding: 0.15rem 0.55rem;
+		font-size: 0.75rem;
+		font-weight: 500;
+		color: var(--accent-dark);
+		background-color: rgb(var(--gray-light));
+		border: 1px solid rgb(var(--border));
+		border-radius: 999px;
+		text-decoration: none;
+		transition: all 0.15s ease;
+	}
+	.post-tags a:hover {
+		color: #fff;
+		background-color: var(--accent);
+		border-color: var(--accent);
 	}
 </style>

@@ -7,14 +7,15 @@ import Header from '../components/Header.astro';
 
 type Props = CollectionEntry<'blog'>['data'];
 
-const { title, description, pubDate, updatedDate } = Astro.props;
+const { title, description, pubDate, updatedDate, tags, heroImage } = Astro.props;
 const { pathname } = Astro.url;
 const isPt = pathname.startsWith('/pt/') || pathname === '/pt';
+const tagsLabel = isPt ? 'Tags' : 'Tags';
 ---
 
 <html lang={isPt ? 'pt' : 'en'}>
 	<head>
-		<BaseHead title={title} description={description} />
+		<BaseHead title={title} description={description} image={heroImage} />
 		<style>
 			main {
 				width: calc(100% - 2em);
@@ -44,6 +45,45 @@ const isPt = pathname.startsWith('/pt/') || pathname === '/pt';
 			.last-updated-on {
 				font-style: italic;
 			}
+			.post-tags {
+				display: flex;
+				flex-wrap: wrap;
+				gap: 0.5rem;
+				justify-content: center;
+				margin: 0.5rem 0 1.5rem 0;
+			}
+			.post-tags a {
+				display: inline-block;
+				padding: 0.25rem 0.7rem;
+				font-size: 0.8rem;
+				font-weight: 500;
+				color: var(--accent-dark);
+				background-color: rgb(var(--gray-light));
+				border: 1px solid rgb(var(--border));
+				border-radius: 999px;
+				text-decoration: none;
+				transition: all 0.15s ease;
+			}
+			.post-tags a:hover {
+				color: #fff;
+				background-color: var(--accent);
+				border-color: var(--accent);
+			}
+			.post-hero {
+				display: block;
+				margin: 1.5em auto;
+				max-width: 900px;
+				border-radius: 12px;
+				overflow: hidden;
+				border: 1px solid rgb(var(--border));
+				background-color: rgb(var(--gray-light));
+			}
+			.post-hero img {
+				display: block;
+				width: 100%;
+				height: auto;
+				border-radius: 0;
+			}
 		</style>
 	</head>
 
@@ -51,6 +91,11 @@ const isPt = pathname.startsWith('/pt/') || pathname === '/pt';
 		<Header />
 		<main>
 			<article>
+				{heroImage && (
+					<figure class="post-hero">
+						<img src={heroImage.src} alt={title} width={1200} height={630} />
+					</figure>
+				)}
 				<div class="prose">
 					<div class="title">
 						<div class="date">
@@ -65,6 +110,18 @@ const isPt = pathname.startsWith('/pt/') || pathname === '/pt';
 							}
 						</div>
 						<h1>{title}</h1>
+						{
+							tags && tags.length > 0 && (
+								<nav class="post-tags" aria-label={tagsLabel}>
+									{tags.map((tag) => {
+										const href = isPt ? `/pt/tags/${tag}/` : `/tags/${tag}/`;
+										return (
+											<a href={href}>#{tag}</a>
+										);
+									})}
+								</nav>
+							)
+						}
 						<hr />
 					</div>
 					<slot />

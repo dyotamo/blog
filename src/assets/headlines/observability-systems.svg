@@ -1,0 +1,133 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" role="img" aria-label="System observability — OpenGraph card">
+	<defs>
+		<linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+			<stop offset="0%" stop-color="#020617" />
+			<stop offset="100%" stop-color="#0a1f2e" />
+		</linearGradient>
+		<linearGradient id="metricFill" x1="0" y1="0" x2="0" y2="1">
+			<stop offset="0%" stop-color="#22d3ee" stop-opacity="0.55" />
+			<stop offset="100%" stop-color="#22d3ee" stop-opacity="0" />
+		</linearGradient>
+		<radialGradient id="cyanGlow" cx="50%" cy="0%" r="60%">
+			<stop offset="0%" stop-color="#22d3ee" stop-opacity="0.30" />
+			<stop offset="100%" stop-color="#22d3ee" stop-opacity="0" />
+		</radialGradient>
+		<pattern id="grid" width="32" height="32" patternUnits="userSpaceOnUse">
+			<path d="M 32 0 L 0 0 0 32" fill="none" stroke="#0e3a5f" stroke-width="0.6" />
+		</pattern>
+	</defs>
+
+	<rect width="1200" height="630" fill="url(#bg)" />
+	<rect width="1200" height="630" fill="url(#grid)" opacity="0.6" />
+	<rect width="1200" height="630" fill="url(#cyanGlow)" />
+
+	<g font-family="'Inter', system-ui, -apple-system, sans-serif" text-anchor="middle">
+		<text x="600" y="96" font-size="18" font-weight="700" letter-spacing="0.40em" fill="#67e8f9">OBSERVABILITY  ·  SRE</text>
+
+		<g transform="translate(600 210)">
+			<text font-size="124" font-weight="900" fill="#f0f9ff">Don't operate <tspan fill="#22d3ee">blind.</tspan></text>
+		</g>
+
+		<text x="600" y="278" font-size="24" font-weight="500" fill="#bae6fd">
+			Metrics · Logs · Traces — three pillars that turn noise into signal.
+		</text>
+	</g>
+
+	<g transform="translate(80 340)">
+		<rect x="0" y="0" width="340" height="220" rx="14" fill="#02101a" stroke="#0e3a5f" stroke-width="2" />
+		<g transform="translate(24 28)">
+			<circle cx="8" cy="8" r="6" fill="#22d3ee" />
+			<text x="26" y="13" font-family="'Inter', sans-serif" font-size="12" font-weight="800" letter-spacing="0.22em" fill="#67e8f9">METRICS</text>
+		</g>
+
+		<g transform="translate(24 78)">
+			<rect x="0" y="0" width="290" height="100" rx="6" fill="#020617" stroke="#0e3a5f" />
+			<g stroke="#0e3a5f" stroke-dasharray="3 4">
+				<line x1="0" y1="25" x2="290" y2="25" />
+				<line x1="0" y1="55" x2="290" y2="55" />
+				<line x1="0" y1="85" x2="290" y2="85" />
+			</g>
+			<path d="M 0 80 L 30 70 L 60 75 L 90 45 L 120 55 L 150 30 L 180 35 L 210 22 L 240 32 L 270 16 L 290 26 L 290 100 L 0 100 Z" fill="url(#metricFill)" />
+			<path d="M 0 80 L 30 70 L 60 75 L 90 45 L 120 55 L 150 30 L 180 35 L 210 22 L 240 32 L 270 16 L 290 26" fill="none" stroke="#22d3ee" stroke-width="3" stroke-linejoin="round" stroke-linecap="round" />
+		</g>
+
+		<text x="170" y="205" font-family="'Inter', sans-serif" font-size="13" font-weight="700" fill="#bae6fd" text-anchor="middle">Vital signs · trends · alerts</text>
+	</g>
+
+	<g transform="translate(430 340)">
+		<rect x="0" y="0" width="340" height="220" rx="14" fill="#02101a" stroke="#0e3a5f" stroke-width="2" />
+		<g transform="translate(24 28)">
+			<circle cx="8" cy="8" r="6" fill="#a78bfa" />
+			<text x="26" y="13" font-family="'Inter', sans-serif" font-size="12" font-weight="800" letter-spacing="0.22em" fill="#c4b5fd">LOGS</text>
+		</g>
+
+		<g transform="translate(24 78)" font-family="'JetBrains Mono', monospace" font-size="12">
+			<rect x="0" y="0" width="290" height="100" rx="6" fill="#020617" stroke="#0e3a5f" />
+			<g fill="#475569">
+				<text x="12" y="22">14:02:11</text>
+				<text x="80" y="22" fill="#22c55e">INFO </text>
+				<text x="120" y="22" fill="#cbd5e1">request ok · 12ms</text>
+			</g>
+			<g fill="#475569">
+				<text x="12" y="44">14:02:12</text>
+				<text x="80" y="44" fill="#f59e0b">WARN </text>
+				<text x="120" y="44" fill="#cbd5e1">retry 2/3</text>
+			</g>
+			<g fill="#475569">
+				<text x="12" y="66">14:02:13</text>
+				<text x="80" y="66" fill="#ef4444">ERROR</text>
+				<text x="120" y="66" fill="#cbd5e1">db timeout · 5xx</text>
+			</g>
+			<g fill="#475569">
+				<text x="12" y="88">14:02:14</text>
+				<text x="80" y="88" fill="#22c55e">INFO </text>
+				<text x="120" y="88" fill="#cbd5e1">recovered · 8ms</text>
+			</g>
+			<rect x="6" y="10" width="3" height="16" fill="#22c55e" rx="1" />
+			<rect x="6" y="32" width="3" height="16" fill="#f59e0b" rx="1" />
+			<rect x="6" y="54" width="3" height="16" fill="#ef4444" rx="1" />
+			<rect x="6" y="76" width="3" height="16" fill="#22c55e" rx="1" />
+		</g>
+
+		<text x="170" y="205" font-family="'Inter', sans-serif" font-size="13" font-weight="700" fill="#c4b5fd" text-anchor="middle">Event journal · context · cause</text>
+	</g>
+
+	<g transform="translate(780 340)">
+		<rect x="0" y="0" width="340" height="220" rx="14" fill="#02101a" stroke="#0e3a5f" stroke-width="2" />
+		<g transform="translate(24 28)">
+			<circle cx="8" cy="8" r="6" fill="#fb7185" />
+			<text x="26" y="13" font-family="'Inter', sans-serif" font-size="12" font-weight="800" letter-spacing="0.22em" fill="#fda4af">TRACES</text>
+		</g>
+
+		<g transform="translate(24 78)" stroke-linecap="round">
+			<line x1="0" y1="22" x2="290" y2="22" stroke="#0e3a5f" />
+			<line x1="0" y1="58" x2="290" y2="58" stroke="#0e3a5f" />
+
+			<g>
+				<rect x="0" y="10" width="60" height="24" rx="5" fill="#22d3ee" />
+				<text x="30" y="26" font-family="'Inter', sans-serif" font-size="10" font-weight="800" fill="#02101a" text-anchor="middle">gateway</text>
+				<rect x="68" y="10" width="80" height="24" rx="5" fill="#22d3ee" />
+				<text x="108" y="26" font-family="'Inter', sans-serif" font-size="10" font-weight="800" fill="#02101a" text-anchor="middle">auth</text>
+				<rect x="156" y="10" width="60" height="24" rx="5" fill="#a78bfa" />
+				<text x="186" y="26" font-family="'Inter', sans-serif" font-size="10" font-weight="800" fill="#1e1b4b" text-anchor="middle">users</text>
+				<rect x="222" y="10" width="50" height="24" rx="5" fill="#fb7185" />
+				<text x="247" y="26" font-family="'Inter', sans-serif" font-size="10" font-weight="800" fill="#1e1b4b" text-anchor="middle">db</text>
+			</g>
+
+			<g transform="translate(0 36)">
+				<rect x="0" y="10" width="50" height="24" rx="5" fill="#22d3ee" />
+				<text x="25" y="26" font-family="'Inter', sans-serif" font-size="10" font-weight="800" fill="#02101a" text-anchor="middle">edge</text>
+				<rect x="58" y="10" width="92" height="24" rx="5" fill="#22d3ee" />
+				<text x="104" y="26" font-family="'Inter', sans-serif" font-size="10" font-weight="800" fill="#02101a" text-anchor="middle">cache</text>
+				<rect x="158" y="10" width="120" height="24" rx="5" fill="#a78bfa" />
+				<text x="218" y="26" font-family="'Inter', sans-serif" font-size="10" font-weight="800" fill="#1e1b4b" text-anchor="middle">recommend</text>
+			</g>
+		</g>
+
+		<text x="170" y="205" font-family="'Inter', sans-serif" font-size="13" font-weight="700" fill="#fda4af" text-anchor="middle">Request GPS · latency · causal</text>
+	</g>
+
+	<g transform="translate(600 595)" font-family="'Inter', sans-serif" text-anchor="middle">
+		<text font-size="14" font-weight="500" fill="#64748b">Latency · Traffic · Errors · Saturation — the 4 Golden Signals</text>
+	</g>
+</svg>
