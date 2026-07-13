@@ -3,7 +3,7 @@ import rss from '@astrojs/rss';
 import { SITE_DESCRIPTION, SITE_TITLE } from '../consts';
 
 export async function GET(context) {
-	const posts = await getCollection('blog');
+	const posts = await getCollection('articles');
 	return rss({
 		title: SITE_TITLE,
 		description: SITE_DESCRIPTION,
@@ -13,7 +13,7 @@ export async function GET(context) {
 			const slug = slugParts.join('/');
 			return {
 				...post.data,
-				link: lang === 'en' ? `/blog/${slug}/` : `/pt/blog/${slug}/`,
+				link: lang === 'en' ? `/articles/${slug}/` : `/pt/articles/${slug}/`,
 			};
 		}),
 	});

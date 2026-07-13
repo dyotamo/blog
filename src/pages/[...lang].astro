@@ -16,7 +16,7 @@ export async function getStaticPaths() {
 const { lang } = Astro.params;
 const currentLang = lang || 'en';
 
-const posts = (await getCollection('blog'))
+const posts = (await getCollection('articles'))
 	.filter((post) => post.id.startsWith(currentLang + '/'))
 	.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
 const latestPosts = posts.slice(0, 3);
@@ -26,7 +26,7 @@ const content = {
 		title: 'Engineering Insights & System Design',
 		bio: 'I\'m <strong>Dássone J. Yotamo</strong>, a software developer who likes programming languages, distributed systems, cloud, and Linux environments.',
 		platform: 'On this blog I share thoughts and ideas about the technical things I use every day.',
-		explore: 'Explore the <a href="/blog">posts</a> or check out the latest below.',
+		explore: 'Explore the <a href="/articles">posts</a> or check out the latest below.',
 		latest: 'Latest Posts',
 		noPosts: 'No posts yet. Stay tuned!',
 	},
@@ -34,7 +34,7 @@ const content = {
 		title: 'Engenharia & Design de Sistemas',
 		bio: 'Sou o <strong>Dássone J. Yotamo</strong>, um desenvolvedor de software que gosta de linguagens de programação, sistemas distribuídos, cloud e ambientes Linux.',
 		platform: 'Neste blog partilho pensamentos e ideias sobre as coisas técnicas que uso no dia a dia.',
-		explore: 'Explore as <a href="/pt/blog">publicações</a> ou veja as últimas abaixo.',
+		explore: 'Explore as <a href="/pt/articles">publicações</a> ou veja as últimas abaixo.',
 		latest: 'Últimas Publicações',
 		noPosts: 'Ainda não há publicações. Fique atento!',
 	},
@@ -61,7 +61,7 @@ const t = content[currentLang as keyof typeof content];
 					<h2>{t.latest}</h2>
 					{latestPosts.map((post) => {
 						const slug = post.id.split('/').slice(1).join('/');
-						const href = currentLang === 'en' ? `/blog/${slug}/` : `/pt/blog/${slug}/`;
+						const href = currentLang === 'en' ? `/articles/${slug}/` : `/pt/articles/${slug}/`;
 						const tags = post.data.tags || [];
 						return (
 							<article>

@@ -14,7 +14,7 @@ export async function getStaticPaths() {
 	}> = [];
 
 	for (const lang of langs) {
-		const posts = (await getCollection('blog')).filter((post) =>
+		const posts = (await getCollection('articles')).filter((post) =>
 			post.id.startsWith(lang + '/'),
 		);
 		const tagSet = new Set<string>();
@@ -38,7 +38,7 @@ type Props = { tag: string; lang: 'en' | 'pt' };
 const { tag, lang } = Astro.props as Props;
 const currentLang = lang;
 
-const posts = (await getCollection('blog'))
+const posts = (await getCollection('articles'))
 	.filter((post) => post.id.startsWith(currentLang + '/'))
 	.filter((post) => (post.data.tags || []).includes(tag))
 	.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
@@ -56,7 +56,7 @@ const allTagsLabel = currentLang === 'en' ? 'All tags' : 'Todas as tags';
 const allTagsHref = currentLang === 'en' ? '/tags/' : '/pt/tags/';
 
 const otherTags = new Map<string, number>();
-const allLangPosts = (await getCollection('blog')).filter((post) =>
+const allLangPosts = (await getCollection('articles')).filter((post) =>
 	post.id.startsWith(currentLang + '/'),
 );
 for (const post of allLangPosts) {
@@ -157,7 +157,7 @@ const relatedTags = [...otherTags.entries()].sort((a, b) => b[1] - a[1]).slice(0
 				{posts.length > 0 ? (
 					posts.map((post) => {
 						const slug = post.id.split('/').slice(1).join('/');
-						const href = currentLang === 'en' ? `/blog/${slug}/` : `/pt/blog/${slug}/`;
+						const href = currentLang === 'en' ? `/articles/${slug}/` : `/pt/articles/${slug}/`;
 						const tags = post.data.tags || [];
 						return (
 							<article>

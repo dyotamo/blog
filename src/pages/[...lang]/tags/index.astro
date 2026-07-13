@@ -15,7 +15,7 @@ export async function getStaticPaths() {
 const { lang } = Astro.params;
 const currentLang = lang || 'en';
 
-const posts = (await getCollection('blog')).filter((post) =>
+const posts = (await getCollection('articles')).filter((post) =>
 	post.id.startsWith(currentLang + '/'),
 );
 
