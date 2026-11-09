@@ -1,0 +1,26 @@
+[[main]]
+name = "Home"
+pageRef = "/"
+weight = 10
+
+[[main]]
+name = "Articles"
+pageRef = "articles"
+weight = 20
+
+[[main]]
+name = "About"
+pageRef = "about"
+weight = 30
+
+[[main]]
+identifier = "locale"
+weight = 90
+[main.params]
+action = "locale"
+
+[[main]]
+identifier = "appearance"
+weight = 100
+[main.params]
+action = "appearance"

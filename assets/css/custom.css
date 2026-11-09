@@ -1,0 +1,70 @@
+@font-face {
+  font-family: "Open Sans";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("/fonts/open-sans-400.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "Open Sans";
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("/fonts/open-sans-700.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "Source Code Pro";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("/fonts/source-code-pro-400.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "Source Code Pro";
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("/fonts/source-code-pro-700.ttf") format("truetype");
+}
+
+html,
+body {
+  font-family: "Open Sans", sans-serif;
+}
+
+.max-w-7xl {
+  max-width: 72rem;
+}
+
+code,
+kbd,
+pre,
+samp {
+  font-family: "Source Code Pro", monospace;
+}
+
+.prose pre {
+  max-width: 100%;
+  overflow-x: auto;
+  line-height: 1.55;
+}
+
+.prose .mermaid {
+  max-width: 100%;
+  overflow-x: auto;
+  margin: 1.5rem 0;
+  text-align: center;
+}
+
+.prose .mermaid svg {
+  max-width: 100%;
+  height: auto;
+}
+
+:focus-visible {
+  outline: 2px solid rgb(var(--color-primary-500));
+  outline-offset: 3px;
+}

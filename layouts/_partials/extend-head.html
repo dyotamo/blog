@@ -1,0 +1,7 @@
+{{ if strings.Contains (lower .RawContent) "```mermaid" }}
+  {{ $algorithm := .Site.Params.fingerprintAlgorithm | default "sha256" }}
+  {{ $mermaidLib := resources.Get "lib/mermaid/mermaid.min.js" }}
+  {{ $mermaidConfig := resources.Get "js/mermaid.js" | minify }}
+  {{ $mermaidBundle := slice $mermaidLib $mermaidConfig | resources.Concat "js/mermaid.bundle.js" | resources.Fingerprint $algorithm }}
+  <script defer src="{{ $mermaidBundle.Permalink }}" integrity="{{ $mermaidBundle.Data.Integrity }}"></script>
+{{ end }}

@@ -1,0 +1,42 @@
+colorScheme = "ocean"
+defaultAppearance = "light"
+autoSwitchAppearance = true
+defaultThemeColor = "#FFFFFF"
+enableSearch = false
+enableCodeCopy = true
+enableImageLazyLoading = true
+enableImageWebp = false
+
+[header]
+layout = "basic"
+showTitle = true
+
+[footer]
+showCopyright = true
+showThemeAttribution = false
+showAppearanceSwitcher = true
+showScrollToTop = true
+
+[homepage]
+layout = "profile"
+showRecent = true
+recentLimit = 3
+
+[article]
+showDate = true
+showDateUpdated = true
+showAuthor = false
+showBreadcrumbs = false
+showHeadingAnchors = false
+showPagination = true
+showReadingTime = true
+showTableOfContents = true
+showTaxonomies = true
+
+[list]
+showSummary = true
+showTaxonomies = true
+groupByYear = false
+
+[taxonomy]
+showTermCount = true

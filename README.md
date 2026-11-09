@@ -1,63 +1,64 @@
-# Astro Starter Kit: Blog
+# Personal Blog
+
+A bilingual personal blog built with Hugo and the Congo theme. It publishes English and Portuguese articles about software engineering, distributed systems, cloud, Linux, and web technologies.
+
+## Technology
+
+- Hugo Extended 0.158.0
+- Congo 2.14.0, resolved through Go modules
+- Markdown content with Hugo taxonomies
+- GitHub Pages deployment through GitHub Actions
+- Open Sans and Source Code Pro self-hosted in `static/fonts/`
+
+The build does not use Node.js, npm, or a JavaScript build toolchain.
+
+## Local development
+
+Install Hugo Extended 0.158.0 and Go 1.24 or newer, then run:
 
 ```sh
-npm create astro@latest -- --template blog
+hugo mod get
+hugo server
 ```
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+Open the local address printed by Hugo. The development server reloads when content or configuration changes.
 
-Features:
+To create a new article, add an `index.md` page bundle under `content/articles/<slug>/` for English or `content/pt/articles/<slug>/` for Portuguese. Include front matter for the title, description, date, and tags. Put article-specific images alongside the Markdown file; Congo detects a file named `cover.*` as the article cover.
 
-- ✅ Minimal styling (make it your own!)
-- ✅ 100/100 Lighthouse performance
-- ✅ SEO-friendly with canonical URLs and Open Graph data
-- ✅ Sitemap support
-- ✅ RSS Feed support
-- ✅ Markdown & MDX support
+## Mermaid diagrams
 
-## 🚀 Project Structure
+Write Mermaid source directly in a fenced Markdown code block:
 
-Inside of your Astro project, you'll see the following folders and files:
+````markdown
+```mermaid
+flowchart TD
+    Client --> API
+    API --> Database
+```
+````
 
-```text
-├── public/
-├── src/
-│   ├── assets/
-│   ├── components/
-│   ├── content/
-│   ├── layouts/
-│   └── pages/
-├── astro.config.mjs
-├── README.md
-├── package.json
-└── tsconfig.json
+The site converts fenced Mermaid blocks to diagrams and loads the version bundled with the pinned Congo theme only on pages containing Mermaid diagrams.
+
+## Theme configuration
+
+Site-wide settings are in `hugo.toml` and `config/_default/`. English and Portuguese language settings and navigation are kept in their respective language configuration files. Small CSS adjustments, including fonts, code blocks, focus indicators, and Mermaid overflow, live in `assets/css/custom.css`; theme files are not modified.
+
+To update Congo, change its pinned version in `go.mod`, resolve the module, and validate the production build:
+
+```sh
+go get github.com/jpanther/congo/v2@<version>
+hugo mod get
+hugo --gc --minify --environment production
 ```
 
-Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
+## Production build
 
-There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
+```sh
+hugo --gc --minify --environment production
+```
 
-The `src/content/` directory contains "collections" of related Markdown and MDX documents. Use `getCollection()` to retrieve posts from `src/content/blog/`, and type-check your frontmatter using an optional schema. See [Astro's Content Collections docs](https://docs.astro.build/en/guides/content-collections/) to learn more.
+The generated site is written to `public/`.
 
-Any static assets, like images, can be placed in the `public/` directory.
+## GitHub Pages deployment
 
-## 🧞 Commands
-
-All commands are run from the root of the project, from a terminal:
-
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `npm install`             | Installs dependencies                            |
-| `npm run dev`             | Starts local dev server at `localhost:4321`      |
-| `npm run build`           | Build your production site to `./dist/`          |
-| `npm run preview`         | Preview your build locally, before deploying     |
-| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro -- --help` | Get help using the Astro CLI                     |
-
-## 👀 Want to learn more?
-
-Check out [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
-
-## Credit
-
-This theme is based off of the lovely [Bear Blog](https://github.com/HermanMartinus/bearblog/).
+Pushing to `main` runs `.github/workflows/deploy.yml`. The workflow installs the pinned Hugo Extended release, resolves the pinned Congo module, builds the site, uploads the Pages artifact, and deploys it using GitHub's Pages Actions. The repository's Pages source should be set to **GitHub Actions**.

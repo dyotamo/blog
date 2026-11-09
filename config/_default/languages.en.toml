@@ -1,0 +1,19 @@
+locale = "en"
+label = "English"
+direction = "ltr"
+weight = 1
+title = "Dássone J. Yotamo"
+copyright = "© 2026 Dássone J. Yotamo. All rights reserved."
+
+[params]
+dateFormat = "2 January 2006"
+description = "Sharing ideas, thoughts, development, and system design experiences."
+mainSections = ["articles"]
+
+[params.author]
+name = "Dássone J. Yotamo"
+headline = "Software developer focused on programming languages, distributed systems, cloud, and Linux."
+bio = "I write about technical ideas and tools I use every day."
+links = [
+  { github = "https://github.com/dyotamo" },
+]

@@ -1,0 +1,18 @@
+[goldmark]
+[goldmark.renderer]
+unsafe = true
+[goldmark.extensions]
+[goldmark.extensions.passthrough]
+enable = true
+[goldmark.extensions.passthrough.delimiters]
+block = [["\\[", "\\]"], ["$$", "$$"]]
+inline = [["\\(", "\\)"]]
+
+[highlight]
+noClasses = false
+style = "github-dark"
+lineNos = false
+
+[tableOfContents]
+startLevel = 2
+endLevel = 4
