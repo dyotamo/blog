@@ -1,8 +1,8 @@
 ---
 title: "Sobre"
-description: "Sobre Dássone J. Yotamo e este blog pessoal dedicado à engenharia."
+description: "Ideias, experiências e conhecimentos sobre programação, sistemas distribuídos, cloud e Linux."
 ---
 
-Sou Dássone J. Yotamo, um desenvolvedor de software interessado em linguagens de programação, sistemas distribuídos, cloud e ambientes Linux.
+Sou Dássone J. Yotamo, desenvolvedor de software interessado em aprender sobre linguagens de programação, sistemas distribuídos, cloud e ambientes Linux, e em partilhar conhecimentos nessas áreas.
 
-Neste blog partilho pensamentos e ideias práticas sobre as ferramentas e os sistemas técnicos que uso no dia a dia.
+Este blog é uma espécie de dump do meu cérebro: um espaço onde partilho ideias, experiências e conhecimentos a partir de diferentes perspetivas.
