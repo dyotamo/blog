@@ -134,4 +134,4 @@ As boas organizações de engenharia não perguntam qual é a linguagem mais ado
 
 E sim, daqui a alguns anos alguém poderá escrever: **“Goodbye Go, Hello Outra Coisa.”** O ciclo continuará, como sempre.
 
-Relaxe. A sua linguagem continua a ser óptima. Só não é eterna. Nem especial. Afinal, não dorme na mesma cama que uma linguagem de programação. Se dorme, talvez seja melhor repensar isso.
+Relaxe. A sua linguagem continua a ser óptima. Só não é eterna. Nem especial.
