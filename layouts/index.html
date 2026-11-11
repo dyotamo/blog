@@ -1,0 +1,71 @@
+{{ define "main" }}
+  {{ $author := .Site.Language.Params.Author }}
+  <div class="home-editorial">
+    <section class="home-hero" aria-labelledby="home-title">
+      <div class="home-intro">
+        <p class="home-kicker">
+          {{ if eq .Site.Language.Lang "pt" }}CADERNO DE ENGENHARIA{{ else }}ENGINEERING FIELD NOTES{{ end }}
+        </p>
+        <h1 id="home-title">{{ $author.name | default .Site.Title }}</h1>
+        {{ with $author.headline }}
+          <p class="home-headline">{{ . | markdownify | emojify }}</p>
+        {{ end }}
+        <div class="home-author-links" aria-label="{{ if eq .Site.Language.Lang "pt" }}Ligações do autor{{ else }}Author links{{ end }}">
+          {{ partial "author-links.html" . }}
+        </div>
+        <div class="home-copy prose dark:prose-invert">
+          {{ .Content | emojify }}
+        </div>
+      </div>
+
+      <aside class="home-system-map" aria-labelledby="home-map-title">
+        <div class="home-map-topline">
+          <span>{{ if eq .Site.Language.Lang "pt" }}MAPA DO SISTEMA{{ else }}SYSTEM MAP{{ end }}</span>
+          <span class="home-map-status"><span></span>{{ if eq .Site.Language.Lang "pt" }}EM EXECUÇÃO{{ else }}RUNNING{{ end }}</span>
+        </div>
+        <h2 id="home-map-title">{{ if eq .Site.Language.Lang "pt" }}Um mapa de interesses{{ else }}A map of interests{{ end }}</h2>
+        <div class="home-map-canvas">
+          <span class="home-map-line home-map-line-one" aria-hidden="true"></span>
+          <span class="home-map-line home-map-line-two" aria-hidden="true"></span>
+          <span class="home-map-line home-map-line-three" aria-hidden="true"></span>
+          <span class="home-map-line home-map-line-four" aria-hidden="true"></span>
+          <span class="home-map-node home-map-node-center">
+            <span class="home-map-node-index">{{ if eq .Site.Language.Lang "pt" }}00 / NOTAS{{ else }}00 / NOTES{{ end }}</span>
+            <span class="home-map-node-title">{{ if eq .Site.Language.Lang "pt" }}Engenharia{{ else }}Engineering{{ end }}</span>
+            <span class="home-map-node-caption">{{ if eq .Site.Language.Lang "pt" }}ideias em construção{{ else }}ideas in progress{{ end }}</span>
+          </span>
+          <span class="home-map-node home-map-node-one">
+            <span class="home-map-node-index">{{ if eq .Site.Language.Lang "pt" }}01 / LING.{{ else }}01 / LANG{{ end }}</span>
+            <span class="home-map-node-title">{{ if eq .Site.Language.Lang "pt" }}Linguagens{{ else }}Programming languages{{ end }}</span>
+          </span>
+          <span class="home-map-node home-map-node-two">
+            <span class="home-map-node-index">{{ if eq .Site.Language.Lang "pt" }}02 / SIST.{{ else }}02 / NET{{ end }}</span>
+            <span class="home-map-node-title">{{ if eq .Site.Language.Lang "pt" }}Sistemas distribuídos{{ else }}Distributed systems{{ end }}</span>
+          </span>
+          <span class="home-map-node home-map-node-three">
+            <span class="home-map-node-index">{{ if eq .Site.Language.Lang "pt" }}03 / NUVEM{{ else }}03 / CLOUD{{ end }}</span>
+            <span class="home-map-node-title">{{ if eq .Site.Language.Lang "pt" }}Nuvem{{ else }}Cloud{{ end }}</span>
+          </span>
+          <span class="home-map-node home-map-node-four">
+            <span class="home-map-node-index">04 / LINUX</span>
+            <span class="home-map-node-title">Linux</span>
+          </span>
+        </div>
+        <div class="home-map-footer">
+          <span>{{ if eq .Site.Language.Lang "pt" }}CURIOSIDADE COMO INFRAESTRUTURA{{ else }}CURIOSITY AS INFRASTRUCTURE{{ end }}</span>
+          <span>DJY — 2026</span>
+        </div>
+      </aside>
+    </section>
+
+    {{ if .Site.Params.homepage.showRecent | default false }}
+      <section class="home-recent" aria-label="{{ if eq .Site.Language.Lang "pt" }}Artigos recentes{{ else }}Recent articles{{ end }}">
+        <div class="home-recent-heading">
+          <p class="home-kicker">{{ if eq .Site.Language.Lang "pt" }}DO CADERNO{{ else }}FROM THE NOTEBOOK{{ end }}</p>
+          <span>{{ if eq .Site.Language.Lang "pt" }}LEITURA CONTÍNUA{{ else }}CONTINUOUS READING{{ end }}</span>
+        </div>
+        {{ partial "recent-articles.html" . }}
+      </section>
+    {{ end }}
+  </div>
+{{ end }}
