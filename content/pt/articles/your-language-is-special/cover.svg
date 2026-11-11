@@ -1,0 +1,76 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" role="img" aria-labelledby="title description">
+	<title id="title">A Sua Linguagem de Programação é Especial… Como Todas as Outras</title>
+	<desc id="description">Java e Go são apresentadas como ferramentas de engenharia diferentes, relacionadas por uma carga de trabalho que determina qual é a escolha mais adequada.</desc>
+	<defs>
+		<linearGradient id="background" x1="0" y1="0" x2="1" y2="1">
+			<stop offset="0%" stop-color="#07111f" />
+			<stop offset="100%" stop-color="#15243a" />
+		</linearGradient>
+		<linearGradient id="java" x1="0" y1="0" x2="1" y2="1">
+			<stop offset="0%" stop-color="#fb923c" />
+			<stop offset="100%" stop-color="#dc2626" />
+		</linearGradient>
+		<linearGradient id="go" x1="0" y1="0" x2="1" y2="1">
+			<stop offset="0%" stop-color="#67e8f9" />
+			<stop offset="100%" stop-color="#0891b2" />
+		</linearGradient>
+		<radialGradient id="glow">
+			<stop offset="0%" stop-color="#1d4ed8" stop-opacity="0.24" />
+			<stop offset="100%" stop-color="#1d4ed8" stop-opacity="0" />
+		</radialGradient>
+		<filter id="shadow" x="-30%" y="-30%" width="160%" height="160%">
+			<feDropShadow dx="0" dy="14" stdDeviation="16" flood-color="#020617" flood-opacity="0.45" />
+		</filter>
+	</defs>
+	<rect width="1200" height="630" fill="url(#background)" />
+	<circle cx="940" cy="305" r="385" fill="url(#glow)" />
+	<path d="M0 540 C220 455 380 640 620 548 S1010 440 1200 520 V630 H0Z" fill="#091523" opacity="0.75" />
+
+	<g font-family="Inter, system-ui, -apple-system, sans-serif">
+		<text x="76" y="100" fill="#67e8f9" font-size="16" font-weight="700" letter-spacing="2.5">ENGENHARIA, NÃO LEALDADE À LINGUAGEM</text>
+		<text x="72" y="198" fill="#f8fafc" font-size="58" font-weight="800" letter-spacing="-2">A sua linguagem</text>
+		<text x="72" y="270" fill="#f8fafc" font-size="60" font-weight="800" letter-spacing="-2">é especial.</text>
+		<text x="76" y="330" fill="#fbbf24" font-size="30" font-weight="700">Como todas as outras.</text>
+		<text x="78" y="392" fill="#cbd5e1" font-size="19" font-weight="500">Escolha para a carga de trabalho de hoje.</text>
+		<g transform="translate(78 458)">
+			<rect width="350" height="58" rx="29" fill="#172b40" stroke="#35516b" />
+			<circle cx="30" cy="29" r="8" fill="#34d399" />
+			<text x="52" y="36" fill="#e2e8f0" font-size="13" font-weight="700" letter-spacing="0.7">FERRAMENTAS, NÃO PERSONALIDADES</text>
+		</g>
+	</g>
+
+	<g filter="url(#shadow)">
+		<rect x="520" y="92" width="620" height="452" rx="30" fill="#0b1728" stroke="#294057" stroke-width="2" />
+		<text x="830" y="137" text-anchor="middle" fill="#94a3b8" font-family="Inter, system-ui, sans-serif" font-size="12" font-weight="700" letter-spacing="2">MESMO PROBLEMA · COMPROMISSOS DIFERENTES</text>
+	</g>
+
+	<g transform="translate(566 176)">
+		<rect width="230" height="236" rx="22" fill="#1a2434" stroke="#9a3412" stroke-width="2" />
+		<circle cx="115" cy="66" r="38" fill="#3b2025" stroke="url(#java)" stroke-width="3" />
+		<path d="M104 77c-12-5 10-11 0-19 17 2 15 15 5 18 13-3 19-13 10-24 24 12 13 34-3 37-10 2-20-3-12-12z" fill="none" stroke="#fb923c" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
+		<text x="115" y="136" text-anchor="middle" fill="#fff7ed" font-family="Inter, system-ui, sans-serif" font-size="26" font-weight="800">JAVA</text>
+		<text x="115" y="169" text-anchor="middle" fill="#cbd5e1" font-family="Inter, system-ui, sans-serif" font-size="14">Runtime maduro</text>
+		<text x="115" y="192" text-anchor="middle" fill="#94a3b8" font-family="Inter, system-ui, sans-serif" font-size="13">Ecossistema amplo</text>
+		<rect x="78" y="211" width="74" height="5" rx="2.5" fill="url(#java)" />
+	</g>
+
+	<g transform="translate(864 176)">
+		<rect width="230" height="236" rx="22" fill="#112b36" stroke="#0e7490" stroke-width="2" />
+		<circle cx="115" cy="66" r="38" fill="#123447" stroke="url(#go)" stroke-width="3" />
+		<path d="M94 63h42M100 54h30M105 72h22" stroke="#67e8f9" stroke-width="5" stroke-linecap="round" />
+		<circle cx="100" cy="54" r="3" fill="#e0f2fe" />
+		<circle cx="136" cy="63" r="3" fill="#e0f2fe" />
+		<circle cx="127" cy="72" r="3" fill="#e0f2fe" />
+		<text x="115" y="136" text-anchor="middle" fill="#ecfeff" font-family="Inter, system-ui, sans-serif" font-size="26" font-weight="800">GO</text>
+		<text x="115" y="169" text-anchor="middle" fill="#cbd5e1" font-family="Inter, system-ui, sans-serif" font-size="14">Compilação nativa</text>
+		<text x="115" y="192" text-anchor="middle" fill="#94a3b8" font-family="Inter, system-ui, sans-serif" font-size="13">Infraestrutura cloud</text>
+		<rect x="78" y="211" width="74" height="5" rx="2.5" fill="url(#go)" />
+	</g>
+
+	<g transform="translate(648 454)" font-family="Inter, system-ui, sans-serif" text-anchor="middle">
+		<rect width="364" height="52" rx="26" fill="#172b40" stroke="#35516b" />
+		<path d="M27 26h28M309 26h28" stroke="#64748b" stroke-width="2" stroke-linecap="round" />
+		<circle cx="182" cy="26" r="7" fill="#34d399" />
+		<text x="182" y="32" fill="#e2e8f0" font-size="13" font-weight="700" letter-spacing="1.2">ADEQUAÇÃO À CARGA DE TRABALHO</text>
+	</g>
+</svg>

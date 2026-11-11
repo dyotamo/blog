@@ -1,0 +1,88 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" role="img" aria-labelledby="title description">
+	<title id="title">Software Licensing: A Dependency Is a Decision Too</title>
+	<desc id="description">Software dependencies with different licenses pass through a review before being included in a product release.</desc>
+	<defs>
+		<linearGradient id="background" x1="0" y1="0" x2="1" y2="1">
+			<stop offset="0%" stop-color="#07111f" />
+			<stop offset="100%" stop-color="#15243a" />
+		</linearGradient>
+		<linearGradient id="accent" x1="0" y1="0" x2="1" y2="1">
+			<stop offset="0%" stop-color="#fbbf24" />
+			<stop offset="100%" stop-color="#f97316" />
+		</linearGradient>
+		<radialGradient id="glow">
+			<stop offset="0%" stop-color="#1d4ed8" stop-opacity="0.24" />
+			<stop offset="100%" stop-color="#1d4ed8" stop-opacity="0" />
+		</radialGradient>
+		<filter id="shadow" x="-30%" y="-30%" width="160%" height="160%">
+			<feDropShadow dx="0" dy="14" stdDeviation="16" flood-color="#020617" flood-opacity="0.45" />
+		</filter>
+	</defs>
+	<rect width="1200" height="630" fill="url(#background)" />
+	<circle cx="960" cy="310" r="390" fill="url(#glow)" />
+	<path d="M0 540 C220 455 380 640 620 548 S1010 440 1200 520 V630 H0Z" fill="#091523" opacity="0.75" />
+
+	<g font-family="Inter, system-ui, -apple-system, sans-serif">
+		<text x="76" y="100" fill="#67e8f9" font-size="17" font-weight="700" letter-spacing="4">OPEN SOURCE · PRODUCT ENGINEERING</text>
+		<text x="72" y="198" fill="#f8fafc" font-size="58" font-weight="800" letter-spacing="-2">Every dependency</text>
+		<text x="72" y="270" fill="#f8fafc" font-size="58" font-weight="800" letter-spacing="-2">comes with</text>
+		<text x="72" y="342" fill="url(#accent)" font-size="64" font-weight="800" letter-spacing="-2">terms.</text>
+		<text x="77" y="404" fill="#cbd5e1" font-size="20" font-weight="500">Know what ships before release.</text>
+		<g transform="translate(78 468)">
+			<rect width="350" height="58" rx="29" fill="#172b40" stroke="#35516b" />
+			<circle cx="30" cy="29" r="8" fill="#34d399" />
+			<text x="52" y="36" fill="#e2e8f0" font-size="14" font-weight="700" letter-spacing="0.8">TRACK · REVIEW · SHIP RESPONSIBLY</text>
+		</g>
+	</g>
+
+	<g filter="url(#shadow)">
+		<rect x="520" y="92" width="620" height="452" rx="30" fill="#0b1728" stroke="#294057" stroke-width="2" />
+		<text x="830" y="137" text-anchor="middle" fill="#94a3b8" font-family="Inter, system-ui, sans-serif" font-size="12" font-weight="700" letter-spacing="2.3">CHECK WHAT GOES INTO THE RELEASE</text>
+	</g>
+
+	<g fill="none" stroke="#475569" stroke-width="2.5" stroke-linecap="round">
+		<path d="M728 222 C770 222 770 300 798 300" />
+		<path d="M728 306h70" />
+		<path d="M728 390 C770 390 770 312 798 312" />
+		<path d="M854 306h56" stroke="#67e8f9" />
+	</g>
+
+	<g font-family="Inter, system-ui, sans-serif">
+		<g transform="translate(558 184)">
+			<rect width="170" height="76" rx="16" fill="#12372f" stroke="#059669" stroke-width="2" />
+			<circle cx="25" cy="38" r="6" fill="#34d399" />
+			<text x="45" y="34" fill="#d1fae5" font-size="15" font-weight="800">MIT</text>
+			<text x="45" y="54" fill="#a7f3d0" font-size="10" font-weight="700" letter-spacing="1">PERMISSIVE</text>
+		</g>
+		<g transform="translate(558 268)">
+			<rect width="170" height="76" rx="16" fill="#123447" stroke="#0891b2" stroke-width="2" />
+			<circle cx="25" cy="38" r="6" fill="#67e8f9" />
+			<text x="45" y="34" fill="#cffafe" font-size="15" font-weight="800">BSD</text>
+			<text x="45" y="54" fill="#a5f3fc" font-size="10" font-weight="700" letter-spacing="1">PERMISSIVE</text>
+		</g>
+		<g transform="translate(558 352)">
+			<rect width="170" height="76" rx="16" fill="#352318" stroke="#c2410c" stroke-width="2" />
+			<circle cx="25" cy="38" r="6" fill="#fb923c" />
+			<text x="45" y="34" fill="#ffedd5" font-size="15" font-weight="800">GPL</text>
+			<text x="45" y="54" fill="#fed7aa" font-size="10" font-weight="700" letter-spacing="1">COPYLEFT</text>
+		</g>
+	</g>
+
+	<g transform="translate(798 264)">
+		<rect width="56" height="84" rx="16" fill="#172b40" stroke="#64748b" stroke-width="2" />
+		<circle cx="28" cy="28" r="14" fill="#12372f" stroke="#34d399" stroke-width="2" />
+		<path d="M21 28l5 5 10-11" fill="none" stroke="#6ee7b7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
+		<text x="28" y="66" text-anchor="middle" fill="#cbd5e1" font-family="Inter, system-ui, sans-serif" font-size="8" font-weight="800" letter-spacing="0.7">REVIEW</text>
+	</g>
+
+	<g transform="translate(910 240)">
+		<rect width="190" height="132" rx="20" fill="#172b40" stroke="#35516b" stroke-width="2" />
+		<path d="M66 26h58l15 16v34H51V42z" fill="#123447" stroke="#22d3ee" stroke-width="2" stroke-linejoin="round" />
+		<path d="M124 26v17h15" fill="none" stroke="#22d3ee" stroke-width="2" />
+		<path d="M67 54h42M67 64h56" stroke="#67e8f9" stroke-width="3" stroke-linecap="round" />
+		<text x="95" y="100" text-anchor="middle" fill="#f8fafc" font-family="Inter, system-ui, sans-serif" font-size="13" font-weight="800" letter-spacing="1">YOUR PRODUCT</text>
+		<text x="95" y="119" text-anchor="middle" fill="#94a3b8" font-family="Inter, system-ui, sans-serif" font-size="10">RELEASE ARTIFACT</text>
+	</g>
+
+	<text x="830" y="476" text-anchor="middle" fill="#64748b" font-family="Inter, system-ui, sans-serif" font-size="13">License · version · distribution model</text>
+</svg>

@@ -1,0 +1,77 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" role="img" aria-labelledby="title description">
+	<title id="title">Entidade de ORM Não é Entidade de Domínio</title>
+	<desc id="description">Um modelo ORM moldado pela base de dados é mapeado para um modelo de domínio separado, responsável pelas regras de negócio.</desc>
+	<defs>
+		<linearGradient id="background" x1="0" y1="0" x2="1" y2="1">
+			<stop offset="0%" stop-color="#07111f" />
+			<stop offset="100%" stop-color="#15243a" />
+		</linearGradient>
+		<linearGradient id="persistence" x1="0" y1="0" x2="1" y2="1">
+			<stop offset="0%" stop-color="#fbbf24" />
+			<stop offset="100%" stop-color="#ea580c" />
+		</linearGradient>
+		<linearGradient id="domain" x1="0" y1="0" x2="1" y2="1">
+			<stop offset="0%" stop-color="#67e8f9" />
+			<stop offset="100%" stop-color="#0891b2" />
+		</linearGradient>
+		<radialGradient id="glow">
+			<stop offset="0%" stop-color="#0e7490" stop-opacity="0.27" />
+			<stop offset="100%" stop-color="#0e7490" stop-opacity="0" />
+		</radialGradient>
+		<filter id="shadow" x="-30%" y="-30%" width="160%" height="160%">
+			<feDropShadow dx="0" dy="14" stdDeviation="16" flood-color="#020617" flood-opacity="0.45" />
+		</filter>
+	</defs>
+	<rect width="1200" height="630" fill="url(#background)" />
+	<circle cx="950" cy="305" r="390" fill="url(#glow)" />
+	<path d="M0 540 C220 450 380 640 620 548 S1010 440 1200 520 V630 H0Z" fill="#091523" opacity="0.75" />
+
+	<g font-family="Inter, system-ui, -apple-system, sans-serif">
+		<text x="76" y="100" fill="#67e8f9" font-size="16" font-weight="700" letter-spacing="3">PERSISTÊNCIA NÃO É O NEGÓCIO</text>
+		<text x="72" y="202" fill="#f8fafc" font-size="50" font-weight="800" letter-spacing="-2">Entidade de ORM</text>
+		<text x="72" y="276" fill="#fbbf24" font-size="64" font-weight="800">≠</text>
+		<text x="72" y="348" fill="#f8fafc" font-size="43" font-weight="800" letter-spacing="-2">Entidade de domínio</text>
+		<text x="77" y="408" fill="#cbd5e1" font-size="18" font-weight="500">Uma mapeia dados. Outra protege regras.</text>
+		<g transform="translate(78 468)">
+			<rect width="340" height="58" rx="29" fill="#172b40" stroke="#35516b" />
+			<circle cx="30" cy="29" r="8" fill="#34d399" />
+			<text x="52" y="36" fill="#e2e8f0" font-size="12" font-weight="700" letter-spacing="0.7">FUNÇÕES DIFERENTES, MODELOS DIFERENTES</text>
+		</g>
+	</g>
+
+	<g filter="url(#shadow)">
+		<rect x="520" y="92" width="620" height="452" rx="30" fill="#0b1728" stroke="#294057" stroke-width="2" />
+		<text x="830" y="137" text-anchor="middle" fill="#94a3b8" font-family="Inter, system-ui, sans-serif" font-size="12" font-weight="700" letter-spacing="2.5">DUAS RAZÕES PARA MUDAR</text>
+	</g>
+
+	<g transform="translate(558 184)">
+		<rect width="190" height="246" rx="20" fill="#2b2116" stroke="#a16207" stroke-width="2" />
+		<text x="95" y="38" text-anchor="middle" fill="#fcd34d" font-family="Inter, system-ui, sans-serif" font-size="17" font-weight="800" letter-spacing="1.5">ORM</text>
+		<rect x="24" y="58" width="142" height="104" rx="10" fill="#111c2b" stroke="#854d0e" />
+		<path d="M24 88h142M24 124h142M68 58v104M116 58v104" stroke="#854d0e" stroke-width="1.5" />
+		<rect x="32" y="68" width="26" height="8" rx="4" fill="#fbbf24" opacity="0.8" />
+		<rect x="76" y="68" width="30" height="8" rx="4" fill="#fbbf24" opacity="0.45" />
+		<rect x="124" y="68" width="26" height="8" rx="4" fill="#fbbf24" opacity="0.45" />
+		<text x="95" y="192" text-anchor="middle" fill="#e2e8f0" font-family="Inter, system-ui, sans-serif" font-size="13" font-weight="700">FORMATO DA TABELA</text>
+		<text x="95" y="216" text-anchor="middle" fill="#94a3b8" font-family="Inter, system-ui, sans-serif" font-size="12">Colunas · índices</text>
+	</g>
+
+	<g fill="none" stroke-linecap="round" stroke-linejoin="round">
+		<path d="M758 307h72" stroke="#64748b" stroke-width="3" />
+		<path d="M818 297l12 10-12 10" stroke="#67e8f9" stroke-width="3" />
+	</g>
+	<text x="794" y="276" text-anchor="middle" fill="#94a3b8" font-family="Inter, system-ui, sans-serif" font-size="10" font-weight="700" letter-spacing="1">MAPEAR</text>
+
+	<g transform="translate(850 184)">
+		<rect width="250" height="246" rx="20" fill="#102a35" stroke="#0e7490" stroke-width="2" />
+		<text x="125" y="38" text-anchor="middle" fill="#67e8f9" font-family="Inter, system-ui, sans-serif" font-size="17" font-weight="800" letter-spacing="1.5">DOMÍNIO</text>
+		<circle cx="125" cy="91" r="28" fill="#123447" stroke="#22d3ee" stroke-width="2" />
+		<path d="M113 91l8 8 17-18" fill="none" stroke="#a5f3fc" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" />
+		<text x="125" y="148" text-anchor="middle" fill="#e2e8f0" font-family="Inter, system-ui, sans-serif" font-size="13" font-weight="700">REGRAS DE NEGÓCIO</text>
+		<rect x="42" y="169" width="166" height="42" rx="12" fill="#123447" stroke="#155e75" />
+		<text x="125" y="196" text-anchor="middle" fill="#a5f3fc" font-family="ui-monospace, monospace" font-size="13">order.confirm()</text>
+		<text x="125" y="230" text-anchor="middle" fill="#94a3b8" font-family="Inter, system-ui, sans-serif" font-size="12">Identidade · ciclo de vida · regras</text>
+	</g>
+
+	<text x="830" y="502" text-anchor="middle" fill="#64748b" font-family="Inter, system-ui, sans-serif" font-size="12">O armazenamento pode mudar sem alterar o significado de negócio</text>
+</svg>
