@@ -19,7 +19,7 @@ Quando a WSO2 anunciou **“Goodbye Java, Hello Go!”**, algumas reacções tra
 - “E o ecossistema?”
 - “E o meu curso de Java 21?”
 
-Calma. Ninguém matou Java. Ninguém queimou os livros de padrões de desenho. A WSO2 olhou para os problemas que espera resolver nos próximos anos e escolheu uma direcção para a futura infraestrutura backend.
+Calma. Ninguém matou Java. Ninguém queimou os livros de design patterns. A WSO2 olhou para os problemas que espera resolver nos próximos anos e escolheu uma direcção para a futura infraestrutura backend.
 
 É uma decisão importante. Não é um veredicto universal sobre linguagens de programação.
 

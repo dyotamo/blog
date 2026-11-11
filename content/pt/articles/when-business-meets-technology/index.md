@@ -25,7 +25,7 @@ Dito de outra forma, o negócio atribuía pesos diferentes a dois resultados:
 - Um carrinho temporariamente imperfeito ainda podia resultar numa compra concluída.
 - Um carrinho indisponível podia impedir a compra por completo.
 
-Essa prioridade levou a um objectivo prático de desenho: continuar a aceitar e servir operações do carrinho durante falhas e reconciliar as diferenças quando o sistema recuperasse.
+Essa prioridade levou a um objectivo prático de design: continuar a aceitar e servir operações do carrinho durante falhas e reconciliar as diferenças quando o sistema recuperasse.
 
 ```mermaid
 flowchart TD
@@ -43,7 +43,7 @@ flowchart TD
 
 A Amazon descreveu o sistema Dynamo num artigo de investigação publicado em 2007, *Dynamo: Amazon’s Highly Available Key-value Store*. Foi concebido como um sistema de armazenamento chave-valor altamente disponível para serviços como o carrinho de compras, nos quais a operação ininterrupta era mais importante do que devolver sempre uma única resposta globalmente acordada naquele preciso instante.
 
-Isto não foi uma declaração de que a consistência não importava. O desenho reconhecia que as falhas acontecem em sistemas distribuídos e dava às aplicações mecanismos para continuar a operar enquanto as réplicas podiam discordar temporariamente. O sistema podia preservar várias versões de um item e permitir que a aplicação ajudasse a resolver conflitos.
+Isto não foi uma declaração de que a consistência não importava. O design reconhecia que as falhas acontecem em sistemas distribuídos e dava às aplicações mecanismos para continuar a operar enquanto as réplicas podiam discordar temporariamente. O sistema podia preservar várias versões de um item e permitir que a aplicação ajudasse a resolver conflitos.
 
 A pergunta orientadora não era: “Qual é a base de dados mais elegante?” Era algo mais próximo de: **“Que comportamento permite a este negócio continuar a servir os clientes quando máquinas ou ligações de rede falham?”**
 
@@ -55,7 +55,7 @@ O Dynamo é frequentemente discutido em conjunto com o Teorema CAP. O CAP diz qu
 - **Disponibilidade (Availability)**: todos os pedidos a um nó que não falhou recebem uma resposta.
 - **Tolerância a partições (Partition Tolerance)**: o sistema continua a funcionar apesar da perda ou do atraso de comunicação entre nós.
 
-A expressão “escolher quaisquer duas” pode induzir em erro. Num sistema distribuído que tem de funcionar através de uma rede, as partições não são algo de que o desenho possa simplesmente abdicar. Durante uma partição, a escolha relevante é, em geral, entre responder ao pedido e garantir que todas as respostas reflectem um único valor mais recente.
+A expressão “escolher quaisquer duas” pode induzir em erro. Num sistema distribuído que tem de funcionar através de uma rede, as partições não são algo de que o design possa simplesmente abdicar. Durante uma partição, a escolha relevante é, em geral, entre responder ao pedido e garantir que todas as respostas reflectem um único valor mais recente.
 
 Para o carrinho, a Amazon valorizou a disponibilidade durante uma partição. O sistema podia aceitar uma actualização num nó disponível, mesmo que outra réplica não pudesse ser contactada. Assim, o cliente podia receber uma resposta enquanto as réplicas mantinham temporariamente versões diferentes do carrinho.
 
@@ -125,7 +125,7 @@ Pergunte o que acontece se estes dados estiverem temporariamente desactualizados
 
 A tabela é apenas um ponto de partida. Por exemplo, um sistema de inventário pode tolerar contagens aproximadas na página de um produto, mas precisar de coordenação mais rigorosa ao reservar a última unidade. O mesmo produto pode, portanto, usar escolhas de consistência diferentes em etapas diferentes.
 
-Uma conversa útil sobre o desenho começa com perguntas como estas:
+Uma conversa útil sobre o design começa com perguntas como estas:
 
 1. Que acção do utilizador tem de continuar a funcionar durante uma falha de dependência?
 2. Que resultado incorrecto o utilizador consegue tolerar e durante quanto tempo?

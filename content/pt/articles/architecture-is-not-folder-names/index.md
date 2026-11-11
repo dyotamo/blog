@@ -8,7 +8,7 @@ coverAlt: "Um diagrama que distingue nomes de pastas da arquitectura real, repre
 aliases: ["/blog/architecture-is-not-folder-names/"]
 ---
 
-No universo do desenho e da arquitectura de software, tenho observado um erro recorrente: assumir que criar e nomear pastas, pacotes ou módulos equivale a implementar correctamente uma arquitectura.
+No universo do design e da arquitectura de software, tenho observado um erro recorrente: assumir que criar e nomear pastas, pacotes ou módulos equivale a implementar correctamente uma arquitectura.
 
 Cria-se `domain`, `application`, `infrastructure`, `services` e `repositories`… e pronto, temos Clean Architecture. Certo?
 
@@ -146,7 +146,7 @@ final class JpaOrderRepositoryAdapter implements OrderRepository {
 
 O detalhe importante não é o nome da interface nem a existência de uma classe chamada `Repository`. É que o fluxo de negócio dependa de uma abstracção útil e não fique amarrado a `JpaRepository`, `EntityManager` ou a uma consulta SQL específica.
 
-Onde colocar a interface? Depende do desenho. Em alguns sistemas faz sentido defini-la junto do domínio; noutros, junto do caso de uso que precisa dela. O que interessa é quem controla o contrato e para que lado apontam as dependências, não seguir uma regra de pastas por imitação.
+Onde colocar a interface? Depende do design. Em alguns sistemas faz sentido defini-la junto do domínio; noutros, junto do caso de uso que precisa dela. O que interessa é quem controla o contrato e para que lado apontam as dependências, não seguir uma regra de pastas por imitação.
 
 ## Um caso de uso pequeno, com responsabilidades visíveis
 
