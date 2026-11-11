@@ -15,6 +15,3 @@ mainSections = ["articles"]
 name = "Dássone J. Yotamo"
 headline = "Desenvolvedor de software interessado em linguagens de programação, sistemas distribuídos, cloud e Linux."
 bio = "Escrevo sobre ideias técnicas e ferramentas que uso no dia a dia."
-links = [
-  { github = "https://github.com/dyotamo" },
-]

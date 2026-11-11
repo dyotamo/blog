@@ -472,8 +472,225 @@ html.dark .home-author-links a:hover {
   background: rgb(255 255 255 / 8%);
 }
 
-html.dark .home-recent article:hover {
-  background: rgb(121 194 187 / 7%);
+.about-page {
+  max-width: 72rem;
+  margin: 0 auto;
+  padding-top: 0.5rem;
+}
+
+article:has(.about-page) > header {
+  display: none;
+}
+
+article:has(.about-page) > section {
+  display: block;
+}
+
+article:has(.about-page) > section > div:has(.about-page) {
+  width: 100%;
+  max-width: none;
+}
+
+article:has(.about-page) > section > div:has(.toc) {
+  display: none;
+}
+
+.about-hero {
+  position: relative;
+  padding: clamp(1.6rem, 3vw, 2.8rem);
+  margin-bottom: 1.5rem;
+  border: 1px solid rgb(20 43 53 / 10%);
+  border-radius: 1.5rem;
+  background: linear-gradient(135deg, rgb(255 255 255 / 55%), rgb(244 241 233 / 95%));
+  box-shadow: 0 1.2rem 3rem rgb(20 43 53 / 8%);
+  overflow: hidden;
+}
+
+.about-hero::before {
+  content: "";
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 0.35rem;
+  background: linear-gradient(180deg, rgb(21 123 120), rgb(210 138 86));
+}
+
+.about-kicker {
+  margin: 0 0 0.8rem;
+  color: rgb(21 123 120);
+  font-family: "Source Code Pro", monospace;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.about-hero h2 {
+  margin: 0;
+  color: #142b35;
+  font-size: clamp(2.2rem, 4vw, 3.4rem);
+  line-height: 0.98;
+  letter-spacing: -0.07em;
+}
+
+.about-hero p {
+  max-width: 42rem;
+  margin: 1rem 0 0;
+  color: #56666b;
+  font-size: 1.08rem;
+  line-height: 1.7;
+}
+
+.about-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(18rem, 0.9fr);
+  gap: 1.5rem;
+  align-items: start;
+}
+
+.about-card {
+  padding: clamp(1.35rem, 2.4vw, 2rem);
+  border: 1px solid rgb(20 43 53 / 10%);
+  border-radius: 1.25rem;
+  background: rgb(255 255 255 / 70%);
+  box-shadow: 0 0.9rem 2rem rgb(20 43 53 / 05%);
+}
+
+.about-card h3 {
+  margin: 0 0 0.9rem;
+  color: #142b35;
+  font-size: 1.2rem;
+  letter-spacing: -0.04em;
+}
+
+.about-bio p {
+  margin: 0 0 0.9rem;
+  color: #3f4d53;
+  font-size: 1.02rem;
+  line-height: 1.75;
+}
+
+.about-bio p:last-child {
+  margin-bottom: 0;
+}
+
+.contact-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 0.85rem;
+}
+
+.contact-list li {
+  padding: 0;
+  border: 1px solid rgb(21 123 120 / 15%);
+  border-radius: 0.9rem;
+  background: linear-gradient(180deg, rgb(255 255 255 / 80%), rgb(245 249 248 / 90%));
+}
+
+.contact-list li > a {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  padding: 0.85rem 1rem;
+}
+
+.contact-icon {
+  width: 1.5rem;
+  height: 1.5rem;
+  flex: 0 0 auto;
+  fill: currentColor;
+}
+
+.contact-list li > a > span {
+  display: grid;
+  gap: 0.2rem;
+}
+
+.contact-label {
+  color: #5c6b70;
+  font-family: "Source Code Pro", monospace;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.contact-handle {
+  color: #157b78;
+}
+
+.contact-list a {
+  color: #157b78;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.contact-list a:hover {
+  color: #142b35;
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 0.18em;
+}
+
+html.dark .about-hero {
+  border-color: rgb(255 255 255 / 8%);
+  background: linear-gradient(135deg, rgb(24 44 52 / 78%), rgb(24 44 52 / 94%));
+}
+
+html.dark .about-hero h2 {
+  color: #edf1ef;
+}
+
+html.dark .about-hero p,
+html.dark .about-bio p,
+html.dark .contact-label {
+  color: #b7c7c7;
+}
+
+html.dark .about-card {
+  border-color: rgb(255 255 255 / 8%);
+  background: rgb(17 29 34 / 78%);
+}
+
+html.dark .about-card h3 {
+  color: #edf1ef;
+}
+
+html.dark .contact-list li {
+  border-color: rgb(121 194 187 / 25%);
+  background: linear-gradient(180deg, rgb(16 39 47 / 80%), rgb(13 28 35 / 92%));
+}
+
+html.dark .contact-list a {
+  color: #8ad8d0;
+}
+
+html.dark .contact-handle {
+  color: #8ad8d0;
+}
+
+html.dark .contact-list a:hover {
+  color: #edf1ef;
+}
+
+@media (max-width: 800px) {
+  .about-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .about-hero {
+    padding: 1.35rem 1.2rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .about-hero h2 {
+    font-size: clamp(1.9rem, 10vw, 2.5rem);
+  }
+  .about-hero p {
+    font-size: 1rem;
+  }
 }
 
 @media (max-width: 800px) {
