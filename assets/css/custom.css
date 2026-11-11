@@ -854,9 +854,18 @@ body > div.relative.flex.grow.flex-col > footer button:focus-visible {
   border-bottom: 1px solid var(--editorial-paper-rule);
 }
 
+#main-content:not(:has(.home-editorial)) {
+  position: relative;
+  left: 50%;
+  width: min(72rem, calc(100vw - 3rem));
+  max-width: none;
+  padding-inline: clamp(1.25rem, 4vw, 3.5rem);
+  transform: translateX(-50%);
+}
+
 #main-content > article {
   width: 100%;
-  max-width: 56rem;
+  max-width: none;
   margin-inline: auto;
 }
 
@@ -883,6 +892,17 @@ html.dark #main-content > article > header {
   width: 100%;
   max-width: none;
   margin-top: 2rem;
+}
+
+#main-content > article > section.prose > div.min-h-0.min-w-0.max-w-prose {
+  max-width: none;
+}
+
+@media (min-width: 64rem) {
+  #main-content > article > section.prose > div:has(.toc) {
+    flex: 0 0 23rem;
+    max-width: 23rem;
+  }
 }
 
 #main-content > article > footer {
