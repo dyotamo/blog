@@ -45,7 +45,7 @@ A Amazon descreveu o sistema Dynamo num artigo de investigação publicado em 20
 
 Isto não foi uma declaração de que a consistência não importava. O design reconhecia que as falhas acontecem em sistemas distribuídos e dava às aplicações mecanismos para continuar a operar enquanto as réplicas podiam discordar temporariamente. O sistema podia preservar várias versões de um item e permitir que a aplicação ajudasse a resolver conflitos.
 
-A pergunta orientadora não era: “Qual é a base de dados mais elegante?” Era algo mais próximo de: **“Que comportamento permite a este negócio continuar a servir os clientes quando máquinas ou ligações de rede falham?”**
+A pergunta orientadora não era: "Qual é a base de dados mais elegante?" Era algo mais próximo de: **"Que comportamento permite a este negócio continuar a servir os clientes quando máquinas ou ligações de rede falham?"**
 
 ## O Teorema CAP no contexto de uma escolha real
 
@@ -55,7 +55,7 @@ O Dynamo é frequentemente discutido em conjunto com o Teorema CAP. O CAP diz qu
 - **Disponibilidade (Availability)**: todos os pedidos a um nó que não falhou recebem uma resposta.
 - **Tolerância a partições (Partition Tolerance)**: o sistema continua a funcionar apesar da perda ou do atraso de comunicação entre nós.
 
-A expressão “escolher quaisquer duas” pode induzir em erro. Num sistema distribuído que tem de funcionar através de uma rede, as partições não são algo de que o design possa simplesmente abdicar. Durante uma partição, a escolha relevante é, em geral, entre responder ao pedido e garantir que todas as respostas reflectem um único valor mais recente.
+A expressão "escolher quaisquer duas" pode induzir em erro. Num sistema distribuído que tem de funcionar através de uma rede, as partições não são algo de que o design possa simplesmente abdicar. Durante uma partição, a escolha relevante é, em geral, entre responder ao pedido e garantir que todas as respostas reflectem um único valor mais recente.
 
 Para o carrinho, a Amazon valorizou a disponibilidade durante uma partição. O sistema podia aceitar uma actualização num nó disponível, mesmo que outra réplica não pudesse ser contactada. Assim, o cliente podia receber uma resposta enquanto as réplicas mantinham temporariamente versões diferentes do carrinho.
 
@@ -98,7 +98,7 @@ Em vez de uma única máquina deter a única cópia de um carrinho, vários nós
 
 O Dynamo replicava dados entre nós e expunha parâmetros que permitiam às aplicações definir quantas réplicas participariam em leituras e escritas. De forma simplificada, exigir a confirmação de mais réplicas pode aumentar a confiança no valor; exigir menos pode ajudar as operações a manter-se disponíveis quando alguns nós estão inacessíveis.
 
-Estas configurações não são um interruptor mágico entre “seguro” e “inseguro”. Expressam um equilíbrio específico para a carga de trabalho entre disponibilidade, latência e probabilidade de observar versões em conflito.
+Estas configurações não são um interruptor mágico entre "seguro" e "inseguro". Expressam um equilíbrio específico para a carga de trabalho entre disponibilidade, latência e probabilidade de observar versões em conflito.
 
 ### Consistência eventual e resolução de conflitos
 

@@ -18,11 +18,11 @@ No universo do software livre e de código aberto, é comum começar por duas gr
 
 Licenças permissivas como **MIT** e **BSD** permitem usar, modificar e redistribuir o código, inclusive em produtos comerciais e proprietários, sem exigir que as alterações ou o produto completo sejam publicados sob a mesma licença.
 
-Isso não significa “sem obrigações”. Por exemplo, as licenças MIT e BSD exigem que certos avisos de direitos de autor, condições e isenções de responsabilidade sejam preservados nas redistribuições. A Apache License 2.0 também é permissiva e inclui termos explícitos relacionados com patentes.
+Isso não significa "sem obrigações". Por exemplo, as licenças MIT e BSD exigem que certos avisos de direitos de autor, condições e isenções de responsabilidade sejam preservados nas redistribuições. A Apache License 2.0 também é permissiva e inclui termos explícitos relacionados com patentes.
 
 As licenças **copyleft**, como a **GPL**, procuram garantir que as liberdades concedidas aos utilizadores continuam presentes quando uma versão abrangida pela licença é partilhada. Em certas situações de combinação e distribuição, isso pode exigir que o trabalho combinado seja disponibilizado sob a GPL, com o código-fonte correspondente e os avisos necessários.
 
-É por isso que se ouve dizer que o copyleft “contamina” o produto. Eu evitaria essa palavra: sugere um efeito automático e universal que não existe. A análise depende da licença e da versão exactas, do modo como os componentes são combinados, das excepções aplicáveis e de como o software é entregue ou disponibilizado.
+É por isso que se ouve dizer que o copyleft "contamina" o produto. Eu evitaria essa palavra: sugere um efeito automático e universal que não existe. A análise depende da licença e da versão exactas, do modo como os componentes são combinados, das excepções aplicáveis e de como o software é entregue ou disponibilizado.
 
 ```mermaid
 flowchart TD
@@ -38,17 +38,17 @@ flowchart TD
     H --> I
 ```
 
-## “Copyleft” não significa publicar tudo para toda a gente
+## "Copyleft" não significa publicar tudo para toda a gente
 
 Este ponto merece destaque porque é onde muitos resumos simplificam demais.
 
 A GPL **não exige, em geral, que uma empresa publique ao mundo inteiro alterações que usa apenas internamente**. A obrigação de disponibilizar o código-fonte correspondente está ligada a determinadas formas de transmitir ou distribuir cópias do software abrangido. Se distribuir um binário coberto pela GPL, por exemplo, terá de cumprir as condições de disponibilização do código-fonte aplicáveis à versão da licença.
 
-Também não significa que o software tenha de ser oferecido a preço zero. A GPL permite cobrar pela cópia ou distribuição. “Livre” aqui está relacionado com as liberdades dadas aos destinatários ,  por exemplo, estudar, modificar e redistribuir sob os termos da licença ,  e não com a ausência obrigatória de preço.
+Também não significa que o software tenha de ser oferecido a preço zero. A GPL permite cobrar pela cópia ou distribuição. "Livre" aqui está relacionado com as liberdades dadas aos destinatários ,  por exemplo, estudar, modificar e redistribuir sob os termos da licença ,  e não com a ausência obrigatória de preço.
 
 Há ainda uma distinção importante para serviços online: a GPL normal não cria, por si só, a mesma obrigação de disponibilização de código apenas porque alguém usa um programa através de uma rede. A **AGPL** foi concebida para cobrir uma situação específica de versões modificadas disponibilizadas para interacção remota; nos termos da licença, os utilizadores que interagem com uma dessas versões devem ter acesso ao respectivo código-fonte. O texto exacto da licença importa.
 
-Por isso, a pergunta não deve ser apenas “tem GPL?”. Pergunte também: **qual é a versão? É GPL, LGPL ou AGPL? Estamos a modificar, combinar, distribuir ou apenas a executar o componente?**
+Por isso, a pergunta não deve ser apenas "tem GPL?". Pergunte também: **qual é a versão? É GPL, LGPL ou AGPL? Estamos a modificar, combinar, distribuir ou apenas a executar o componente?**
 
 ## Copyleft forte, fraco e licenças por ficheiro
 
@@ -65,7 +65,7 @@ Estes nomes são um mapa, não o território. A licença, as excepções e a arq
 
 A licença de uma dependência **não transforma automaticamente** todo o produto numa obra copyleft. Primeiro é preciso determinar se o componente e o produto formam um trabalho combinado abrangido pela licença ou se são programas independentes distribuídos em conjunto. A forma de ligação, a comunicação entre processos, a arquitectura de plugins e os termos da licença podem fazer diferença. Colocar dois programas no mesmo instalador ou container, por si só, não responde a todas essas perguntas.
 
-Também não existe uma regra simples de que “se estiver numa dependência transitiva, aplica-se a licença ao produto inteiro”. Uma dependência transitiva continua a ter uma licença que precisa de ser respeitada, mas a obrigação concreta depende do que é copiado, combinado e entregue.
+Também não existe uma regra simples de que "se estiver numa dependência transitiva, aplica-se a licença ao produto inteiro". Uma dependência transitiva continua a ter uma licença que precisa de ser respeitada, mas a obrigação concreta depende do que é copiado, combinado e entregue.
 
 Isto é especialmente relevante para componentes GPL ligados a uma aplicação. A própria Free Software Foundation explica que certas formas de ligação podem criar um trabalho combinado; também distingue esses casos de programas independentes agregados lado a lado. Ainda assim, determinar a fronteira num produto real pode exigir análise jurídica ,  não basta olhar para o ficheiro `package.json` ou para o nome do pacote.
 
@@ -128,7 +128,7 @@ Não estou a defender que se evitem dependências copyleft. O kernel Linux usa a
 
 Uma licença permissiva também pode ser a escolha certa: facilita a adopção em ecossistemas diversos e permite que código seja incorporado em produtos com outras licenças, desde que os avisos e demais condições sejam cumpridos.
 
-A decisão não é “qual licença é boa e qual é má?”. É: **que direitos queremos conceder, que obrigações estamos dispostos a cumprir e como o software será usado e distribuído?**
+A decisão não é "qual licença é boa e qual é má?". É: **que direitos queremos conceder, que obrigações estamos dispostos a cumprir e como o software será usado e distribuído?**
 
 ## Licenciamento é parte da engenharia do produto
 

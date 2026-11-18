@@ -99,7 +99,7 @@ flowchart LR
 
 A chamada pode entrar no adaptador e voltar ao caso de uso, mas o código de negócio continua sem importar a implementação concreta. Essa é a diferença entre um diagrama bonito e uma fronteira de dependências real.
 
-## “Service” é um nome; que serviço estamos a descrever?
+## "Service" é um nome; que serviço estamos a descrever?
 
 Em Java, podemos chamar uma classe `UserService`, `OrderService` ou `PaymentService`. O compilador não verifica se ela é realmente um serviço de aplicação, um serviço de domínio, uma fachada para uma API externa ou apenas uma classe grande onde tudo acabou por parar.
 
@@ -111,7 +111,7 @@ O nome `service` é especialmente ambíguo:
 
 Misturar estas funções numa classe com um nome genérico produz o conhecido serviço que valida regras, abre transacções, constrói consultas, envia emails, serializa respostas e ainda gere retries. Continua a chamar-se `OrderService`, mas o nome não reduz a responsabilidade nem o acoplamento.
 
-## “Repository” também pode ser apenas um rótulo
+## "Repository" também pode ser apenas um rótulo
 
 Um repositório deveria oferecer ao código de aplicação ou de domínio uma forma de recuperar e guardar objectos de domínio sem expor os detalhes da persistência.
 
@@ -232,7 +232,7 @@ Algumas ferramentas e escolhas de linguagem podem tornar as fronteiras mais dif�
 - **Testes de arquitectura**: ferramentas como ArchUnit podem verificar regras de dependência no CI.
 - **Revisão do grafo de dependências**: builds e ferramentas de análise podem revelar ciclos e caminhos inesperados.
 
-Uma convenção como “o domínio não importa infraestrutura” só é útil quando a equipa consegue detectar e corrigir violações. Se depende apenas da memória colectiva, mais cedo ou mais tarde alguém vai atravessá-la para resolver um problema urgente ,  e a excepção torna-se padrão.
+Uma convenção como "o domínio não importa infraestrutura" só é útil quando a equipa consegue detectar e corrigir violações. Se depende apenas da memória colectiva, mais cedo ou mais tarde alguém vai atravessá-la para resolver um problema urgente ,  e a excepção torna-se padrão.
 
 ## Como reconhecer uma camada que só existe no nome
 

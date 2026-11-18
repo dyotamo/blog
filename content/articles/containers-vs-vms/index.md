@@ -38,7 +38,7 @@ graph TD
 
 ## Containers: The Efficiency Revolution
 
-Containers raise the level of abstraction. Instead of virtualizing the hardware, they virtualize the **Operating System Kernel**.
+Containers raise the level of abstraction. Instead of virtualizing the hardware, they "virtualize" the **Operating System Kernel**.
 
 ### What changes in practice?
 Containers share the host's Kernel. You don't need to replicate a complete OS for each application. And pay attention: Docker or Kubernetes are not "containers" in themselves; Docker is an engine and Kubernetes is an orchestrator.

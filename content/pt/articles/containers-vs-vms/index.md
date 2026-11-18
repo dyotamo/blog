@@ -38,7 +38,7 @@ graph TD
 
 ## Containers: A Revolução da Eficiência
 
-Containers sobem o nível da abstração. Em vez de virtualizarem o hardware, eles virtualizam o **Kernel do Sistema Operativo**.
+Containers sobem o nível da abstração. Em vez de virtualizarem o hardware, eles "virtualizam" o **Kernel do Sistema Operativo**.
 
 ### O que muda na prática?
 Os containers partilham o Kernel do host. Não precisas de replicar um SO completo para cada aplicação. E atenção: Docker ou Kubernetes não são "containers" em si; o Docker é um *engine* (motor) e o Kubernetes é um orquestrador.

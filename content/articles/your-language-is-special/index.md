@@ -12,12 +12,12 @@ Your programming language is special…
 
 Of course it is. Just like all the others.
 
-When WSO2 announced **“Goodbye Java, Hello Go!”**, some reactions treated it less like an engineering decision and more like a personal breakup:
+When WSO2 announced **"Goodbye Java, Hello Go!"**, some reactions treated it less like an engineering decision and more like a personal breakup:
 
-- “What do you mean, leave Java?”
-- “What about more than twenty years of maturity?”
-- “What about the ecosystem?”
-- “And my Java 21 course?”
+- "What do you mean, leave Java?"
+- "What about more than twenty years of maturity?"
+- "What about the ecosystem?"
+- "And my Java 21 course?"
 
 Breathe. Nobody killed Java. Nobody burned the design-pattern books. WSO2 looked at the problems it expects to solve over the next several years and chose a direction for its future backend infrastructure.
 
@@ -112,7 +112,7 @@ flowchart TD
 
 ## A better way to choose a language
 
-Instead of asking **“Which language do we love?”**, ask questions that make the consequences visible:
+Instead of asking **"Which language do we love?"**, ask questions that make the consequences visible:
 
 1. What does this service do, and how long does each instance usually live?
 2. How quickly must a new instance become ready?
@@ -128,10 +128,10 @@ For an existing product, there is also a difference between **choosing a languag
 
 ## Languages are tools, not identities
 
-The lesson is not **“Go is better than Java.”** It is that a programming language is one part of an engineering system that includes the workload, runtime, libraries, team, deployment model, and business constraints.
+The lesson is not **"Go is better than Java."** It is that a programming language is one part of an engineering system that includes the workload, runtime, libraries, team, deployment model, and business constraints.
 
 Good engineering organizations do not ask which language is most lovable. They ask which option creates the least friction for the problem they have today, and what evidence would make them reconsider tomorrow.
 
-And yes, a few years from now, someone may write: **“Goodbye Go, Hello Something Else.”** The cycle will continue, as it always has.
+And yes, a few years from now, someone may write: **"Goodbye Go, Hello Something Else."** The cycle will continue, as it always has.
 
 Relax. Your language is still great. It just is not eternal. Or special.

@@ -2,6 +2,12 @@
   {{ $algorithm := .Site.Params.fingerprintAlgorithm | default "sha256" }}
   {{ $mermaidLib := resources.Get "lib/mermaid/mermaid.min.js" }}
   {{ $mermaidConfig := resources.Get "js/mermaid.js" | minify }}
-  {{ $mermaidBundle := slice $mermaidLib $mermaidConfig | resources.Concat "js/mermaid.bundle.js" | resources.Fingerprint $algorithm }}
+  {{ $mermaidZoom := resources.Get "js/mermaid-zoom.js" | minify }}
+  {{ $mermaidBundle := slice $mermaidLib $mermaidConfig $mermaidZoom | resources.Concat "js/mermaid.bundle.js" | resources.Fingerprint $algorithm }}
   <script defer src="{{ $mermaidBundle.Permalink }}" integrity="{{ $mermaidBundle.Data.Integrity }}"></script>
+{{ end }}
+{{ if .Params.coverAlt }}
+  {{ $algorithm := .Site.Params.fingerprintAlgorithm | default "sha256" }}
+  {{ $imageZoom := resources.Get "js/image-zoom.js" | minify | resources.Fingerprint $algorithm }}
+  <script defer src="{{ $imageZoom.Permalink }}" integrity="{{ $imageZoom.Data.Integrity }}"></script>
 {{ end }}

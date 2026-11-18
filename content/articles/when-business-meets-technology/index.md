@@ -45,7 +45,7 @@ Amazon described its Dynamo system in a 2007 research paper, *Dynamo: Amazon’s
 
 This was not a declaration that consistency did not matter. The design recognized that failures happen in distributed systems and gave applications mechanisms to continue operating while replicas temporarily disagreed. The system could preserve multiple versions of an item and let the application help resolve conflicts.
 
-The guiding question was not, “What is the most elegant database?” It was closer to: **“What behavior lets this business keep serving customers when machines or network links fail?”**
+The guiding question was not, "What is the most elegant database?" It was closer to: **"What behavior lets this business keep serving customers when machines or network links fail?"**
 
 ## The CAP theorem, in the context of a real choice
 
@@ -55,7 +55,7 @@ Dynamo is often discussed alongside the CAP theorem. CAP says that when a networ
 - **Availability**: every request to a non-failing node receives a response.
 - **Partition tolerance**: the system continues operating despite lost or delayed communication between nodes.
 
-The phrase “choose any two” can be misleading. In a distributed system that must operate across a network, partitions are not something a design can simply opt out of. The meaningful trade-off during a partition is commonly between giving a response and guaranteeing that all responses reflect one latest value.
+The phrase "choose any two" can be misleading. In a distributed system that must operate across a network, partitions are not something a design can simply opt out of. The meaningful trade-off during a partition is commonly between giving a response and guaranteeing that all responses reflect one latest value.
 
 For the shopping cart, Amazon valued availability during a partition. The system could accept an update at an available node, even if another replica could not be contacted. That meant a customer could receive a response while replicas temporarily held different versions of the cart.
 
@@ -98,7 +98,7 @@ Instead of one machine owning the only copy of a cart, multiple nodes could hold
 
 Dynamo replicated data across nodes and exposed parameters that let applications tune how many replicas participate in reads and writes. In simplified terms, requiring more replicas to acknowledge an operation can improve confidence in the value, while requiring fewer can help operations remain available when nodes are unreachable.
 
-Those settings are not a magic switch between “safe” and “unsafe.” They express a workload-specific balance involving availability, latency, and the probability of seeing conflicting versions.
+Those settings are not a magic switch between "safe" and "unsafe." They express a workload-specific balance involving availability, latency, and the probability of seeing conflicting versions.
 
 ### Eventual consistency and conflict resolution
 

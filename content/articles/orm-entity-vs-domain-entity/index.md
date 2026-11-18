@@ -44,7 +44,7 @@ The ORM model is allowed to know about persistence. It may need:
 
 These details can change when the schema evolves, the ORM changes, or the application moves from one storage technology to another. Some are useful implementation decisions, but they are not automatically business concepts.
 
-For instance, a `deleted_at` column may exist because a system implements soft deletion. The business concept might instead be “cancelled,” “archived,” or “no longer available”, each with different rules and meaning.
+For instance, a `deleted_at` column may exist because a system implements soft deletion. The business concept might instead be "cancelled," "archived," or "no longer available", each with different rules and meaning.
 
 ## The domain model follows business meaning
 
@@ -133,7 +133,7 @@ This does not mean every application needs a repository abstraction for every ta
 
 If an application is a small CRUD tool, its rules are trivial, its persistence model is unlikely to change independently, and the team benefits from keeping things simple, one class can be a sensible choice. Frameworks such as Active Record deliberately combine persistence and object behavior, and that can be productive in the right context.
 
-The signal to separate the models is not “we are using an ORM.” It is that the reasons to change have started to differ:
+The signal to separate the models is not "we are using an ORM." It is that the reasons to change have started to differ:
 
 - Business rules are growing or changing independently of the schema.
 - Persistence details are spreading into use cases and domain behavior.
@@ -145,7 +145,7 @@ For systems expected to grow, separating the models early can prevent those conc
 
 ## A related distinction: entity versus value object
 
-“Domain entity” also has a specific meaning in domain-driven design. An entity has identity that persists through changes: two orders with the same items are still different orders if they have different identities. A value object is defined by its values and is typically immutable, for example, a `Money` amount with a currency.
+"Domain entity" also has a specific meaning in domain-driven design. An entity has identity that persists through changes: two orders with the same items are still different orders if they have different identities. A value object is defined by its values and is typically immutable, for example, a `Money` amount with a currency.
 
 Neither concept is the same as an ORM entity. An ORM can persist both entities and value objects, sometimes in the same table, separate tables, or embedded columns. The persistence mapping does not decide the domain semantics.
 

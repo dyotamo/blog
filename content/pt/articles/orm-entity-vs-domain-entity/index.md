@@ -44,7 +44,7 @@ O modelo de ORM pode conhecer os detalhes de persistência. Pode precisar de:
 
 Estes detalhes podem mudar quando o esquema evolui, quando se troca o ORM ou quando a aplicação muda de tecnologia de armazenamento. Alguns são decisões úteis de implementação, mas não são automaticamente conceitos de negócio.
 
-Por exemplo, uma coluna `deleted_at` pode existir porque o sistema implementa eliminação lógica. O conceito de negócio pode ser antes “cancelada”, “arquivada” ou “já não disponível” ,  cada um com significado e regras diferentes.
+Por exemplo, uma coluna `deleted_at` pode existir porque o sistema implementa eliminação lógica. O conceito de negócio pode ser antes "cancelada", "arquivada" ou "já não disponível" ,  cada um com significado e regras diferentes.
 
 ## O modelo de domínio segue o significado do negócio
 
@@ -133,7 +133,7 @@ Isto não significa que todas as aplicações precisem de uma abstracção de re
 
 Se a aplicação for uma pequena ferramenta CRUD, as regras forem triviais, o modelo de persistência dificilmente mudar de forma independente e a equipa beneficiar da simplicidade, uma única classe pode ser uma escolha sensata. Frameworks como Active Record combinam deliberadamente persistência e comportamento dos objectos, e isso pode ser produtivo no contexto certo.
 
-O sinal para separar os modelos não é “estamos a usar um ORM”. É que as razões para mudar começaram a ser diferentes:
+O sinal para separar os modelos não é "estamos a usar um ORM". É que as razões para mudar começaram a ser diferentes:
 
 - As regras de negócio estão a crescer ou a mudar independentemente do esquema.
 - Os detalhes de persistência estão a espalhar-se pelos casos de uso e pelo comportamento de domínio.
@@ -145,7 +145,7 @@ Em sistemas que se espera que cresçam, separar os modelos desde cedo pode evita
 
 ## Uma distinção relacionada: entidade e objecto de valor
 
-“Entidade de domínio” também tem um significado específico em *domain-driven design*. Uma entidade tem uma identidade que persiste ao longo das mudanças: duas encomendas com os mesmos artigos continuam a ser encomendas diferentes se tiverem identidades diferentes. Um objecto de valor é definido pelos seus valores e é normalmente imutável ,  por exemplo, um valor monetário com uma moeda.
+"Entidade de domínio" também tem um significado específico em *domain-driven design*. Uma entidade tem uma identidade que persiste ao longo das mudanças: duas encomendas com os mesmos artigos continuam a ser encomendas diferentes se tiverem identidades diferentes. Um objecto de valor é definido pelos seus valores e é normalmente imutável ,  por exemplo, um valor monetário com uma moeda.
 
 Nenhum destes conceitos é igual a uma entidade de ORM. Um ORM pode persistir entidades e objectos de valor, por vezes na mesma tabela, em tabelas separadas ou em colunas incorporadas. O mapeamento de persistência não determina a semântica do domínio.
 

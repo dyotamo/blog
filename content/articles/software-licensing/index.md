@@ -18,11 +18,11 @@ In the free and open-source software world, it is common to start with two broad
 
 Permissive licenses such as **MIT** and **BSD** allow code to be used, modified, and redistributed, including in commercial and proprietary products, without requiring changes or the complete product to be released under the same license.
 
-That does not mean “no obligations.” For example, MIT and BSD require certain copyright notices, conditions, and disclaimers to be preserved in redistributions. The Apache License 2.0 is also permissive and includes explicit patent-related terms.
+That does not mean "no obligations." For example, MIT and BSD require certain copyright notices, conditions, and disclaimers to be preserved in redistributions. The Apache License 2.0 is also permissive and includes explicit patent-related terms.
 
 **Copyleft licenses**, such as the **GPL**, aim to ensure that the freedoms granted to users remain available when a covered version is shared. In certain situations involving combination and distribution, this can require the combined work to be made available under the GPL, with corresponding source code and required notices.
 
-That is why people say copyleft “infects” a product. I would avoid that word: it suggests an automatic, universal effect that does not exist. The analysis depends on the exact license and version, how components are combined, which exceptions apply, and how the software is delivered or made available.
+That is why people say copyleft "infects" a product. I would avoid that word: it suggests an automatic, universal effect that does not exist. The analysis depends on the exact license and version, how components are combined, which exceptions apply, and how the software is delivered or made available.
 
 ```mermaid
 flowchart TD
@@ -38,17 +38,17 @@ flowchart TD
     H --> I
 ```
 
-## “Copyleft” does not mean publishing everything to everyone
+## "Copyleft" does not mean publishing everything to everyone
 
 This deserves emphasis because many summaries oversimplify it.
 
 The GPL does **not generally require a company to publish changes it uses only internally to the whole world**. The obligation to provide corresponding source is tied to certain ways of conveying or distributing copies of covered software. For example, if you distribute a binary covered by the GPL, you must comply with the source-availability conditions that apply to that license version.
 
-It also does not mean the software must be offered at zero cost. The GPL permits charging for a copy or its distribution. “Free” here refers to the freedoms granted to recipients, for example, to study, modify, and redistribute under the license terms, not a mandatory zero price.
+It also does not mean the software must be offered at zero cost. The GPL permits charging for a copy or its distribution. "Free" here refers to the freedoms granted to recipients, for example, to study, modify, and redistribute under the license terms, not a mandatory zero price.
 
 There is also an important distinction for online services: the ordinary GPL does not by itself create the same source-availability obligation simply because someone uses a program over a network. The **AGPL** was designed to cover a specific situation involving modified versions made available for remote interaction; under its terms, users interacting with such a version must be offered access to its source. The exact license text matters.
 
-So do not stop at asking, “Is it GPL?” Also ask: **Which version? GPL, LGPL, or AGPL? Are we modifying, combining, distributing, or merely running the component?**
+So do not stop at asking, "Is it GPL?" Also ask: **Which version? GPL, LGPL, or AGPL? Are we modifying, combining, distributing, or merely running the component?**
 
 ## Strong copyleft, weak copyleft, and file-level copyleft
 
@@ -65,7 +65,7 @@ These terms are a map, not the territory. The specific license, exceptions, and 
 
 A dependency’s license does **not automatically transform** the entire product into a copyleft work. First, you need to determine whether the component and product form a combined work covered by the license, or are independent programs distributed together. Linking, inter-process communication, plugin architecture, and the license terms can all matter. Putting two programs in the same installer or container does not, by itself, answer every question.
 
-There is also no simple rule that “if it is a transitive dependency, its license applies to the whole product.” A transitive dependency still has a license that must be respected, but the specific obligation depends on what is copied, combined, and conveyed.
+There is also no simple rule that "if it is a transitive dependency, its license applies to the whole product." A transitive dependency still has a license that must be respected, but the specific obligation depends on what is copied, combined, and conveyed.
 
 This matters especially for GPL components linked into an application. The Free Software Foundation explains that some forms of linking can create a combined work; it also distinguishes those cases from independent programs aggregated side by side. Even so, determining the boundary in a real product may require legal analysis, a `package.json` file or package name is not enough.
 
@@ -128,7 +128,7 @@ I am not arguing that copyleft dependencies should be avoided. The Linux kernel 
 
 A permissive license can also be the right choice: it makes adoption across diverse ecosystems easier and allows code to be incorporated into products under other licenses, as long as notices and other conditions are followed.
 
-The question is not “Which license is good and which is bad?” It is: **What rights do we want to grant, what obligations are we willing to meet, and how will this software be used and distributed?**
+The question is not "Which license is good and which is bad?" It is: **What rights do we want to grant, what obligations are we willing to meet, and how will this software be used and distributed?**
 
 ## Licensing is part of product engineering
 

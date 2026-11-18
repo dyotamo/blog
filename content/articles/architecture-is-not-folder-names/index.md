@@ -100,7 +100,7 @@ flowchart LR
 
 A call can enter the adapter and return to the use case while business code still avoids importing the concrete implementation. That is the difference between a nice-looking diagram and a real dependency boundary.
 
-## “Service” is a name; what kind of service is it?
+## "Service" is a name; what kind of service is it?
 
 In Java, we can name a class `UserService`, `OrderService`, or `PaymentService`. The compiler does not check whether it is actually an application service, a domain service, a facade for an external API, or just a large class where everything ended up.
 
@@ -112,7 +112,7 @@ The name `service` is especially ambiguous:
 
 Mixing these functions in a class with a generic name produces the familiar service that validates rules, opens transactions, builds queries, sends email, serializes responses, and manages retries. It may still be called `OrderService`, but its name neither reduces its responsibilities nor its coupling.
 
-## “Repository” can also be just a label
+## "Repository" can also be just a label
 
 A repository should give application or domain code a way to retrieve and save domain objects without exposing persistence details.
 
@@ -233,7 +233,7 @@ Some tools and language choices can make boundaries harder to cross:
 - **Architecture tests**: tools such as ArchUnit can verify dependency rules in CI.
 - **Dependency-graph review**: builds and analysis tools can reveal cycles and unexpected paths.
 
-A convention such as “the domain does not import infrastructure” is only useful if the team can detect and correct violations. If it depends solely on collective memory, sooner or later someone will cross the boundary to solve an urgent problem, and the exception will become the pattern.
+A convention such as "the domain does not import infrastructure" is only useful if the team can detect and correct violations. If it depends solely on collective memory, sooner or later someone will cross the boundary to solve an urgent problem, and the exception will become the pattern.
 
 ## How to recognize a layer that exists only in name
 

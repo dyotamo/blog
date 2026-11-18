@@ -12,12 +12,12 @@ A sua linguagem de programação é especial…
 
 Claro que é. Como todas as outras.
 
-Quando a WSO2 anunciou **“Goodbye Java, Hello Go!”**, algumas reacções trataram o assunto menos como uma decisão de engenharia e mais como um desgosto amoroso:
+Quando a WSO2 anunciou **"Goodbye Java, Hello Go!"**, algumas reacções trataram o assunto menos como uma decisão de engenharia e mais como um desgosto amoroso:
 
-- “Como assim, deixar Java?”
-- “E os mais de vinte anos de maturidade?”
-- “E o ecossistema?”
-- “E o meu curso de Java 21?”
+- "Como assim, deixar Java?"
+- "E os mais de vinte anos de maturidade?"
+- "E o ecossistema?"
+- "E o meu curso de Java 21?"
 
 Calma. Ninguém matou Java. Ninguém queimou os livros de design patterns. A WSO2 olhou para os problemas que espera resolver nos próximos anos e escolheu uma direcção para a futura infraestrutura backend.
 
@@ -112,7 +112,7 @@ flowchart TD
 
 ## Uma forma melhor de escolher uma linguagem
 
-Em vez de perguntar **“De que linguagem gostamos?”**, façamos perguntas que tornam as consequências visíveis:
+Em vez de perguntar **"De que linguagem gostamos?"**, façamos perguntas que tornam as consequências visíveis:
 
 1. O que faz este serviço e quanto tempo costuma viver cada instância?
 2. Com que rapidez uma nova instância tem de ficar pronta?
@@ -128,10 +128,10 @@ Num produto existente, também há uma diferença entre **escolher uma linguagem
 
 ## Linguagens são ferramentas, não identidades
 
-A lição não é **“Go é melhor que Java”**. Uma linguagem de programação é uma parte de um sistema de engenharia que também inclui a carga de trabalho, o runtime, as bibliotecas, a equipa, o modelo de implementação e as restrições do negócio.
+A lição não é **"Go é melhor que Java"**. Uma linguagem de programação é uma parte de um sistema de engenharia que também inclui a carga de trabalho, o runtime, as bibliotecas, a equipa, o modelo de implementação e as restrições do negócio.
 
 As boas organizações de engenharia não perguntam qual é a linguagem mais adorada. Perguntam qual opção cria menos atrito para o problema que têm hoje ,  e que evidências as fariam reconsiderar amanhã.
 
-E sim, daqui a alguns anos alguém poderá escrever: **“Goodbye Go, Hello Outra Coisa.”** O ciclo continuará, como sempre.
+E sim, daqui a alguns anos alguém poderá escrever: **"Goodbye Go, Hello Outra Coisa."** O ciclo continuará, como sempre.
 
 Relaxe. A sua linguagem continua a ser óptima. Só não é eterna. Nem especial.
