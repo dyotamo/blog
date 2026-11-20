@@ -1,5 +1,5 @@
 ---
-title: "Your Programming Language Is Special… Just Like All the Others"
+title: "Your Programming Language Is Special… Just Like All the Others 💻🛠️"
 description: "WSO2’s Java-to-Go direction is not proof that one language won. It is an example of choosing tools for the workloads, constraints, and costs a business has today."
 date: "2026-11-11"
 tags: ["programming-languages", "java", "go", "wso2", "software-architecture", "cloud-native", "engineering"]

@@ -1,5 +1,5 @@
 ---
-title: "Licenciamento de Software: Uma Dependência Também é uma Decisão"
+title: "Licenciamento de Software: Uma Dependência Também é uma Decisão ⚖️📜"
 description: "MIT, BSD, GPL, LGPL e AGPL não são apenas etiquetas. Entenda permissões, obrigações de distribuição e como acompanhar as licenças das dependências."
 date: "2026-11-11"
 tags: ["software-licensing", "open-source", "copyleft", "compliance", "dependencies", "software-architecture"]

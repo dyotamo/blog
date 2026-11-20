@@ -1,5 +1,5 @@
 ---
-title: "Arquitectura Não é Nome de Pasta"
+title: "Arquitectura Não é Nome de Pasta 📁🏗️"
 description: "Camadas, serviços e repositórios só existem de verdade quando as responsabilidades e dependências do código respeitam o que esses nomes prometem."
 date: "2026-11-11"
 tags: ["software-architecture", "layered-architecture", "clean-architecture", "design-patterns", "java", "modularity"]

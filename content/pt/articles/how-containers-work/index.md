@@ -1,5 +1,5 @@
 ---
-title: "Containers não são máquinas virtuais: como funcionam por dentro?"
+title: "Containers não são máquinas virtuais: como funcionam por dentro? 🐧⚙️"
 description: "Uma explicação prática de processos, namespaces, cgroups, sistemas de ficheiros, rede, segurança e runtimes Linux ,  e do que acontece quando um container arranca."
 date: "2026-11-18"
 tags: ["containers", "linux", "docker", "kubernetes", "namespaces", "cgroups", "devops"]
@@ -164,7 +164,7 @@ Namespaces e cgroups são peças importantes, mas **não constituem, por si só,
 - **User namespaces e execução rootless:** podem reduzir os privilégios necessários no host, mas não eliminam todos os riscos nem garantem que todo o caminho de execução esteja sem privilégios.
 - **Isolamento adicional:** em ambientes que exigem uma fronteira mais forte, podem usar-se VMs ou sandboxes que acrescentam outra camada entre a carga de trabalho e o kernel do host.
 
-Uma configuração defensiva costuma evitar modo privilegiado sem necessidade, limitar capabilities, definir limites de recursos, manter o kernel atualizado e tratar imagens e segredos com cuidado. Não existe uma configuração única adequada a todos os workloads.
+Uma configuração defensiva costuma evitar modo privilegiado sem necessidade, limitar capabilities, definir limites de recursos, manter o kernel atualizado e tratar imagens e segredos (secrets) com cuidado. Não existe uma configuração única adequada a todos os workloads.
 
 ## 7. Runtimes: quem prepara e inicia o container?
 

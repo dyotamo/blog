@@ -1,5 +1,5 @@
 ---
-title: "When Business Meets Technology: The Story Behind Dynamo"
+title: "When Business Meets Technology: The Story Behind Dynamo 🛒⚡"
 description: "How a shopping cart that could not go down led Amazon to rethink distributed data systems, and why business priorities shape architecture."
 date: "2026-11-11"
 tags: ["dynamo", "amazon", "distributed-systems", "databases", "cap-theorem", "availability", "consistency", "architecture"]

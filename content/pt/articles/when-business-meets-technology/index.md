@@ -1,5 +1,5 @@
 ---
-title: "Quando o Negócio Encontra a Tecnologia: A História do Dynamo"
+title: "Quando o Negócio Encontra a Tecnologia: A História do Dynamo 🛒⚡"
 description: "Como um carrinho de compras que não podia falhar levou a Amazon a repensar sistemas de dados distribuídos ,  e por que as prioridades do negócio moldam a arquitectura."
 date: "2026-11-11"
 tags: ["dynamo", "amazon", "distributed-systems", "databases", "cap-theorem", "availability", "consistency", "architecture"]

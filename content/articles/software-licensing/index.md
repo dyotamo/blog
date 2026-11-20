@@ -1,5 +1,5 @@
 ---
-title: "Software Licensing: A Dependency Is a Decision Too"
+title: "Software Licensing: A Dependency Is a Decision Too ⚖️📜"
 description: "MIT, BSD, GPL, LGPL, and AGPL are more than labels. Understand permissions, distribution obligations, and how to track your dependencies’ licenses."
 date: "2026-11-11"
 tags: ["software-licensing", "open-source", "copyleft", "compliance", "dependencies", "software-architecture"]

@@ -315,7 +315,7 @@ Os pedidos de range HTTP fazem pouco sentido para o QUERY. A Secção 2.8 torna 
 A especificação é direta:
 
 - Como o body é **menos propenso a ser registado em log** do que a URI, o **QUERY pode ser uma defesa contra fugas** para consultas sensíveis.
-- Se o servidor criar uma URI temporária para o recurso equivalente (`Location`), essa URI NÃO DEVE conter o conteúdo sensível da consulta ,  caso contrário, o segredo acaba em logs de acesso outra vez.
+- Se o servidor criar uma URI temporária para o recurso equivalente (`Location`), essa URI NÃO DEVE conter o conteúdo sensível da consulta, caso contrário, a secret (segredo) acaba em logs de acesso outra vez.
 - **CORS**: `QUERY` não está nos métodos *safelisted* do CORS. Qualquer pedido cross-origin dispara um **preflight (`OPTIONS`)**.
 
 ```mermaid

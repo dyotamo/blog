@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" role="img" aria-label="Containers are not VMs ,  OpenGraph card">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" role="img" aria-label="Containers não são máquinas virtuais, imagem de capa">
 	<defs>
 		<linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
 			<stop offset="0%" stop-color="#020617" />
@@ -31,7 +31,7 @@
 	<rect width="1200" height="630" fill="url(#rightGlow)" />
 
 	<g font-family="'Inter', system-ui, -apple-system, sans-serif" text-anchor="middle">
-		<text x="600" y="96" font-size="18" font-weight="700" letter-spacing="0.40em" fill="#67e8f9">CONTAINERS  ·  VIRTUAL MACHINES</text>
+		<text x="600" y="96" font-size="18" font-weight="700" letter-spacing="0.40em" fill="#67e8f9">CONTAINERS  ·  MÁQUINAS VIRTUAIS</text>
 
 		<g transform="translate(600 195)">
 			<text font-size="124" font-weight="900" fill="#f8fafc">
@@ -42,30 +42,30 @@
 		</g>
 
 		<text x="600" y="278" font-size="22" font-weight="500" fill="#cbd5e1">
-			Same kernel. Different abstraction.
+			Mesmo kernel. Abstrações diferentes.
 		</text>
 	</g>
 
 	<g transform="translate(220 340)">
 		<g font-family="'Inter', sans-serif" text-anchor="middle">
-			<text x="90" y="-14" font-size="13" font-weight="700" letter-spacing="0.22em" fill="#fbbf24">VM STACK</text>
+			<text x="90" y="-14" font-size="13" font-weight="700" letter-spacing="0.22em" fill="#fbbf24">PILHA DA VM</text>
 			<text x="90" y="218" font-size="11" font-weight="600" letter-spacing="0.18em" fill="#92400e">~ GIGABYTES</text>
 		</g>
 		<g>
 			<rect x="0" y="0" width="180" height="28" rx="4" fill="#fde68a" />
-			<text x="90" y="19" font-family="'Inter', sans-serif" font-size="11" font-weight="700" fill="#7c2d12" text-anchor="middle">App</text>
+			<text x="90" y="19" font-family="'Inter', sans-serif" font-size="11" font-weight="700" fill="#7c2d12" text-anchor="middle">Aplicação</text>
 		</g>
 		<g transform="translate(0 32)">
 			<rect x="0" y="0" width="180" height="26" rx="4" fill="#fbbf24" />
-			<text x="90" y="18" font-family="'Inter', sans-serif" font-size="11" font-weight="600" fill="#451a03" text-anchor="middle">Binaries</text>
+			<text x="90" y="18" font-family="'Inter', sans-serif" font-size="11" font-weight="600" fill="#451a03" text-anchor="middle">Binários</text>
 		</g>
 		<g transform="translate(0 62)">
 			<rect x="0" y="0" width="180" height="34" rx="4" fill="url(#amber)" />
-			<text x="90" y="22" font-family="'Inter', sans-serif" font-size="12" font-weight="700" fill="#fffbeb" text-anchor="middle">Guest OS</text>
+			<text x="90" y="22" font-family="'Inter', sans-serif" font-size="12" font-weight="700" fill="#fffbeb" text-anchor="middle">SO convidado</text>
 		</g>
 		<g transform="translate(0 100)">
 			<rect x="0" y="0" width="180" height="34" rx="4" fill="#92400e" />
-			<text x="90" y="22" font-family="'Inter', sans-serif" font-size="12" font-weight="700" fill="#fef3c7" text-anchor="middle">Hypervisor</text>
+			<text x="90" y="22" font-family="'Inter', sans-serif" font-size="12" font-weight="700" fill="#fef3c7" text-anchor="middle">Hipervisor</text>
 		</g>
 		<g transform="translate(0 138)">
 			<rect x="0" y="0" width="180" height="34" rx="4" fill="#475569" />
@@ -75,24 +75,24 @@
 
 	<g transform="translate(800 340)">
 		<g font-family="'Inter', sans-serif" text-anchor="middle">
-			<text x="90" y="-14" font-size="13" font-weight="700" letter-spacing="0.22em" fill="#67e8f9">CONTAINER STACK</text>
+			<text x="90" y="-14" font-size="13" font-weight="700" letter-spacing="0.22em" fill="#67e8f9">PILHA DO CONTAINER</text>
 			<text x="90" y="218" font-size="11" font-weight="600" letter-spacing="0.18em" fill="#0e7490">~ MEGABYTES</text>
 		</g>
 		<g>
 			<rect x="0" y="0" width="180" height="28" rx="4" fill="#cffafe" />
-			<text x="90" y="19" font-family="'Inter', sans-serif" font-size="11" font-weight="700" fill="#155e75" text-anchor="middle">App</text>
+			<text x="90" y="19" font-family="'Inter', sans-serif" font-size="11" font-weight="700" fill="#155e75" text-anchor="middle">Aplicação</text>
 		</g>
 		<g transform="translate(0 32)">
 			<rect x="0" y="0" width="180" height="26" rx="4" fill="#67e8f9" />
-			<text x="90" y="18" font-family="'Inter', sans-serif" font-size="11" font-weight="600" fill="#083344" text-anchor="middle">Binaries</text>
+			<text x="90" y="18" font-family="'Inter', sans-serif" font-size="11" font-weight="600" fill="#083344" text-anchor="middle">Binários</text>
 		</g>
 		<g transform="translate(0 62)">
 			<rect x="0" y="0" width="180" height="34" rx="4" fill="url(#cyan)" />
-			<text x="90" y="22" font-family="'Inter', sans-serif" font-size="12" font-weight="700" fill="#ecfeff" text-anchor="middle">Container Engine</text>
+			<text x="90" y="22" font-family="'Inter', sans-serif" font-size="12" font-weight="700" fill="#ecfeff" text-anchor="middle">Motor de containers</text>
 		</g>
 		<g transform="translate(0 100)">
 			<rect x="0" y="0" width="180" height="34" rx="4" fill="url(#kernel)" />
-			<text x="90" y="22" font-family="'Inter', sans-serif" font-size="12" font-weight="700" fill="#e0e7ff" text-anchor="middle">Host Kernel</text>
+			<text x="90" y="22" font-family="'Inter', sans-serif" font-size="12" font-weight="700" fill="#e0e7ff" text-anchor="middle">Kernel do host</text>
 		</g>
 		<g transform="translate(0 138)">
 			<rect x="0" y="0" width="180" height="34" rx="4" fill="#475569" />
@@ -109,6 +109,6 @@
 	</g>
 
 	<g transform="translate(600 575)" font-family="'Inter', sans-serif" text-anchor="middle">
-		<text font-size="14" font-weight="500" fill="#64748b">Containers share the host kernel · VMs virtualize the hardware</text>
+		<text font-size="14" font-weight="500" fill="#64748b">Os containers partilham o kernel do host · as VMs virtualizam o hardware</text>
 	</g>
 </svg>

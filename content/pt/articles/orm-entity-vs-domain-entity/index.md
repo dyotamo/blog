@@ -1,5 +1,5 @@
 ---
-title: "Entidade de ORM ≠ Entidade de Domínio"
+title: "Entidade de ORM ≠ Entidade de Domínio 🗄️🏛️"
 description: "Podem começar com os mesmos atributos, mas os modelos de persistência e de domínio têm responsabilidades diferentes. Descubra onde divergem e quando compensa mantê-los separados."
 date: "2026-11-11"
 tags: ["orm", "domain-driven-design", "software-architecture", "persistence", "domain-model", "clean-architecture"]

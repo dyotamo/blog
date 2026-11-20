@@ -1,5 +1,5 @@
 ---
-title: "An ORM Entity Is Not a Domain Entity"
+title: "An ORM Entity Is Not a Domain Entity 🗄️🏛️"
 description: "They may start with the same fields, but persistence models and domain models have different jobs. Learn where they diverge and when keeping them apart pays off."
 date: "2026-11-11"
 tags: ["orm", "domain-driven-design", "software-architecture", "persistence", "domain-model", "clean-architecture"]

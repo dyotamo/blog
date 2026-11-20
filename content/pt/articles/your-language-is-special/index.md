@@ -1,5 +1,5 @@
 ---
-title: "A Sua Linguagem de Programação é Especial… Como Todas as Outras"
+title: "A Sua Linguagem de Programação é Especial… Como Todas as Outras 💻🛠️"
 description: "A orientação da WSO2 de Java para Go não prova que uma linguagem venceu. É um exemplo de como escolher ferramentas para as cargas de trabalho, restrições e custos de hoje."
 date: "2026-11-11"
 tags: ["programming-languages", "java", "go", "wso2", "software-architecture", "cloud-native", "engineering"]

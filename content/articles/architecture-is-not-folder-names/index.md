@@ -1,5 +1,5 @@
 ---
-title: "Architecture Is More Than Folder Names"
+title: "Architecture Is More Than Folder Names 📁🏗️"
 description: "Layers, services, and repositories are real only when component responsibilities and dependencies do what their names promise."
 date: "2026-11-11"
 tags: ["software-architecture", "layered-architecture", "clean-architecture", "design-patterns", "java", "modularity"]
