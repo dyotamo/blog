@@ -29,7 +29,7 @@
 		</g>
 
 		<text x="600" y="278" font-size="24" font-weight="500" fill="#bae6fd">
-			Métricas · Registos · Rastreamentos — três pilares que transformam ruído em sinal.
+			Métricas · Registos · Rastreamentos , três pilares que transformam ruído em sinal.
 		</text>
 	</g>
 
@@ -128,6 +128,6 @@
 	</g>
 
 	<g transform="translate(600 595)" font-family="'Inter', sans-serif" text-anchor="middle">
-		<text font-size="14" font-weight="500" fill="#64748b">Latência · tráfego · erros · saturação — os quatro sinais de ouro</text>
+		<text font-size="14" font-weight="500" fill="#64748b">Latência · tráfego · erros · saturação , os quatro sinais de ouro</text>
 	</g>
 </svg>

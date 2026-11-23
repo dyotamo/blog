@@ -156,4 +156,4 @@ flowchart LR
 
 Cada camada oferece uma abstracção útil. Uma linguagem de alto nível permite-nos exprimir uma intenção sem desenhar um circuito. O compilador traduz e optimiza essa intenção. As instruções de máquina descrevem operações para uma arquitectura de processador. Os circuitos da CPU executam-nas usando sinais eléctricos nos transístores.
 
-Quando o código-fonte exprime uma operação como `a + b`, não estamos a dar uma ordem directa à electricidade. Usamos uma pilha de abstracções que, no fim, faz com que o comportamento eléctrico produza `102` de forma fiável — a menos que o compilador consiga provar esse resultado antecipadamente e eliminar o trabalho.
+Quando o código-fonte exprime uma operação como `a + b`, não estamos a dar uma ordem directa à electricidade. Usamos uma pilha de abstracções que, no fim, faz com que o comportamento eléctrico produza `102` de forma fiável , a menos que o compilador consiga provar esse resultado antecipadamente e eliminar o trabalho.

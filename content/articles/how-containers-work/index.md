@@ -240,11 +240,11 @@ Once you understand how these pieces fit together, containers stop looking like 
 
 ### Further reading
 
-- [Linux namespaces ,  man7.org](https://man7.org/linux/man-pages/man7/namespaces.7.html)
-- [Control Group v2 ,  Linux kernel documentation](https://docs.kernel.org/admin-guide/cgroup-v2.html)
-- [OverlayFS ,  Linux kernel documentation](https://docs.kernel.org/filesystems/overlayfs.html)
-- [Linux capabilities ,  man7.org](https://man7.org/linux/man-pages/man7/capabilities.7.html)
-- [Seccomp filter ,  Linux kernel documentation](https://docs.kernel.org/userspace-api/seccomp_filter.html)
+- [Linux namespaces  man7.org](https://man7.org/linux/man-pages/man7/namespaces.7.html)
+- [Control Group v2  Linux kernel documentation](https://docs.kernel.org/admin-guide/cgroup-v2.html)
+- [OverlayFS  Linux kernel documentation](https://docs.kernel.org/filesystems/overlayfs.html)
+- [Linux capabilities  man7.org](https://man7.org/linux/man-pages/man7/capabilities.7.html)
+- [Seccomp filter  Linux kernel documentation](https://docs.kernel.org/userspace-api/seccomp_filter.html)
 - [OCI Runtime Specification](https://github.com/opencontainers/runtime-spec)
 - [OCI Image Specification](https://github.com/opencontainers/image-spec)
 - [Kubernetes container runtimes](https://kubernetes.io/docs/setup/production-environment/container-runtimes/)

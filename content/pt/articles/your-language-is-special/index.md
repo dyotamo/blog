@@ -82,7 +82,7 @@ Mas não há almoço grátis escondido no comando `go build`:
 - Mudar de linguagem implica custos de formação, contratação, ferramentas, testes e manutenção a longo prazo.
 - O melhor resultado depende da aplicação, das dependências, do tráfego e da forma como o serviço é operado.
 
-A escolha faz sentido quando os benefícios medidos na implementação real superam os custos de migração e de ciclo de vida ,  não porque uma linguagem venceu um concurso de popularidade.
+A escolha faz sentido quando os benefícios medidos na implementação real superam os custos de migração e de ciclo de vida  não porque uma linguagem venceu um concurso de popularidade.
 
 ## Porque não Rust? Porque não outra coisa?
 
@@ -130,7 +130,7 @@ Num produto existente, também há uma diferença entre **escolher uma linguagem
 
 A lição não é **"Go é melhor que Java"**. Uma linguagem de programação é uma parte de um sistema de engenharia que também inclui a carga de trabalho, o runtime, as bibliotecas, a equipa, o modelo de implementação e as restrições do negócio.
 
-As boas organizações de engenharia não perguntam qual é a linguagem mais adorada. Perguntam qual opção cria menos atrito para o problema que têm hoje ,  e que evidências as fariam reconsiderar amanhã.
+As boas organizações de engenharia não perguntam qual é a linguagem mais adorada. Perguntam qual opção cria menos atrito para o problema que têm hoje  e que evidências as fariam reconsiderar amanhã.
 
 E sim, daqui a alguns anos alguém poderá escrever: **"Goodbye Go, Hello Outra Coisa."** O ciclo continuará, como sempre.
 

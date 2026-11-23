@@ -14,7 +14,7 @@ Cria-se `domain`, `application`, `infrastructure`, `services` e `repositories`�
 
 Não necessariamente.
 
-> **Não é o nome que define a camada ou o padrão. É a responsabilidade que o código implementa ,  e as dependências que respeita.**
+> **Não é o nome que define a camada ou o padrão. É a responsabilidade que o código implementa  e as dependências que respeita.**
 
 Os nomes ajudam pessoas a navegar e a comunicar. Mas são uma promessa, não uma garantia. A arquitectura real está no que os componentes fazem, no que conhecem e nas mudanças que conseguem absorver sem arrastar o resto do sistema.
 
@@ -48,7 +48,7 @@ A árvore é uma pista. A direcção das dependências e o comportamento do cód
 
 Uma arquitectura em camadas separa responsabilidades que mudam por razões diferentes. Uma divisão comum pode ter:
 
-- **Apresentação**: recebe interacções externas ,  HTTP, interface gráfica, CLI ou mensagens ,  e traduz os dados de entrada e saída.
+- **Apresentação**: recebe interacções externas  HTTP, interface gráfica, CLI ou mensagens  e traduz os dados de entrada e saída.
 - **Aplicação**: coordena casos de uso, controla a sequência de operações e define a fronteira transaccional.
 - **Domínio**: representa conceitos de negócio e protege as regras e invariantes do sistema.
 - **Infraestrutura**: liga o sistema a tecnologias externas, como bases de dados, filas, serviços de terceiros, ficheiros e frameworks.
@@ -198,7 +198,7 @@ Não é necessário que todos os sistemas tenham exactamente estas quatro classe
 Há duas formas comuns de organizar o código:
 
 - **Por camada técnica**: todos os controladores juntos, todos os serviços juntos, todos os repositórios juntos.
-- **Por funcionalidade ou contexto**: encomendas, pagamentos, identidade, notificações ,  cada área reúne o código que lhe pertence.
+- **Por funcionalidade ou contexto**: encomendas, pagamentos, identidade, notificações  cada área reúne o código que lhe pertence.
 
 Ambas podem funcionar. A organização por camada é simples de compreender em aplicações pequenas, mas num sistema grande pode obrigar a percorrer muitas pastas para perceber uma funcionalidade. A organização por funcionalidade aproxima as peças que mudam em conjunto, mas pode criar duplicação ou fronteiras erradas se cada módulo inventar as suas próprias regras.
 
@@ -232,7 +232,7 @@ Algumas ferramentas e escolhas de linguagem podem tornar as fronteiras mais dif�
 - **Testes de arquitectura**: ferramentas como ArchUnit podem verificar regras de dependência no CI.
 - **Revisão do grafo de dependências**: builds e ferramentas de análise podem revelar ciclos e caminhos inesperados.
 
-Uma convenção como "o domínio não importa infraestrutura" só é útil quando a equipa consegue detectar e corrigir violações. Se depende apenas da memória colectiva, mais cedo ou mais tarde alguém vai atravessá-la para resolver um problema urgente ,  e a excepção torna-se padrão.
+Uma convenção como "o domínio não importa infraestrutura" só é útil quando a equipa consegue detectar e corrigir violações. Se depende apenas da memória colectiva, mais cedo ou mais tarde alguém vai atravessá-la para resolver um problema urgente  e a excepção torna-se padrão.
 
 ## Como reconhecer uma camada que só existe no nome
 
@@ -260,4 +260,4 @@ O custo aparece quando responsabilidades diferentes começam a mudar por razões
 
 Criar pacotes chamados `domain`, `application`, `infrastructure`, `services` e `repositories` pode ser um excelente começo para a organização. Mas não prova que as responsabilidades estejam separadas nem que as dependências estejam correctas.
 
-A arquitectura emerge daquilo que cada componente faz, do que conhece e da direcção em que o sistema permite que as mudanças se propaguem. Os nomes podem explicar a intenção. A implementação é que tem de a cumprir ,  e os módulos, testes e processo de build devem ajudar a manter essa promessa.
+A arquitectura emerge daquilo que cada componente faz, do que conhece e da direcção em que o sistema permite que as mudanças se propaguem. Os nomes podem explicar a intenção. A implementação é que tem de a cumprir  e os módulos, testes e processo de build devem ajudar a manter essa promessa.

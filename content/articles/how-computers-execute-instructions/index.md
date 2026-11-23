@@ -98,7 +98,7 @@ Binary addition follows the same column-by-column idea as decimal addition, exce
   01100110
 ```
 
-The compiler's instruction does not have to mean “perform this exact drawing.” It asks the CPU to perform an integer addition with the specified operands and destination.
+The compiler's instruction does not have to mean "perform this exact drawing.” It asks the CPU to perform an integer addition with the specified operands and destination.
 
 ## 4. The operating system loads the program
 
@@ -130,7 +130,7 @@ The exact implementation is more complex than a chain of classroom gates. Modern
 
 A digital circuit uses transistors as controllable electrical switches. In a simplified CMOS transistor, an input voltage affects whether a conducting path is formed. By combining transistors, chip designers build gates whose output voltage moves toward one of two ranges interpreted as logical 0 or logical 1.
 
-These are **voltage ranges**, not perfectly fixed voltages and not little particles labeled “zero” or “one.” The circuit is designed so that small variations still leave the signal reliably within a valid range. As signals change, capacitances in the circuit charge and discharge; that switching consumes energy and contributes to heat.
+These are **voltage ranges**, not perfectly fixed voltages and not little particles labeled "zero” or "one.” The circuit is designed so that small variations still leave the signal reliably within a valid range. As signals change, capacitances in the circuit charge and discharge; that switching consumes energy and contributes to heat.
 
 The CPU's clock provides timing references for much of this coordinated work. A clock edge does not mean every transistor in the chip flips at once: different parts of the chip are active at different times, and some logic is combinational between clocked elements. But clocking helps coordinate when state such as register contents is updated.
 
@@ -140,7 +140,7 @@ At the very bottom of this explanation, the addition is not a magical operation 
 
 After the addition, the result `102` is available in the processor's state, often in a register to be used by the next instruction. If later code needs it in memory, the compiler can generate an instruction to store it. If we print it, there is much more work: formatting the number as characters, passing output to the operating system, and eventually sending it to a terminal or another destination.
 
-In our original example, `c` is never read, and the addition has no observable side effects. The compiler can discard the binding and calculation. That means asking “where is `c` stored?” may have no concrete answer in the final machine code: it may not exist at runtime at all.
+In our original example, `c` is never read, and the addition has no observable side effects. The compiler can discard the binding and calculation. That means asking "where is `c` stored?” may have no concrete answer in the final machine code: it may not exist at runtime at all.
 
 ## The whole path, in one view
 
@@ -156,4 +156,4 @@ flowchart LR
 
 Each layer offers a useful abstraction. A high-level language lets us express intent without designing a circuit. The compiler translates and optimizes that intent. Machine instructions describe operations for a processor architecture. CPU circuits carry them out using electrical signals in transistors.
 
-When source code expresses an operation like `a + b`, it is not directly commanding electricity. It uses a stack of abstractions that ultimately makes electrical behavior reliably produce `102`—unless the compiler can prove that answer in advance and skip the work.
+When source code expresses an operation like `a + b`, it is not directly commanding electricity. It uses a stack of abstractions that ultimately makes electrical behavior reliably produce `102`,unless the compiler can prove that answer in advance and skip the work.

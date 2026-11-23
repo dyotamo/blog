@@ -7,7 +7,7 @@ summary: "Uma imagem de container é mais do que um Dockerfile ou um ficheiro ta
 coverAlt: "Um manifesto de imagem de container aponta para camadas reutilizáveis do sistema de arquivo que o OverlayFS combina no sistema de arquivo do container."
 ---
 
-Um Dockerfile parece uma lista de comandos. Fazemos o build e obtemos uma imagem que pode ser descarregada, identificada com uma tag e iniciada. Mas de que é feita essa imagem e porque pode uma alteração numa linha tornar o build lento ,  ou deixar um ficheiro inesperado na imagem final?
+Um Dockerfile parece uma lista de comandos. Fazemos o build e obtemos uma imagem que pode ser descarregada, identificada com uma tag e iniciada. Mas de que é feita essa imagem e porque pode uma alteração numa linha tornar o build lento  ou deixar um ficheiro inesperado na imagem final?
 
 Vamos acompanhar uma imagem desde o formato publicado até ao sistema de arquivo (ou ficheiros) que um container em execução vê.
 
@@ -23,7 +23,7 @@ Por analogia com a programação orientada a objetos, pense nesta relação assi
 
 Tal como podemos criar vários objetos a partir da mesma classe, também podemos criar vários containers a partir da mesma imagem. Partilham o ponto de partida só de leitura da imagem, mas cada um tem o seu próprio estado de execução.
 
-As imagens são geralmente descritas como uma pilha de camadas, mas não são simplesmente várias cópias completas de diretórios. Cada camada do sistema de arquivo regista alterações ,  ficheiros adicionados ou modificados e, por vezes, marcadores para ficheiros removidos ,  em relação ao que veio antes. O conteúdo da camada é imutável depois do build; uma alteração posterior acrescenta outra camada em vez de editar uma já existente.
+As imagens são geralmente descritas como uma pilha de camadas, mas não são simplesmente várias cópias completas de diretórios. Cada camada do sistema de arquivo regista alterações  ficheiros adicionados ou modificados e, por vezes, marcadores para ficheiros removidos  em relação ao que veio antes. O conteúdo da camada é imutável depois do build; uma alteração posterior acrescenta outra camada em vez de editar uma já existente.
 
 ## OCI: um formato comum para imagens
 
@@ -34,7 +34,7 @@ Em termos gerais, uma imagem OCI tem:
 - Um **manifesto de imagem**, que aponta para a configuração da imagem e para as suas camadas do sistema de arquivo.
 - Uma **configuração da imagem**, que regista metadados como o comando predefinido, o ambiente e o histórico ordenado de camadas.
 - **Blobs de camadas**, que contêm alterações ao sistema de arquivo.
-- Opcionalmente, um **índice de imagem**, que aponta para diferentes manifestos ,  por exemplo, builds para diferentes arquiteturas de CPU.
+- Opcionalmente, um **índice de imagem**, que aponta para diferentes manifestos  por exemplo, builds para diferentes arquiteturas de CPU.
 
 Estes objetos são endereçados pelo conteúdo: os seus digests são derivados dos bytes que os compõem. Um registo pode reutilizar conteúdo idêntico, e o cliente pode confirmar que os dados descarregados correspondem ao digest esperado. Tags como `minha-app:latest` são nomes convenientes que podem mudar; um digest identifica conteúdo específico.
 
@@ -51,7 +51,7 @@ O armazenamento e a implementação do runtime podem variar, mas estes objetos O
 
 ## Camadas durante o build e a execução
 
-Uma instrução do Dockerfile que altera o sistema de arquivo ,  normalmente `RUN`, `COPY` ou `ADD` ,  costuma contribuir uma camada de sistema de arquivo num build de imagem tradicional. Outras instruções podem alterar a configuração da imagem sem acrescentar conteúdo ao sistema de arquivo. O **BuildKit** é o conjunto de ferramentas de build de imagens usado pelo Docker: executa os passos do Dockerfile e gere a cache de build. Tal como outros construtores, pode representar os passos intermédios e os dados em cache de forma diferente; por isso, é melhor pensar nos passos de build e nas alterações resultantes do que assumir que cada linha se transforma sempre numa camada final.
+Uma instrução do Dockerfile que altera o sistema de arquivo  normalmente `RUN`, `COPY` ou `ADD`  costuma contribuir uma camada de sistema de arquivo num build de imagem tradicional. Outras instruções podem alterar a configuração da imagem sem acrescentar conteúdo ao sistema de arquivo. O **BuildKit** é o conjunto de ferramentas de build de imagens usado pelo Docker: executa os passos do Dockerfile e gere a cache de build. Tal como outros construtores, pode representar os passos intermédios e os dados em cache de forma diferente; por isso, é melhor pensar nos passos de build e nas alterações resultantes do que assumir que cada linha se transforma sempre numa camada final.
 
 Quando um container arranca, as camadas da imagem ficam disponíveis como camadas inferiores só de leitura. Um driver de armazenamento ou *snapshotter* apresenta-as, juntamente com uma camada superior gravável, como uma única árvore do sistema de arquivo. Em muitos sistemas Linux, isto pode ser feito com **OverlayFS**:
 
@@ -101,7 +101,7 @@ Alguns detalhes da cache são fáceis de ignorar:
 
 ## Um ficheiro apagado pode continuar na imagem
 
-Adicionar um ficheiro numa camada e apagá-lo numa camada posterior normalmente não remove os seus bytes da camada anterior. A vista combinada oculta-o, mas a camada anterior continua a fazer parte da imagem. Isto pode desperdiçar espaço ,  e é especialmente arriscado com credenciais ou ficheiros privados.
+Adicionar um ficheiro numa camada e apagá-lo numa camada posterior normalmente não remove os seus bytes da camada anterior. A vista combinada oculta-o, mas a camada anterior continua a fazer parte da imagem. Isto pode desperdiçar espaço  e é especialmente arriscado com credenciais ou ficheiros privados.
 
 Não copie uma secret (segredo) para a imagem para depois o apagar numa instrução seguinte. Mantenha as secrets fora do contexto de build e use um mecanismo de montagem das secrets do construtor quando o build precisar mesmo de uma credencial. Se alguns ficheiros só forem necessários para compilar a aplicação, os **builds multi-stage** permitem manter as ferramentas numa etapa de build e copiar apenas os resultados necessários para a etapa final.
 
