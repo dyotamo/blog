@@ -39,12 +39,26 @@ At a high level, an OCI image has:
 These objects are content-addressed: their digests are derived from their bytes. A registry can reuse identical content, and a client can check that downloaded content matches the digest it requested. Tags such as `my-app:latest` are convenient names that can move; a digest identifies specific content.
 
 ```mermaid
-flowchart TD
-    TAG[Image name or tag] --> INDEX[Optional OCI image index]
-    INDEX --> MANIFEST[Platform-specific manifest]
-    MANIFEST --> CONFIG[Image configuration]
-    MANIFEST --> LAYERS[Ordered filesystem layer blobs]
-    LAYERS --> ROOT[Combined filesystem used by a container]
+erDiagram
+    IMAGE_INDEX o|--|{ MANIFEST : lists
+    IMAGE_CONFIG ||--o{ MANIFEST : used_by
+    LAYER_BLOB }o--o{ MANIFEST : referenced_by
+    IMAGE_INDEX {
+        string platform_manifests
+    }
+    MANIFEST {
+        string config_digest
+        string layer_digests
+    }
+    IMAGE_CONFIG {
+        string default_command
+        string environment
+        string ordered_layer_history
+    }
+    LAYER_BLOB {
+        string digest
+        string filesystem_changes
+    }
 ```
 
 The exact storage and runtime implementation can differ, but these OCI objects provide a shared vocabulary for distributing images.
@@ -53,15 +67,24 @@ The exact storage and runtime implementation can differ, but these OCI objects p
 
 A Dockerfile instruction that changes the filesystem, commonly `RUN`, `COPY`, or `ADD`, typically contributes a filesystem layer in a classic image build. Other instructions may change image configuration without adding filesystem content. **BuildKit** is the image-building toolkit used by Docker; it executes Dockerfile build steps and manages their cache. Like other builders, it may represent intermediate steps and cached data differently, so it is better to think in terms of build steps and resulting changes than assume every line always becomes one final layer.
 
-When a container starts, its image layers are available as read-only lower layers. A storage driver or snapshotter presents them together with a writable upper layer as one filesystem tree. On many Linux systems, this can be done with **OverlayFS**:
+When a container starts, its image layers are available as read-only lower layers. A storage driver or snapshotter presents them together with a writable upper layer as one filesystem tree. On many Linux systems, **OverlayFS** provides this merged view. Suppose an application reads a file that exists only in an image layer, then changes it:
 
 ```mermaid
-graph TD
-    APP[Application sees one filesystem] --> MERGED[Merged view]
-    MERGED --> UPPER[Writable container layer]
-    MERGED --> LOWER[Read-only image layers]
-    UPPER --> NEW[New or changed runtime files]
-    LOWER --> BASE[Image files and directories]
+sequenceDiagram
+    participant App as Application
+    participant Merged as OverlayFS merged view
+    participant Upper as Writable upper layer
+    participant Lower as Read-only image layers
+    App->>Merged: Read /etc/example.conf
+    Merged->>Upper: Look for the file
+    Upper-->>Merged: Not present
+    Merged->>Lower: Look for the file
+    Lower-->>Merged: Return image file
+    Merged-->>App: File contents
+    App->>Merged: Change the file
+    Merged->>Upper: Copy up, then apply the change
+    Upper-->>Merged: Store the modified file
+    Merged-->>App: Updated file
 ```
 
 The application sees paths such as `/etc` or `/usr` in the merged view; it does not need to know which layer supplied a file. OverlayFS is common, not universal: storage drivers, snapshotters, and operating systems can use different mechanisms.

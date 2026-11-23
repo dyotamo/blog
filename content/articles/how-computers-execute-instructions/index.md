@@ -7,9 +7,9 @@ summary: "A friendly end-to-end tour of how a high-level operation becomes machi
 coverAlt: "A visual path from source code through machine instructions and logic gates to transistors."
 ---
 
-When we write a line of high-level code, the processor does not read its keywords or operators. A CPU works with a much smaller vocabulary: machine instructions encoded as bits. Between source code and those bits are several layers of translation, and below the bits are circuits whose electrical behavior makes computation possible.
+When you write `a + b`, it feels as if the computer simply understands what you mean and adds the numbers. In a way, it does—but only after your code has passed through several layers of translation. The processor does not read Rust keywords or the `+` sign. It fetches machine instructions encoded as bits, and transistor-based circuits turn those instructions into electrical changes.
 
-To follow those layers, consider this small integer addition:
+Let’s follow one small addition all the way through. We’ll use it as a guided tour, and we’ll be careful to separate what the source code says from what a particular CPU might actually do:
 
 ```rust
 fn main() {
@@ -19,7 +19,7 @@ fn main() {
 }
 ```
 
-The result is `102`. That simple calculation gives us a thread to follow through compilation, the operating system, CPU instructions, logic gates, and transistors.
+The answer is `102`. Nothing about the arithmetic is complicated; the interesting part is how many layers make that answer happen. We’ll trace it from Rust, through compiled instructions and CPU hardware, down to logic gates and transistors.
 
 ## 1. High-level code describes an intention
 
@@ -34,13 +34,18 @@ A name such as `a` is mainly useful to us and to the compiler. It does not promi
 A compiler typically processes source through several representations. For our Rust example, `rustc` (usually invoked via Cargo) follows a path that can be summarized like this:
 
 ```mermaid
-flowchart TD
-    SRC[Readable source code] --> PARSE[Tokens and syntax tree]
-    PARSE --> CHECK[Types and language rules checked]
-    CHECK --> MIR[Compiler intermediate representation]
-    MIR --> LLVM[LLVM intermediate representation]
-    LLVM --> ASM[Instructions for a target CPU]
-    ASM --> BIN[Object code and executable]
+sequenceDiagram
+    participant Source as Rust source
+    participant Rustc as Rust compiler
+    participant LLVM as LLVM backend
+    participant Linker
+    participant Program as Executable
+    Source->>Rustc: Source code
+    Note over Rustc: Parse, type-check, and build MIR
+    Rustc->>LLVM: Lower to LLVM IR
+    Note over LLVM: Optimize and generate target instructions
+    LLVM->>Linker: Object code
+    Linker->>Program: Link machine code and required data
 ```
 
 In simplified terms:
@@ -67,19 +72,47 @@ fn add(a: i32, b: i32) -> i32 {
 }
 ```
 
-The compiler must produce a result for the values supplied when the function runs, although it can still choose different instructions or transformations for different targets and build modes. To inspect the generated assembly locally, one option is:
+This function makes the example a little more realistic: the inputs arrive when the function runs, so the compiler cannot simply calculate the answer in advance. It still has freedom to choose different instructions for different processors and build settings.
+
+To inspect generated assembly for your own project, you can ask Rust to emit it:
 
 ```bash
 cargo rustc --release -- --emit=asm
 ```
 
-The output is specific to your platform and compiler. Assembly is a human-readable view of machine instructions, not the CPU's native input format.
+The exact output depends on your target, compiler version, and surrounding code. Assembly is a readable spelling of machine instructions; the CPU itself receives instruction bytes, not these words.
 
 ## 3. Machine instructions operate on bits
 
-A CPU instruction might tell the processor to add the contents of two registers and put the answer in a register. On an x86-64 CPU, a compiler might use an instruction resembling `add eax, esi`; an AArch64 CPU has different instruction encodings and names. These are examples, not guaranteed output for our exact source.
+A CPU instruction can say, in effect, “add the value in this register to the value in that register, and keep the answer here.” Here is one x86-64 example, written in Intel assembly syntax:
 
-The numbers themselves can be written in binary:
+```asm
+add eax, esi
+```
+
+Read it as: add `esi` to `eax`, then put the result in `eax`. These names are CPU registers, not Rust variables. Imagine that earlier instructions have put `90` in `eax` and `12` in `esi`. This instruction changes `eax` to `102`. We’re skipping those setup instructions so we can focus on the addition itself. A real Rust function may use different registers or a different instruction; this is a concrete illustration, not a promise about what every compiler emits.
+
+### What does that instruction look like in binary?
+
+On x86-64, the instruction above has this machine-code encoding:
+
+```text
+Hex bytes:     01 F0
+Binary bits:   00000001 11110000
+```
+
+Hexadecimal is a compact way to write bytes. The CPU fetches `01 F0`, not the letters `add eax, esi`. Here is the second byte split into the fields the x86 decoder reads:
+
+```text
+F0 = 11 110 000
+     mod reg r/m
+```
+
+In that second byte, `mod = 11` means both operands are registers; `reg = 110` selects `esi`, and `r/m = 000` selects `eax`. The first byte, `01`, selects an `ADD` instruction form. Together, those encoding rules tell the processor to add `esi` into `eax`.
+
+Other CPU architectures encode addition differently, and x86 can encode equivalent operations in more than one way. Assembly is the human-readable spelling; machine code is the architecture-specific bit pattern the processor decodes.
+
+Now let’s look at the values being added. Written with just eight bits, they are:
 
 ```text
 90  = 01011010
@@ -87,9 +120,7 @@ The numbers themselves can be written in binary:
 102 = 01100110
 ```
 
-For this small illustration, we show only eight bits. In our Rust example, the values are `i32`, so an actual operation generally uses 32-bit values or an equivalent representation. The extra leading bits are zero for these positive numbers.
-
-Binary addition follows the same column-by-column idea as decimal addition, except each column uses base 2. A bit can be 0 or 1, and adding two bits can produce a carry into the next column. Here is the eight-bit view:
+Our Rust values are `i32`, so they are 32-bit values; the eight-bit version is just easier to read on the page. For these positive numbers, the extra bits to the left are all zero. Binary addition works column by column, just like decimal addition, but each column is base 2:
 
 ```text
   01011010
@@ -98,7 +129,7 @@ Binary addition follows the same column-by-column idea as decimal addition, exce
   01100110
 ```
 
-The compiler's instruction does not have to mean "perform this exact drawing.” It asks the CPU to perform an integer addition with the specified operands and destination.
+The CPU does not follow this drawing as a little recipe. The instruction tells its arithmetic hardware which operation to perform and which values to use; the hardware combines the bits and produces the result.
 
 ## 4. The operating system loads the program
 
@@ -114,9 +145,9 @@ At a high level, a CPU core repeatedly performs work often described as **fetch,
 2. **Decode:** determine which instruction those bits represent and what operands it needs.
 3. **Execute:** perform the operation, such as integer addition, and update the processor's state.
 
-Modern processors do much more internally: they pipeline work, predict branches, rename registers, and may execute independent operations in parallel. Those techniques help performance, but the visible result still follows the program's defined behavior.
+The fetch-decode-execute loop is a useful picture, but modern processors do more behind the scenes. They pipeline work, predict branches, rename registers, and may run independent operations in parallel. Some x86 processors also decode an instruction such as the one above into smaller internal operations, often called micro-ops. Those are implementation details: they are not the same thing as the instruction bytes `01 F0`, and they can differ between processor designs.
 
-For an addition, the operands may be in registers. Registers are tiny, very fast storage locations inside the CPU core. The CPU's arithmetic hardware combines the operand bits and makes the result available to later instructions. The compiler decides how values are assigned to registers; a source-level variable does not map permanently to one physical register.
+For our addition, the values may be in registers: tiny, very fast storage locations inside the CPU core. Arithmetic hardware combines their bits and makes the result available to later instructions. The compiler chooses which registers to use, so a Rust variable does not stay tied to one physical register.
 
 ## 6. Logic gates make the addition happen
 
@@ -130,7 +161,7 @@ The exact implementation is more complex than a chain of classroom gates. Modern
 
 A digital circuit uses transistors as controllable electrical switches. In a simplified CMOS transistor, an input voltage affects whether a conducting path is formed. By combining transistors, chip designers build gates whose output voltage moves toward one of two ranges interpreted as logical 0 or logical 1.
 
-These are **voltage ranges**, not perfectly fixed voltages and not little particles labeled "zero” or "one.” The circuit is designed so that small variations still leave the signal reliably within a valid range. As signals change, capacitances in the circuit charge and discharge; that switching consumes energy and contributes to heat.
+These are **voltage ranges**, not perfectly fixed voltages and not tiny particles labeled “zero” or “one.” The circuit is designed so that small variations still leave a signal reliably within a valid range. As signals change, capacitances in the circuit charge and discharge; that switching uses energy and contributes to heat.
 
 The CPU's clock provides timing references for much of this coordinated work. A clock edge does not mean every transistor in the chip flips at once: different parts of the chip are active at different times, and some logic is combinational between clocked elements. But clocking helps coordinate when state such as register contents is updated.
 
@@ -142,18 +173,28 @@ After the addition, the result `102` is available in the processor's state, ofte
 
 In our original example, `c` is never read, and the addition has no observable side effects. The compiler can discard the binding and calculation. That means asking "where is `c` stored?” may have no concrete answer in the final machine code: it may not exist at runtime at all.
 
-## The whole path, in one view
+## The layers involved in one addition
 
 ```mermaid
-flowchart LR
-    SOURCE[Source code expresses the operation] --> COMPILER[Compiler checks and transforms it]
-    COMPILER --> CODE[Target-specific machine instructions]
-    CODE --> CPU[CPU fetches and executes instructions]
-    CPU --> GATES[Logic gates combine bits]
-    GATES --> TRANS[Transistors switch electrical signals]
-    TRANS --> RESULT[The result becomes processor state]
+mindmap
+  root((One addition: 90 + 12 = 102))
+    Source code
+      Rust expresses the operation
+    Compiler
+      Checks and optimizes
+    Machine code
+      x86-64 instruction: add eax, esi
+      Bytes: 01 F0
+    CPU
+      Fetch and decode
+      Registers and arithmetic unit
+    Circuit
+      Logic gates
+      Transistors switch signals
+    Result
+      102 in processor state
 ```
 
 Each layer offers a useful abstraction. A high-level language lets us express intent without designing a circuit. The compiler translates and optimizes that intent. Machine instructions describe operations for a processor architecture. CPU circuits carry them out using electrical signals in transistors.
 
-When source code expresses an operation like `a + b`, it is not directly commanding electricity. It uses a stack of abstractions that ultimately makes electrical behavior reliably produce `102`,unless the compiler can prove that answer in advance and skip the work.
+When your source code says `a + b`, it is not directly commanding electricity. It describes an operation through a stack of abstractions, and those abstractions eventually guide electrical changes that produce `102`—unless the compiler can prove the answer ahead of time and skip the addition altogether.

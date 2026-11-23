@@ -39,12 +39,26 @@ Em termos gerais, uma imagem OCI tem:
 Estes objetos são endereçados pelo conteúdo: os seus digests são derivados dos bytes que os compõem. Um registo pode reutilizar conteúdo idêntico, e o cliente pode confirmar que os dados descarregados correspondem ao digest esperado. Tags como `minha-app:latest` são nomes convenientes que podem mudar; um digest identifica conteúdo específico.
 
 ```mermaid
-flowchart TD
-    TAG[Nome ou tag da imagem] --> INDEX[Índice OCI opcional]
-    INDEX --> MANIFEST[Manifesto para uma plataforma]
-    MANIFEST --> CONFIG[Configuração da imagem]
-    MANIFEST --> LAYERS[Blobs ordenados de camadas]
-    LAYERS --> ROOT[sistema de arquivo combinado do container]
+erDiagram
+    IMAGE_INDEX o|--|{ MANIFEST : lista
+    IMAGE_CONFIG ||--o{ MANIFEST : usada_por
+    LAYER_BLOB }o--o{ MANIFEST : referenciado_por
+    IMAGE_INDEX {
+        string manifestos_plataformas
+    }
+    MANIFEST {
+        string digest_config
+        string digests_camadas
+    }
+    IMAGE_CONFIG {
+        string comando_predefinido
+        string ambiente
+        string historico_camadas
+    }
+    LAYER_BLOB {
+        string digest
+        string alteracoes_fs
+    }
 ```
 
 O armazenamento e a implementação do runtime podem variar, mas estes objetos OCI oferecem uma linguagem comum para distribuir imagens.
@@ -53,15 +67,24 @@ O armazenamento e a implementação do runtime podem variar, mas estes objetos O
 
 Uma instrução do Dockerfile que altera o sistema de arquivo  normalmente `RUN`, `COPY` ou `ADD`  costuma contribuir uma camada de sistema de arquivo num build de imagem tradicional. Outras instruções podem alterar a configuração da imagem sem acrescentar conteúdo ao sistema de arquivo. O **BuildKit** é o conjunto de ferramentas de build de imagens usado pelo Docker: executa os passos do Dockerfile e gere a cache de build. Tal como outros construtores, pode representar os passos intermédios e os dados em cache de forma diferente; por isso, é melhor pensar nos passos de build e nas alterações resultantes do que assumir que cada linha se transforma sempre numa camada final.
 
-Quando um container arranca, as camadas da imagem ficam disponíveis como camadas inferiores só de leitura. Um driver de armazenamento ou *snapshotter* apresenta-as, juntamente com uma camada superior gravável, como uma única árvore do sistema de arquivo. Em muitos sistemas Linux, isto pode ser feito com **OverlayFS**:
+Quando um container arranca, as camadas da imagem ficam disponíveis como camadas inferiores só de leitura. Um driver de armazenamento ou *snapshotter* apresenta-as, juntamente com uma camada superior gravável, como uma única árvore do sistema de arquivo. Em muitos sistemas Linux, o **OverlayFS** apresenta esta vista combinada. Imaginemos que uma aplicação lê um ficheiro que existe apenas numa camada da imagem e, em seguida, o altera:
 
 ```mermaid
-graph TD
-    APP[Aplicação vê um único sistema de arquivo] --> MERGED[Vista combinada]
-    MERGED --> UPPER[Camada gravável do container]
-    MERGED --> LOWER[Camadas da imagem só de leitura]
-    UPPER --> NEW[Ficheiros novos ou alterados em execução]
-    LOWER --> BASE[Ficheiros e diretórios da imagem]
+sequenceDiagram
+    participant App as Aplicação
+    participant Merged as Vista combinada do OverlayFS
+    participant Upper as Camada superior gravável
+    participant Lower as Camadas da imagem só de leitura
+    App->>Merged: Lê /etc/example.conf
+    Merged->>Upper: Procura o ficheiro
+    Upper-->>Merged: Não existe
+    Merged->>Lower: Procura o ficheiro
+    Lower-->>Merged: Devolve o ficheiro da imagem
+    Merged-->>App: Conteúdo do ficheiro
+    App->>Merged: Altera o ficheiro
+    Merged->>Upper: Copy-up e aplicação da alteração
+    Upper-->>Merged: Guarda o ficheiro alterado
+    Merged-->>App: Ficheiro actualizado
 ```
 
 A aplicação vê caminhos como `/etc` ou `/usr` na vista combinada; não precisa de saber qual camada forneceu cada ficheiro. O OverlayFS é comum, mas não universal: drivers de armazenamento, *snapshotters* e sistemas operativos podem usar mecanismos diferentes.

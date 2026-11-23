@@ -16,15 +16,17 @@ A container is not, by itself, a virtual machine, a complete operating system, o
 The processes are still scheduled by the same kernel and use the same hardware as other host processes. What changes is the context in which they run: which processes they can see, which filesystem tree they encounter, which network interfaces they have available, which user identities they appear to have, and which resources they can consume.
 
 ```mermaid
-graph TD
-    HW[Physical hardware] --> K[Host Linux kernel]
-    K --> H[Host processes]
-    K --> C1[Processes in container A]
-    K --> C2[Processes in container B]
-    C1 --- N1[Namespaces and policies for A]
-    C2 --- N2[Namespaces and policies for B]
-    C1 --- G1[Cgroups for A]
-    C2 --- G2[Cgroups for B]
+mindmap
+  root((Shared host Linux kernel))
+    Schedules processes
+    Serves system calls
+    Host processes
+    Container A processes
+      Namespace views
+      Cgroup resource controls
+    Container B processes
+      Namespace views
+      Cgroup resource controls
 ```
 
 This diagram is conceptual: namespaces and cgroups are not layers that every syscall passes through. They are mechanisms the kernel consults when handling process operations.
@@ -125,12 +127,18 @@ That does not mean the image contains its own Linux kernel. The host still provi
 OCI-format images are distributed as content with manifests and layers. Shared layers can be reused by multiple images. At runtime, the runtime and its storage component prepare a filesystem tree for the process. In many Linux configurations, a union filesystem such as OverlayFS combines read-only layers with a writable layer; other implementations and snapshotters are also possible.
 
 ```mermaid
-graph TD
-    APP[Container process sees one / tree] --> MERGED[Combined view]
-    MERGED --> UPPER[Container writable layer]
-    MERGED --> LOWER[Read-only image layers]
-    UPPER --> COPY[Changes made at runtime]
-    LOWER --> IMAGE[Executables, libraries, and base files]
+erDiagram
+    CONTAINER ||--|| MERGED_ROOTFS : presents
+    MERGED_ROOTFS ||--|{ IMAGE_LAYER : combines
+    MERGED_ROOTFS ||--|| WRITABLE_LAYER : combines
+    IMAGE_LAYER {
+        string access "Read-only"
+        string contents "Executables, libraries, base files"
+    }
+    WRITABLE_LAYER {
+        string access "Writable"
+        string contents "Runtime changes"
+    }
 ```
 
 With OverlayFS, changing a file that exists only in a lower layer can trigger a *copy-up* operation: the file is copied into the writable layer before modification. The specific mechanism depends on the driver or snapshotter in use.
@@ -144,12 +152,17 @@ The writable layer usually belongs to the container’s lifecycle. If it is remo
 A network namespace provides an independent network stack, but its connections must be configured to communicate with other networks. A common setup creates a *veth* pair: one end resides in the container’s namespace and the other connects to a bridge on the host. The host can route traffic, and firewall or NAT rules can allow external access.
 
 ```mermaid
-flowchart LR
-    APP[Container application] --> ETH[Interface in namespace]
-    ETH --> VETH[veth pair]
-    VETH --> BR[Host bridge]
-    BR --> ROUTE[Routing or NAT]
-    ROUTE --> EXT[Host or external network]
+sequenceDiagram
+    participant Namespace as Container network namespace
+    participant Peer as Host veth peer
+    participant Host as Host bridge and routing
+    participant Network as External network
+    Namespace->>Peer: Send packet through veth pair
+    Peer->>Host: Deliver to bridge
+    Host->>Network: Route or apply firewall/NAT rules
+    Network-->>Host: Response packet
+    Host-->>Peer: Return through configured route
+    Peer-->>Namespace: Deliver through veth pair
 ```
 
 This is a common architecture, not a universal rule. Network plugins, host networking mode, cluster policies, IPvlan/Macvlan, and other configurations change the path. "The port is open in the container" also does not mean it is reachable from the Internet: check the listening address, forwarding, firewall rules, and surrounding network.
@@ -185,14 +198,20 @@ Details vary by version and configuration. Names such as Docker, `containerd`, a
 Consider `docker run nginx`. Conceptually, the path looks like this, although the exact components vary between tools:
 
 ```mermaid
-flowchart TD
-    CMD[Request to run an image] --> IMG[Resolve and obtain the image]
-    IMG --> ROOT[Prepare root filesystem and mounts]
-    ROOT --> CONFIG[Configure namespaces, cgroups, and networking]
-    CONFIG --> SEC[Apply user and security policies]
-    SEC --> INIT[Prepare environment and initial process]
-    INIT --> EXEC[OCI runtime executes the process]
-    EXEC --> KERNEL[Linux kernel schedules process and serves syscalls]
+sequenceDiagram
+    participant Client as CLI or API client
+    participant Manager as Higher-level runtime
+    participant Storage as Image and storage component
+    participant OCI as OCI runtime
+    participant Kernel as Linux kernel
+    Client->>Manager: Request to run nginx
+    Manager->>Storage: Resolve image and prepare rootfs
+    Storage-->>Manager: Layers and mounts are ready
+    Manager->>OCI: Create with process and runtime settings
+    OCI->>Kernel: Configure namespaces, cgroups and mounts
+    OCI->>Kernel: Execute the initial process
+    Kernel-->>OCI: Process is created
+    Note over Kernel,OCI: The kernel schedules the process and handles its system calls
 ```
 
 1. The tool resolves the image reference and obtains any missing content, if needed.

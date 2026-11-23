@@ -16,15 +16,17 @@ Um container não é, por si só, uma máquina virtual, um sistema operativo com
 Os processos continuam a ser agendados pelo mesmo kernel e a usar o mesmo hardware que os restantes processos do host. O que muda é o contexto em que são executados: que processos conseguem ver, que árvore de ficheiros encontram, que interfaces de rede têm disponíveis, que utilizadores aparentam ser e que recursos podem consumir.
 
 ```mermaid
-graph TD
-    HW[Hardware físico] --> K[Kernel Linux do host]
-    K --> H[Processos do host]
-    K --> C1[Processos do container A]
-    K --> C2[Processos do container B]
-    C1 --- N1[Namespaces e políticas do A]
-    C2 --- N2[Namespaces e políticas do B]
-    C1 --- G1[Cgroups do A]
-    C2 --- G2[Cgroups do B]
+mindmap
+  root((Kernel Linux partilhado do host))
+    Agenda processos
+    Serve chamadas de sistema
+    Processos do host
+    Processos do container A
+      Vistas dos namespaces
+      Controlo de recursos por cgroups
+    Processos do container B
+      Vistas dos namespaces
+      Controlo de recursos por cgroups
 ```
 
 O desenho é conceptual: namespaces e cgroups não são camadas pelas quais cada syscall passa. São mecanismos que o kernel consulta ao tratar operações dos processos.
@@ -125,12 +127,18 @@ Isso não significa que a imagem contenha um kernel Linux próprio. O kernel e a
 Imagens no formato OCI são distribuídas como conteúdo com manifests e camadas. Camadas partilhadas podem ser reutilizadas por várias imagens. Durante a execução, o runtime e o respetivo componente de armazenamento preparam uma árvore de ficheiros para o processo. Em muitas configurações Linux, um filesystem por união como OverlayFS combina camadas só de leitura com uma camada gravável; outras implementações e *snapshotters* também são possíveis.
 
 ```mermaid
-graph TD
-    APP[Processo do container vê uma única árvore /] --> MERGED[Vista combinada]
-    MERGED --> UPPER[Camada gravável do container]
-    MERGED --> LOWER[Camadas da imagem, só de leitura]
-    UPPER --> COPY[Alterações durante a execução]
-    LOWER --> IMAGE[Executáveis, bibliotecas e ficheiros base]
+erDiagram
+    CONTAINER ||--|| MERGED_ROOTFS : apresenta
+    MERGED_ROOTFS ||--|{ IMAGE_LAYER : combina
+    MERGED_ROOTFS ||--|| WRITABLE_LAYER : combina
+    IMAGE_LAYER {
+        string access "Só de leitura"
+        string contents "Executáveis, bibliotecas e ficheiros base"
+    }
+    WRITABLE_LAYER {
+        string access "Gravável"
+        string contents "Alterações durante a execução"
+    }
 ```
 
 Com OverlayFS, uma alteração a um ficheiro que só existe numa camada inferior pode desencadear uma operação *copy-up*: o ficheiro é copiado para a camada gravável antes de ser modificado. O mecanismo concreto depende do driver ou snapshotter em uso.
@@ -144,12 +152,17 @@ A camada gravável costuma pertencer ao ciclo de vida do container. Se for remov
 O namespace de rede dá ao processo uma pilha de rede independente, mas é preciso configurar as ligações para que essa pilha comunique com outras redes. Uma configuração comum cria um par *veth*: uma ponta fica no namespace do container e a outra liga-se a uma bridge no host. O host pode encaminhar tráfego, e regras de firewall ou NAT podem permitir o acesso externo.
 
 ```mermaid
-flowchart LR
-    APP[Aplicação no container] --> ETH[Interface no namespace]
-    ETH --> VETH[Par veth]
-    VETH --> BR[Bridge no host]
-    BR --> ROUTE[Encaminhamento ou NAT]
-    ROUTE --> EXT[Host ou rede externa]
+sequenceDiagram
+    participant Namespace as Namespace de rede do container
+    participant Peer as Ponta veth no host
+    participant Host as Bridge e encaminhamento no host
+    participant Network as Rede externa
+    Namespace->>Peer: Envia o pacote pelo par veth
+    Peer->>Host: Entrega à bridge
+    Host->>Network: Encaminha ou aplica regras de firewall/NAT
+    Network-->>Host: Pacote de resposta
+    Host-->>Peer: Devolve pela rota configurada
+    Peer-->>Namespace: Entrega pelo par veth
 ```
 
 É uma arquitetura comum, não uma regra universal. Plugins de rede, modo host, políticas de cluster, IPvlan/Macvlan e outras configurações alteram o caminho. "A porta está aberta no container" também não quer dizer que esteja acessível a partir da Internet: é necessário verificar o endereço de escuta, os encaminhamentos, as regras de firewall e a rede envolvente.
@@ -185,14 +198,20 @@ Os detalhes variam por versão e configuração. Nomes como Docker, `containerd`
 Consideremos `docker run nginx`. Em termos conceptuais, o caminho é semelhante a este  embora os componentes exatos variem entre ferramentas:
 
 ```mermaid
-flowchart TD
-    CMD[Pedido para executar uma imagem] --> IMG[Resolver e obter a imagem]
-    IMG --> ROOT[Preparar root filesystem e mounts]
-    ROOT --> CONFIG[Configurar namespaces, cgroups e rede]
-    CONFIG --> SEC[Aplicar utilizador e políticas de segurança]
-    SEC --> INIT[Preparar ambiente e processo inicial]
-    INIT --> EXEC[Runtime OCI executa o processo]
-    EXEC --> KERNEL[Kernel Linux agenda e serve as syscalls]
+sequenceDiagram
+    participant Client as Cliente CLI ou API
+    participant Manager as Runtime de nível superior
+    participant Storage as Componente de imagem e armazenamento
+    participant OCI as Runtime OCI
+    participant Kernel as Kernel Linux
+    Client->>Manager: Pede para executar nginx
+    Manager->>Storage: Resolve a imagem e prepara o rootfs
+    Storage-->>Manager: Camadas e mounts preparados
+    Manager->>OCI: Cria com as definições do processo e do runtime
+    OCI->>Kernel: Configura namespaces, cgroups e mounts
+    OCI->>Kernel: Executa o processo inicial
+    Kernel-->>OCI: Processo criado
+    Note over Kernel,OCI: O kernel agenda o processo e trata das chamadas de sistema
 ```
 
 1. A ferramenta resolve a referência da imagem e obtém os conteúdos em falta, se necessário.

@@ -7,9 +7,9 @@ summary: "Uma explicação acessível de como uma operação de alto nível se t
 coverAlt: "Percurso visual do código-fonte pelas instruções de máquina e portas lógicas até aos transístores."
 ---
 
-Quando escrevemos código de alto nível, o processador não lê as palavras-chave nem os operadores. A CPU trabalha com um vocabulário muito mais pequeno: instruções de máquina codificadas em bits. Entre o código-fonte e esses bits existem várias camadas de tradução; por baixo dos bits, há circuitos cujo comportamento eléctrico torna a computação possível.
+Quando escrevemos `a + b`, parece que o computador percebe simplesmente o que queremos e soma os números. De certa forma, sim, mas só depois de o código passar por várias camadas de tradução. O processador não lê as palavras-chave do Rust nem o sinal `+`. Obtém instruções de máquina codificadas em bits, e circuitos baseados em transístores transformam essas instruções em alterações eléctricas.
 
-Para percorrer essas camadas, consideremos esta pequena soma de inteiros:
+Vamos acompanhar uma pequena soma de princípio a fim. Será o nosso fio condutor, e vamos distinguir o que o código-fonte exprime daquilo que uma CPU específica poderá realmente fazer:
 
 ```rust
 fn main() {
@@ -19,7 +19,7 @@ fn main() {
 }
 ```
 
-O resultado é `102`. Esta soma simples permite-nos acompanhar o percurso pela compilação, pelo sistema operativo, pelas instruções da CPU, pelas portas lógicas e pelos transístores.
+O resultado é `102`. A conta é simples; o interessante é perceber quantas camadas tornam essa resposta possível. Vamos acompanhá-la desde o Rust, passando pelas instruções compiladas e pelo hardware da CPU, até às portas lógicas e aos transístores.
 
 ## 1. O código de alto nível descreve uma intenção
 
@@ -34,13 +34,18 @@ Um nome como `a` é sobretudo útil para nós e para o compilador. Não garante 
 Um compilador processa normalmente o código-fonte através de várias representações. Para o nosso exemplo em Rust, `rustc` (normalmente invocado através do Cargo) segue um percurso que podemos resumir assim:
 
 ```mermaid
-flowchart TD
-    SRC[Código-fonte legível] --> PARSE[Tokens e árvore sintáctica]
-    PARSE --> CHECK[Verificação de tipos e regras da linguagem]
-    CHECK --> MIR[Representação intermédia do compilador]
-    MIR --> LLVM[Representação intermédia do LLVM]
-    LLVM --> ASM[Instruções para uma CPU alvo]
-    ASM --> BIN[Código objecto e executável]
+sequenceDiagram
+    participant Source as Código Rust
+    participant Rustc as Compilador Rust
+    participant LLVM as Backend LLVM
+    participant Linker as Ligador
+    participant Program as Executável
+    Source->>Rustc: Código-fonte
+    Note over Rustc: Analisa, verifica tipos e constrói MIR
+    Rustc->>LLVM: Converte para LLVM IR
+    Note over LLVM: Optimiza e gera instruções para o alvo
+    LLVM->>Linker: Código objecto
+    Linker->>Program: Liga o código de máquina e os dados necessários
 ```
 
 De forma simplificada:
@@ -67,19 +72,47 @@ fn add(a: i32, b: i32) -> i32 {
 }
 ```
 
-O compilador tem de produzir um resultado para os valores fornecidos quando a função é executada, embora possa continuar a escolher instruções ou transformações diferentes conforme o alvo e o modo de compilação. Para inspeccionar localmente o assembly gerado, uma opção é:
+Esta função aproxima-nos um pouco mais de um caso real: os valores só são fornecidos quando a função é executada, por isso o compilador não pode calcular antecipadamente a resposta para todos os casos. Continua a poder escolher instruções diferentes conforme o processador e as opções de compilação.
+
+Para inspeccionar o assembly gerado no teu projecto, podes pedir ao Rust que o emita:
 
 ```bash
 cargo rustc --release -- --emit=asm
 ```
 
-O resultado depende da plataforma e do compilador. O assembly é uma representação legível das instruções de máquina, não o formato nativo que a CPU recebe.
+O resultado exacto depende do alvo, da versão do compilador e do código envolvente. O assembly é uma forma legível de escrever instruções de máquina; a CPU recebe os bytes das instruções, não estas palavras.
 
 ## 3. As instruções de máquina operam sobre bits
 
-Uma instrução da CPU pode indicar ao processador que some o conteúdo de dois registos e coloque a resposta noutro registo. Numa CPU x86-64, o compilador pode utilizar uma instrução semelhante a `add eax, esi`; uma CPU AArch64 usa outras codificações e nomes de instruções. São exemplos, não uma previsão garantida para o nosso código exacto.
+Uma instrução da CPU pode dizer, em termos simples: «soma o valor deste registo ao valor daquele e guarda aqui a resposta». Eis um exemplo x86-64, escrito na sintaxe Intel de assembly:
 
-Podemos representar os números em binário:
+```asm
+add eax, esi
+```
+
+Lê-se assim: soma `esi` a `eax` e guarda o resultado em `eax`. Estes nomes são registos da CPU, não variáveis Rust. Imagina que instruções anteriores colocaram `90` em `eax` e `12` em `esi`. Esta instrução altera `eax` para `102`. Estamos a omitir as instruções de preparação para nos concentrarmos na soma. Uma função Rust real pode usar outros registos ou outra instrução; este é um exemplo concreto, não uma promessa sobre o que qualquer compilador vai gerar.
+
+### Como fica esta instrução em binário?
+
+Em x86-64, a instrução acima tem esta codificação em código de máquina:
+
+```text
+Bytes em hexadecimal:  01 F0
+Bits em binário:       00000001 11110000
+```
+
+O sistema hexadecimal é uma forma compacta de escrever bytes. A CPU obtém `01 F0`, não as letras `add eax, esi`. Eis o segundo byte dividido nos campos que o descodificador x86 lê:
+
+```text
+F0 = 11 110 000
+     mod reg r/m
+```
+
+Nesse segundo byte, `mod = 11` significa que ambos os operandos são registos; `reg = 110` selecciona `esi` e `r/m = 000` selecciona `eax`. O primeiro byte, `01`, escolhe uma forma da instrução `ADD`. Em conjunto, estas regras de codificação dizem ao processador para somar `esi` a `eax`.
+
+Outras arquitecturas de CPU codificam a soma de forma diferente, e o x86 também pode codificar operações equivalentes de mais do que uma maneira. O assembly é a forma legível por humanos; o código de máquina é o padrão de bits específico da arquitectura que o processador descodifica.
+
+Agora vejamos os valores que estão a ser somados. Escritos com apenas oito bits, ficam assim:
 
 ```text
 90  = 01011010
@@ -87,9 +120,7 @@ Podemos representar os números em binário:
 102 = 01100110
 ```
 
-Para simplificar, mostramos apenas oito bits. Neste exemplo em Rust, os valores são `i32`, pelo que uma operação real usa, em geral, valores de 32 bits ou uma representação equivalente. Nestes números positivos, os bits adicionais à esquerda são zeros.
-
-A soma binária segue a mesma ideia de somar coluna a coluna que usamos no sistema decimal, mas com base 2. Cada coluna contém 0 ou 1, e a soma de dois bits pode produzir um transporte para a coluna seguinte. Eis a representação em oito bits:
+Os valores Rust são `i32`, ou seja, têm 32 bits; a versão de oito bits é apenas mais fácil de ler. Como estes números são positivos, os bits adicionais à esquerda são todos zeros. A soma binária funciona coluna a coluna, como a soma decimal, mas cada coluna usa a base 2:
 
 ```text
   01011010
@@ -98,7 +129,7 @@ A soma binária segue a mesma ideia de somar coluna a coluna que usamos no siste
   01100110
 ```
 
-A instrução do compilador não tem de significar «executa exactamente este desenho». Pede à CPU que faça uma soma de inteiros com os operandos e o destino especificados.
+A CPU não segue este desenho como se fosse uma receita. A instrução indica ao hardware aritmético que operação deve realizar e que valores deve usar; o hardware combina os bits e produz o resultado.
 
 ## 4. O sistema operativo carrega o programa
 
@@ -114,9 +145,9 @@ Em termos gerais, uma CPU repete um ciclo muitas vezes descrito como **procurar,
 2. **Descodificar (decode):** determina que instrução os bits representam e de que operandos necessita.
 3. **Executar (execute):** realiza a operação, como uma soma de inteiros, e actualiza o estado do processador.
 
-Os processadores modernos fazem muito mais internamente: usam pipelines, prevêem desvios, renomeiam registos e podem executar operações independentes em paralelo. Estas técnicas melhoram o desempenho, mas o resultado visível continua a respeitar o comportamento definido pelo programa.
+O ciclo procurar-descodificar-executar é uma imagem útil, mas os processadores modernos fazem muito mais nos bastidores. Usam pipelines, prevêem desvios, renomeiam registos e podem executar operações independentes em paralelo. Alguns processadores x86 também descodificam uma instrução como a anterior em operações internas mais pequenas, muitas vezes chamadas micro-operações ou micro-ops. São detalhes de implementação: não são o mesmo que os bytes da instrução `01 F0` e podem variar entre modelos de processador.
 
-Numa soma, os operandos podem estar em registos. Os registos são pequenas áreas de armazenamento muito rápidas dentro do núcleo da CPU. O hardware aritmético combina os bits dos operandos e disponibiliza o resultado às instruções seguintes. O compilador decide como atribuir os valores aos registos; uma variável do código-fonte não fica permanentemente associada a um registo físico.
+Na nossa soma, os valores podem estar em registos: pequenas áreas de armazenamento muito rápidas dentro do núcleo da CPU. O hardware aritmético combina os bits e disponibiliza o resultado às instruções seguintes. É o compilador que escolhe os registos, por isso uma variável Rust não fica permanentemente associada a um registo físico.
 
 ## 6. As portas lógicas concretizam a soma
 
@@ -130,7 +161,7 @@ A implementação real é mais complexa do que uma sequência de portas de um ex
 
 Um circuito digital usa transístores como interruptores eléctricos controláveis. Num transístor CMOS simplificado, uma tensão de entrada influencia a formação de um caminho condutor. Ao combinar transístores, os projectistas constroem portas cuja tensão de saída se aproxima de uma de duas gamas, interpretadas como o valor lógico 0 ou 1.
 
-São **gamas de tensão**, não tensões perfeitamente fixas nem partículas com uma etiqueta «zero» ou «um». O circuito é concebido para que pequenas variações mantenham o sinal dentro de uma gama válida e fiável. Quando os sinais mudam, as capacitâncias do circuito carregam-se e descarregam-se; esta comutação consome energia e contribui para o calor.
+São **gamas de tensão**, não tensões perfeitamente fixas nem partículas minúsculas com uma etiqueta «zero» ou «um». O circuito é concebido para que pequenas variações mantenham o sinal dentro de uma gama válida e fiável. Quando os sinais mudam, as capacitâncias do circuito carregam-se e descarregam-se; esta comutação consome energia e contribui para o calor.
 
 O relógio da CPU fornece referências temporais para coordenar grande parte deste trabalho. Uma transição do relógio não significa que todos os transístores do chip mudem ao mesmo tempo: diferentes partes do chip estão activas em momentos diferentes, e alguma lógica é combinatória entre elementos sincronizados pelo relógio. Ainda assim, o relógio ajuda a coordenar quando o estado, como o conteúdo dos registos, é actualizado.
 
@@ -142,18 +173,28 @@ Depois da soma, o resultado `102` fica disponível no estado do processador, mui
 
 No nosso exemplo original, `c` nunca é lido e a soma não tem efeitos observáveis. O compilador pode eliminar a variável e o cálculo. Por isso, perguntar «onde fica guardado o `c`?» pode não ter uma resposta concreta no código de máquina final: a variável pode nem existir durante a execução.
 
-## O percurso completo, numa só vista
+## As camadas envolvidas numa soma
 
 ```mermaid
-flowchart LR
-    SOURCE[Código-fonte exprime a operação] --> COMPILER[Compilador verifica e transforma o código]
-    COMPILER --> CODE[Instruções de máquina para o alvo]
-    CODE --> CPU[CPU procura e executa instruções]
-    CPU --> GATES[Portas lógicas combinam bits]
-    GATES --> TRANS[Transístores comutam sinais eléctricos]
-    TRANS --> RESULT[O resultado passa a fazer parte do estado do processador]
+mindmap
+  root((Uma soma: 90 + 12 = 102))
+    Código-fonte
+      Rust exprime a operação
+    Compilador
+      Verifica e optimiza
+    Código de máquina
+      Instrução x86-64: add eax, esi
+      Bytes: 01 F0
+    CPU
+      Obtém e descodifica
+      Registos e unidade aritmética
+    Circuito
+      Portas lógicas
+      Transístores comutam sinais
+    Resultado
+      102 no estado do processador
 ```
 
 Cada camada oferece uma abstracção útil. Uma linguagem de alto nível permite-nos exprimir uma intenção sem desenhar um circuito. O compilador traduz e optimiza essa intenção. As instruções de máquina descrevem operações para uma arquitectura de processador. Os circuitos da CPU executam-nas usando sinais eléctricos nos transístores.
 
-Quando o código-fonte exprime uma operação como `a + b`, não estamos a dar uma ordem directa à electricidade. Usamos uma pilha de abstracções que, no fim, faz com que o comportamento eléctrico produza `102` de forma fiável , a menos que o compilador consiga provar esse resultado antecipadamente e eliminar o trabalho.
+Quando o teu código diz `a + b`, não está a dar uma ordem directa à electricidade. Descreve uma operação através de várias camadas de abstracção, que acabam por orientar alterações eléctricas que produzem `102`, a menos que o compilador consiga provar o resultado antecipadamente e elimine a soma.
