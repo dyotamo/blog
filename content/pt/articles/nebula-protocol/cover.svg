@@ -1,0 +1,73 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" role="img" aria-label="Transformar um Fluxo de Bytes em Significado, e Muito Mais...">
+	<defs>
+		<linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+			<stop offset="0%" stop-color="#020617" />
+			<stop offset="100%" stop-color="#0a1f2e" />
+		</linearGradient>
+		<linearGradient id="packet" x1="0" y1="0" x2="1" y2="0">
+			<stop offset="0%" stop-color="#22d3ee" />
+			<stop offset="100%" stop-color="#38bdf8" />
+		</linearGradient>
+		<radialGradient id="glow" cx="50%" cy="0%" r="65%">
+			<stop offset="0%" stop-color="#22d3ee" stop-opacity="0.28" />
+			<stop offset="100%" stop-color="#22d3ee" stop-opacity="0" />
+		</radialGradient>
+		<pattern id="grid" width="32" height="32" patternUnits="userSpaceOnUse">
+			<path d="M 32 0 L 0 0 0 32" fill="none" stroke="#0e3a5f" stroke-width="0.6" />
+		</pattern>
+	</defs>
+
+	<rect width="1200" height="630" fill="url(#bg)" />
+	<rect width="1200" height="630" fill="url(#grid)" opacity="0.6" />
+	<rect width="1200" height="630" fill="url(#glow)" />
+
+	<g font-family="'Inter', system-ui, -apple-system, sans-serif" text-anchor="middle">
+		<text x="600" y="88" font-size="18" font-weight="700" letter-spacing="0.36em" fill="#67e8f9">NEBULACACHE  ·  TCP / L7</text>
+		<text x="600" y="176" font-size="58" font-weight="900" fill="#f0f9ff">Transformar um Fluxo de Bytes</text>
+		<text x="600" y="240" font-size="58" font-weight="900" fill="#f0f9ff">em Significado, <tspan fill="#22d3ee">e Muito Mais...</tspan></text>
+		<text x="600" y="287" font-size="21" font-weight="500" fill="#bae6fd">Do formato na rede às operações de cache</text>
+	</g>
+
+	<g transform="translate(100 330)" font-family="'Inter', system-ui, sans-serif">
+		<rect x="0" y="0" width="230" height="150" rx="14" fill="#02101a" stroke="#0e3a5f" stroke-width="2" />
+		<circle cx="28" cy="30" r="6" fill="#22d3ee" />
+		<text x="47" y="35" font-size="13" font-weight="800" letter-spacing="0.16em" fill="#67e8f9">SDK CLIENTE</text>
+		<text x="24" y="88" font-family="'JetBrains Mono', monospace" font-size="18" font-weight="700" fill="#f0f9ff">GET user:123</text>
+		<text x="24" y="119" font-size="14" fill="#94a3b8">Rust · Go · Java · JS · Python</text>
+
+		<path d="M 250 75 H 322" fill="none" stroke="#22d3ee" stroke-width="3" />
+		<path d="M 312 65 L 324 75 L 312 85" fill="none" stroke="#22d3ee" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
+
+		<rect x="340" y="-18" width="320" height="186" rx="14" fill="#02101a" stroke="#0e3a5f" stroke-width="2" />
+		<text x="500" y="16" text-anchor="middle" font-size="12" font-weight="800" letter-spacing="0.18em" fill="#67e8f9">FRAME BINÁRIO  ·  BIG ENDIAN</text>
+		<g transform="translate(362 40)">
+			<rect x="0" y="0" width="54" height="74" rx="6" fill="#164e63" stroke="#22d3ee" />
+			<text x="27" y="30" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="12" font-weight="700" fill="#cffafe">NEBU</text>
+			<text x="27" y="54" text-anchor="middle" font-size="10" fill="#a5f3fc">MAGIC</text>
+			<rect x="62" y="0" width="42" height="74" rx="6" fill="#0c4a6e" stroke="#38bdf8" />
+			<text x="83" y="30" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="13" font-weight="700" fill="#e0f2fe">v1</text>
+			<text x="83" y="54" text-anchor="middle" font-size="10" fill="#bae6fd">VERSÃO</text>
+			<rect x="112" y="0" width="56" height="74" rx="6" fill="#0c4a6e" stroke="#38bdf8" />
+			<text x="140" y="30" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="13" font-weight="700" fill="#e0f2fe">GET</text>
+			<text x="140" y="54" text-anchor="middle" font-size="10" fill="#bae6fd">OPCODE</text>
+			<rect x="176" y="0" width="100" height="74" rx="6" fill="#082f49" stroke="#0e7490" />
+			<text x="226" y="30" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="13" font-weight="700" fill="#e0f2fe">CHAVE · LEN</text>
+			<text x="226" y="54" text-anchor="middle" font-size="10" fill="#bae6fd">HEADER</text>
+			<rect x="0" y="88" width="276" height="28" rx="5" fill="#020617" stroke="#164e63" />
+			<text x="138" y="107" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="12" fill="#a5f3fc">CHAVE + VALOR · BYTES VARIÁVEIS</text>
+		</g>
+
+		<path d="M 680 75 H 752" fill="none" stroke="#22d3ee" stroke-width="3" />
+		<path d="M 742 65 L 754 75 L 742 85" fill="none" stroke="#22d3ee" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
+
+		<rect x="770" y="0" width="230" height="150" rx="14" fill="#02101a" stroke="#0e3a5f" stroke-width="2" />
+		<circle cx="798" cy="30" r="6" fill="#a78bfa" />
+		<text x="817" y="35" font-size="13" font-weight="800" letter-spacing="0.16em" fill="#c4b5fd">SERVIDOR NEBULA</text>
+		<text x="794" y="88" font-family="'JetBrains Mono', monospace" font-size="18" font-weight="700" fill="#f0f9ff">DESCODIFICAR → GET</text>
+		<text x="794" y="119" font-size="14" fill="#94a3b8">Stream TCP · frame validado</text>
+	</g>
+
+	<g transform="translate(600 548)" font-family="'Inter', system-ui, sans-serif" text-anchor="middle">
+		<text font-size="14" font-weight="500" fill="#64748b">Framing · versionamento · payloads binários · SDKs multilingues</text>
+	</g>
+</svg>
