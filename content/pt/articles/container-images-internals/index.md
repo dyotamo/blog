@@ -1,5 +1,5 @@
 ---
-title: "Imagens de Containers, Camada a Camada 📦🐳"
+title: "Imagens de Containers, Camada a Camada"
 description: "Um guia prático sobre imagens OCI, camadas do sistema de arquivo, copy-on-write no OverlayFS e cache de build."
 date: "2026-11-19"
 tags: ["containers", "docker", "oci", "overlayfs", "linux", "devops"]

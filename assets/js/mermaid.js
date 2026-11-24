@@ -33,5 +33,4 @@ mermaid.initialize({
 });
 
 mermaid.run()
-  .then(() => document.querySelectorAll(".mermaid").forEach(addZoomControls))
   .catch((error) => console.error("Mermaid failed to render", error));

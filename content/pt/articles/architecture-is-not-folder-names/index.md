@@ -1,5 +1,5 @@
 ---
-title: "Arquitectura Não é Nome de Pasta 📁🏗️"
+title: "Arquitectura Não é Nome de Pasta"
 description: "Camadas, serviços e repositórios só existem de verdade quando as responsabilidades e dependências do código respeitam o que esses nomes prometem."
 date: "2026-11-11"
 tags: ["software-architecture", "layered-architecture", "clean-architecture", "design-patterns", "java", "modularity"]
@@ -31,15 +31,17 @@ Uma estrutura de directórios mostra onde os ficheiros foram colocados. Não mos
 É possível ter um pacote chamado `domain` que importa classes JPA, conhece tabelas e executa SQL. E é possível ter um pacote chamado `infrastructure` que contém apenas uma interface, sem qualquer implementação técnica. Os nomes não corrigem essas responsabilidades.
 
 ```mermaid
-flowchart LR
-    subgraph Names[O que a árvore de ficheiros mostra]
-        A[domain/] --> B[application/]
-        B --> C[infrastructure/]
-    end
-    subgraph Reality[O que as dependências realmente fazem]
-        D[Domain] --> E[JPA e SQL]
-        F[Infrastructure] --> G[Interface sem implementação]
-    end
+mindmap
+  root((Arquitectura))
+    Árvore de ficheiros
+      domain/
+      application/
+      infrastructure/
+    Dependências reais
+      Domínio
+        JPA e SQL
+      Infraestrutura
+        Interface sem implementação
 ```
 
 A árvore é uma pista. A direcção das dependências e o comportamento do código é que contam.
@@ -87,14 +89,21 @@ sequenceDiagram
 Mas o fluxo de chamadas em execução não determina as dependências de compilação. Na direcção de dependências de uma arquitectura hexagonal ou Clean, o núcleo não deve precisar de conhecer a tecnologia exterior. O adaptador de persistência conhece a porta; a porta não precisa de conhecer JPA.
 
 ```mermaid
-flowchart LR
-    W[Web e apresentação] --> A[Aplicação e casos de uso]
-    A --> D[Domínio]
-    A --> P[Porta de persistência]
-    I[Adaptador de persistência] --> P
-    I --> DB[(JPA, SQL, base de dados)]
-    W -->|não deve ser importado por| D
-    DB -->|não deve ser importada por| D
+classDiagram
+    direction LR
+    class WebPresentation
+    class ApplicationUseCases
+    class Domain
+    class PersistencePort
+    class PersistenceAdapter
+    class Database
+    WebPresentation --> ApplicationUseCases
+    ApplicationUseCases --> Domain
+    ApplicationUseCases --> PersistencePort
+    PersistenceAdapter ..|> PersistencePort
+    PersistenceAdapter --> Database
+    Domain ..> WebPresentation : não deve depender de
+    Domain ..> Database : não deve depender de
 ```
 
 A chamada pode entrar no adaptador e voltar ao caso de uso, mas o código de negócio continua sem importar a implementação concreta. Essa é a diferença entre um diagrama bonito e uma fronteira de dependências real.
@@ -205,18 +214,17 @@ Ambas podem funcionar. A organização por camada é simples de compreender em a
 Também é possível combinar as duas: agrupar primeiro por funcionalidade e, dentro de cada módulo, separar apresentação, aplicação, domínio e infraestrutura quando isso trouxer valor.
 
 ```mermaid
-flowchart TD
-    subgraph Technical[Organização por camada]
-        T1[controllers/]
-        T2[services/]
-        T3[repositories/]
-    end
-    subgraph Feature[Organização por funcionalidade]
-        F1[orders/]
-        F2[payments/]
-        F3[identity/]
-        F4[Camadas internas quando necessário]
-    end
+mindmap
+  root((Organização do código))
+    Por camada
+      controllers/
+      services/
+      repositories/
+    Por funcionalidade
+      orders/
+      payments/
+      identity/
+      Camadas internas quando necessário
 ```
 
 A decisão deve facilitar a descoberta do código e limitar mudanças não relacionadas. Não existe uma pontuação arquitectural por quantidade de pastas.

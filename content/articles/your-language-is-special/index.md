@@ -1,5 +1,5 @@
 ---
-title: "Your Programming Language Is Special… Just Like All the Others 💻🛠️"
+title: "Your Programming Language Is Special… Just Like All the Others"
 description: "WSO2’s Java-to-Go direction is not proof that one language won. It is an example of choosing tools for the workloads, constraints, and costs a business has today."
 date: "2026-11-11"
 tags: ["programming-languages", "java", "go", "wso2", "software-architecture", "cloud-native", "engineering"]
@@ -38,15 +38,17 @@ The announcement also described different choices for different layers of its so
 So the headline is deliberately punchy, but the actual strategy is more specific: **use different languages for different parts of the system, and move future backend infrastructure toward Go and Python**.
 
 ```mermaid
-flowchart TD
-    A[User interface] --> B[Middle tier: user-facing APIs and orchestration]
-    B --> C[Backend: core infrastructure services]
-    A1[Existing mix] --> A
-    B1[Java and Ballerina] --> B
-    C1[Java, Go, Node.js, Python] --> C
-    A --> A2[No planned change]
-    B --> B2[Ballerina direction]
-    C --> C2[Go and Python direction]
+mindmap
+  root((WSO2 software stack))
+    Frontend
+      Current: Web and mobile technologies
+      Direction: No change
+    Middle tier
+      Current: Java and Ballerina
+      Direction: Ballerina
+    Backend infrastructure
+      Current: Java, Go, Node.js, Python
+      Direction: Go and Python
 ```
 
 ## The workload changed
@@ -56,13 +58,17 @@ For much of WSO2’s history, enterprise middleware was delivered as long-runnin
 Cloud-native deployments changed the shape of the problem. A service may now run inside a container that is created to handle work, scaled out during a traffic spike, rescheduled after a failure, or shut down when demand falls. In that world, startup latency and memory use are not abstract benchmark numbers: they affect how quickly capacity becomes available and how much infrastructure is needed to keep it available.
 
 ```mermaid
-flowchart LR
-    subgraph LongLived[Long-lived server model]
-        A1[Start once] --> A2[Warm up and optimize] --> A3[Serve for a long time]
-    end
-    subgraph Ephemeral[Ephemeral container model]
-        B1[Start container] --> B2[Become ready quickly] --> B3[Handle a unit of work] --> B4[Scale down or restart]
-    end
+mindmap
+  root((Runtime lifecycle))
+    Long-lived server
+      Start once
+      Warm up and optimize
+      Serve for a long time
+    Ephemeral container
+      Start container
+      Become ready quickly
+      Handle a unit of work
+      Scale down or restart
 ```
 
 Java’s just-in-time compilation and mature runtime can be a strength for long-lived services: the process has time to warm up and optimize. For short-lived workloads, however, the time and resources spent getting to that point can matter more. A large application’s dependency graph, runtime configuration, and memory needs also shape its startup and operating costs.
@@ -99,15 +105,20 @@ I did not do that. Not because I disliked Python, but because it was not viable 
 Those considerations do not make Python a bad language. They make a language choice consequential. A preference can help us explore an option, but it cannot pay the infrastructure bill, staff a team, or erase the properties of a workload.
 
 ```mermaid
-flowchart TD
-    A[Start with the workload] --> B[Define latency, memory, throughput, and uptime needs]
-    B --> C[Check team skills and hiring market]
-    C --> D[Measure runtime and operating costs]
-    D --> E[Compare migration and maintenance effort]
-    E --> F{Does the option fit the constraints?}
-    F -->|Yes| G[Prototype and benchmark in context]
-    G --> H[Choose based on evidence and revisit later]
-    F -->|No| I[Keep evaluating other options]
+mindmap
+  root((Choose a language))
+    Workload
+      Latency
+      Memory
+      Throughput
+      Availability
+    Team and hiring
+    Runtime and operating costs
+    Migration and maintenance effort
+    Evaluate constraints
+      Prototype and benchmark
+      Choose with evidence
+      Reassess later
 ```
 
 ## A better way to choose a language

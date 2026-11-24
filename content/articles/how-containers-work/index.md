@@ -1,5 +1,5 @@
 ---
-title: "Containers Are Not Virtual Machines: How Do They Actually Work? 🐧⚙️"
+title: "Containers Are Not Virtual Machines: How Do They Actually Work?"
 description: "A practical explanation of processes, namespaces, cgroups, filesystems, networking, security, and Linux runtimes, and what happens when a container starts."
 date: "2026-11-18"
 tags: ["containers", "linux", "docker", "kubernetes", "namespaces", "cgroups", "devops"]

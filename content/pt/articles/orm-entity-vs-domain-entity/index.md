@@ -1,5 +1,5 @@
 ---
-title: "Entidade de ORM ≠ Entidade de Domínio 🗄️🏛️"
+title: "Entidade de ORM ≠ Entidade de Domínio"
 description: "Podem começar com os mesmos atributos, mas os modelos de persistência e de domínio têm responsabilidades diferentes. Descubra onde divergem e quando compensa mantê-los separados."
 date: "2026-11-11"
 tags: ["orm", "domain-driven-design", "software-architecture", "persistence", "domain-model", "clean-architecture"]
@@ -21,15 +21,18 @@ Uma **entidade de domínio** representa um conceito importante para o negócio. 
 A mesma classe `Order` pode representar as duas coisas numa aplicação pequena. A diferença está na responsabilidade, não no nome. Uma classe chamada `Order` não se torna automaticamente um modelo de domínio só por ter um nome com significado.
 
 ```mermaid
-flowchart LR
-    A[Linha ou documento na base de dados] --> B[Entidade de ORM]
-    B --> C[Fronteira de mapeamento]
-    C --> D[Entidade de domínio]
-    D --> E[Regras e comportamento de negócio]
-    E --> D
-    D --> C
-    C --> B
-    B --> F[Linha ou documento na base de dados]
+sequenceDiagram
+    participant DB as Base de dados
+    participant ORM as Entidade de ORM
+    participant Mapper as Fronteira de mapeamento
+    participant Domain as Entidade de domínio
+    DB->>ORM: Carregar registo armazenado
+    ORM->>Mapper: Converter dados de persistência
+    Mapper->>Domain: Criar entidade de domínio
+    Domain->>Domain: Aplicar regras de negócio
+    Domain->>Mapper: Devolver estado de domínio atualizado
+    Mapper->>ORM: Converter para persistência
+    ORM->>DB: Guardar registo atualizado
 ```
 
 ## O modelo de persistência segue as preocupações do armazenamento
@@ -115,14 +118,22 @@ Um sistema pode começar com uma tabela simples e algumas operações directas. 
 Uma fronteira útil permite que o código da aplicação use o modelo de domínio e uma abstracção de repositório, enquanto um adaptador de infraestrutura trata dos detalhes do ORM e da base de dados. O repositório traduz entre os objectos de domínio e as representações de persistência.
 
 ```mermaid
-flowchart TD
-    U[Caso de uso da aplicação] --> D[Modelo de domínio]
-    U --> R[Interface do repositório]
-    R --> A[Adaptador de persistência]
-    A --> O[Entidade de ORM]
-    O --> DB[(Base de dados)]
-    A --> M[Mapeamento]
-    M --> D
+classDiagram
+    direction LR
+    class UseCase
+    class DomainModel
+    class RepositoryInterface
+    class PersistenceAdapter
+    class ORMEntity
+    class Database
+    class Mapping
+    UseCase --> DomainModel : aplica regras
+    UseCase --> RepositoryInterface : depende de
+    PersistenceAdapter ..|> RepositoryInterface : implementa
+    PersistenceAdapter --> ORMEntity : mapeia
+    ORMEntity --> Database : persiste
+    PersistenceAdapter --> Mapping : utiliza
+    Mapping --> DomainModel : cria
 ```
 
 O mapeamento não é gratuito. Acrescenta código, testes e tipos para manter. Mas cria um lugar claro para traduzir entre dois modelos que mudam por razões diferentes. Se o ORM, o esquema ou a tecnologia de armazenamento mudar, o adaptador pode absorver grande parte dessa alteração sem obrigar as regras de negócio a falar a linguagem da base de dados.

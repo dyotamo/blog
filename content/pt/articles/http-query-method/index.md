@@ -1,5 +1,5 @@
 ---
-title: "Método HTTP QUERY: Um GET seguro... com corpo! 🔎📜"
+title: "Método HTTP QUERY: Um GET seguro... com corpo!"
 description: "Descobre o RFC 10008: o novo método HTTP QUERY que preenche o espaço entre o GET e o POST, com passado, presente e futuro do protocolo, diagramas, exemplos e casos de uso."
 date: "2026-07-12"
 tags: ["http", "rfc-10008", "ietf", "web", "protocols", "api", "rest", "networking"]
@@ -125,13 +125,16 @@ Esta é a tabela central do RFC 10008. Memoriza-a:
 | **Conteúdo (body)** | *"sem semântica definida"* | **esperado** (semântica pelo recurso) | esperado |
 
 ```mermaid
-graph LR
-    A[Cliente] -->|Quer ler sem efeitos?| B{Tamanho dos dados?}
-    B -->|Pequeno| C[GET com URL]
-    B -->|Grande / Complexo| D{A consulta precisa de body?}
-    D -->|Sim| E[QUERY]
-    D -->|Não precisa| C
-    A -->|Vai mutar estado?| F[POST]
+stateDiagram-v2
+    [*] --> Pedido
+    Pedido --> LeituraSegura : Ler sem efeitos secundários
+    Pedido --> Alteracao : Alterar estado
+    Alteracao --> POST
+    LeituraSegura --> TamanhoDados
+    TamanhoDados --> GET : Consulta pequena
+    TamanhoDados --> CorpoNecessario : Consulta grande ou complexa
+    CorpoNecessario --> QUERY : Precisa de corpo
+    CorpoNecessario --> GET : URL suficiente
 ```
 
 ## Descobrir o Suporte a QUERY
@@ -224,13 +227,20 @@ A especificação dá ao servidor duas ferramentas complementares para "promover
 - **`Location`**: URI que devolve um **resultado futuro** se a mesma consulta for executada novamente (estado atualizado).
 
 ```mermaid
-graph TD
-    Q[QUERY inicial /contacts] -->|Servidor processa| R1[200 OK com body]
-    R1 --> CL[Content-Location: /contacts/stored-results/17]
-    R1 --> LO[Location: /contacts/stored-queries/42]
-
-    CL -->|GET devolve| SR[snapshot do resultado]
-    LO -->|GET devolve| SQ[a consulta, executada de novo]
+sequenceDiagram
+    participant Cliente
+    participant Servidor
+    Cliente->>Servidor: QUERY /contacts
+    Servidor-->>Cliente: 200 OK com resultado
+    Servidor-->>Cliente: Content-Location: snapshot do resultado
+    Servidor-->>Cliente: Location: consulta armazenada
+    par Recuperar o resultado atual
+        Cliente->>Servidor: GET Content-Location
+        Servidor-->>Cliente: Snapshot armazenado
+    and Executar novamente mais tarde
+        Cliente->>Servidor: GET Location
+        Servidor-->>Cliente: Resultado atualizado da consulta
+    end
 ```
 
 Isto permite um padrão elegante: o primeiro pedido é um QUERY e, a partir daí, o cliente (ou a cache) pode usar GET  que é muito mais barato de processar.
@@ -289,19 +299,20 @@ Na prática, isto significa que a cache **tem de ler o body inteiro** para calcu
 A boa notícia: se o servidor devolver um `Location`, o cliente pode **migrar para GET** a partir do segundo pedido  e isso *é* trivial de fazer cache.
 
 ```mermaid
-flowchart LR
-    R[QUERY Request] --> K[Calcular chave de cache]
-    K --> K1[Método]
-    K --> K2[URI alvo]
-    K --> K3[Corpo do pedido]
-    K --> K4[Content-Type]
-    K --> K5[Content-Encoding]
-    K1 & K2 & K3 & K4 & K5 --> KEY{Chave composta}
-    KEY --> MATCH{Em cache?}
-    MATCH -->|Sim| HITS[Devolve resposta em cache]
-    MATCH -->|Não| EXEC[Executa consulta na origem]
-    EXEC --> STORE[Guarda em cache]
-    STORE --> RESP[Devolve resposta]
+sequenceDiagram
+    participant Cliente
+    participant Cache
+    participant Origem
+    Cliente->>Cache: Pedido QUERY
+    Note over Cache: A chave inclui método, URI alvo, corpo, Content-Type e Content-Encoding
+    alt Cache hit
+        Cache-->>Cliente: Devolver resposta em cache
+    else Cache miss
+        Cache->>Origem: Executar consulta
+        Origem-->>Cache: Resposta da consulta
+        Cache->>Cache: Guardar resposta pela chave composta
+        Cache-->>Cliente: Devolver resposta
+    end
 ```
 
 > ⚠️ *"Note que o caching de respostas QUERY é inerentemente mais complexo do que o caching de respostas a GET."*  RFC 10008, Secção 2.7
@@ -319,11 +330,13 @@ A especificação é direta:
 - **CORS**: `QUERY` não está nos métodos *safelisted* do CORS. Qualquer pedido cross-origin dispara um **preflight (`OPTIONS`)**.
 
 ```mermaid
-graph LR
-    Browser -->|1. OPTIONS preflight| Servidor
-    Servidor -->|2. 200 OK /<br/>Allow: QUERY,<br/>Access-Control-Allow-*| Browser
-    Browser -->|3. QUERY real| Servidor
-    Servidor -->|4. Resultado| Browser
+sequenceDiagram
+    participant Browser
+    participant Servidor
+    Browser->>Servidor: Preflight OPTIONS
+    Servidor-->>Browser: 200 OK / Allow: QUERY / Access-Control-Allow-*
+    Browser->>Servidor: QUERY real
+    Servidor-->>Browser: Resultado da consulta
 ```
 
 ## Vantagens do QUERY  Lista Rápida
@@ -356,12 +369,13 @@ Ainda é cedo para o RFC 10008, mas a trajetória é entusiasmante:
 - **OpenAPI 4 / JSON Schema**: esperam-se atualizações para declarar o QUERY em contratos de API.
 
 ```mermaid
-graph TD
-    N[Agora] --> S1[APIs documentadas adotam QUERY]
-    S1 --> S2[Frameworks adicionam suporte nativo]
-    S2 --> S3[Proxies e CDNs otimizam caching]
-    S3 --> S4[Browsers classificam CORS de forma mais eficiente]
-    S4 --> F[Futuro: QUERY como cidadão de primeira classe]
+stateDiagram-v2
+    [*] --> EstadoAtual : Adoção do QUERY começa
+    EstadoAtual --> APIs : APIs documentadas adotam QUERY
+    APIs --> Frameworks : Frameworks adicionam suporte nativo
+    Frameworks --> Caching : Proxies e CDNs otimizam caching
+    Caching --> Browsers : Browsers tratam CORS com eficiência
+    Browsers --> MetodoEstabelecido : QUERY torna-se método de primeira classe
 ```
 
 ## QUERY Numa Frase

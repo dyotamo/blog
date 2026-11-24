@@ -1,5 +1,5 @@
 ---
-title: "Software Licensing: A Dependency Is a Decision Too ⚖️📜"
+title: "Software Licensing: A Dependency Is a Decision Too"
 description: "MIT, BSD, GPL, LGPL, and AGPL are more than labels. Understand permissions, distribution obligations, and how to track your dependencies’ licenses."
 date: "2026-11-11"
 tags: ["software-licensing", "open-source", "copyleft", "compliance", "dependencies", "software-architecture"]
@@ -25,17 +25,19 @@ That does not mean "no obligations." For example, MIT and BSD require certain co
 That is why people say copyleft "infects" a product. I would avoid that word: it suggests an automatic, universal effect that does not exist. The analysis depends on the exact license and version, how components are combined, which exceptions apply, and how the software is delivered or made available.
 
 ```mermaid
-flowchart TD
-    A[Add a dependency] --> B[Identify the exact license and version]
-    B --> C{How does it interact with the product?}
-    C -->|Combined code or linking| D[Review compatibility and obligations]
-    C -->|Separate program or external service| E[Review boundaries and distribution model]
-    D --> F{Will the product be conveyed to others?}
-    E --> F
-    F -->|Yes| G[Prepare notices, source, and other applicable materials]
-    F -->|No| H[Record the analysis and track changes]
-    G --> I[Review with engineering and legal stakeholders]
-    H --> I
+stateDiagram-v2
+    [*] --> Dependency
+    Dependency --> IdentifyLicense : Add dependency
+    IdentifyLicense --> Interaction
+    Interaction --> Combined : Combined code or linking
+    Interaction --> Separate : Separate program or external service
+    Combined --> Distribution
+    Separate --> Distribution
+    Distribution --> PrepareMaterials : Product conveyed to others
+    Distribution --> RecordDecision : Internal use only
+    PrepareMaterials --> Review
+    RecordDecision --> Review
+    Review --> [*]
 ```
 
 ## "Copyleft" does not mean publishing everything to everyone
@@ -94,15 +96,19 @@ The direct license for each dependency is just the beginning. A useful inventory
 A dependency list in the repository does not guarantee it matches what was actually included in the released artifact. Analyze the build output and preserve the relationship between versions, dependencies, and releases.
 
 ```mermaid
-flowchart LR
-    A[Manifests and lockfiles] --> D[Component inventory]
-    B[Vendored code] --> D
-    C[Final images and artifacts] --> D
-    D --> E[Identify license and version]
-    E --> F[Check obligations and compatibility]
-    F --> G[Generate notices and compliance materials]
-    G --> H[Review before release]
-    H --> I[Record decision and monitor changes]
+mindmap
+  root((Dependency license review))
+    Inputs
+      Manifests and lockfiles
+      Vendored code
+      Final images and artifacts
+    Component inventory
+      Identify license and version
+      Check obligations and compatibility
+      Generate notices and compliance materials
+    Release review
+      Record decision
+      Monitor changes
 ```
 
 Tools can automate part of this work. Formats and identifiers such as **SPDX** help record licenses consistently; software-composition analysis tools can identify dependencies and generate an inventory or SBOM. But a scanner is not a substitute for review: metadata may be wrong, licenses may be customized, and the tool may not know how a component is combined or distributed.

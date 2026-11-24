@@ -1,5 +1,5 @@
 ---
-title: "Architecture Is More Than Folder Names 📁🏗️"
+title: "Architecture Is More Than Folder Names"
 description: "Layers, services, and repositories are real only when component responsibilities and dependencies do what their names promise."
 date: "2026-11-11"
 tags: ["software-architecture", "layered-architecture", "clean-architecture", "design-patterns", "java", "modularity"]
@@ -31,16 +31,17 @@ A directory structure shows where files were placed. By itself, it does not show
 You can have a package called `domain` that imports JPA classes, knows about tables, and executes SQL. And you can have a package called `infrastructure` that contains only an interface and no technical implementation. The names do not fix those responsibilities.
 
 ```mermaid
-flowchart LR
-    subgraph Names[What the file tree shows]
-        A[domain/]
-        B[application/]
-        C[infrastructure/]
-    end
-    subgraph Reality[What the dependencies actually do]
-        D[Domain] --> E[JPA and SQL]
-        F[Infrastructure] --> G[Interface with no implementation]
-    end
+mindmap
+  root((Architecture))
+    File tree
+      domain/
+      application/
+      infrastructure/
+    Actual dependencies
+      Domain
+        JPA and SQL
+      Infrastructure
+        Interface without implementation
 ```
 
 The tree is a clue. The dependency direction and the behavior of the code are what matter.
@@ -88,14 +89,21 @@ sequenceDiagram
 But runtime call flow does not determine compile-time dependencies. In the dependency direction of Hexagonal or Clean Architecture, the core should not need to know about outer technology. The persistence adapter knows the port; the port does not need to know about JPA.
 
 ```mermaid
-flowchart LR
-    W[Web and presentation] --> A[Application and use cases]
-    A --> D[Domain]
-    A --> P[Persistence port]
-    I[Persistence adapter] --> P
-    I --> DB[(JPA, SQL, database)]
-    D -.->|must not depend on| W
-    D -.->|must not depend on| DB
+classDiagram
+    direction LR
+    class WebPresentation
+    class ApplicationUseCases
+    class Domain
+    class PersistencePort
+    class PersistenceAdapter
+    class Database
+    WebPresentation --> ApplicationUseCases
+    ApplicationUseCases --> Domain
+    ApplicationUseCases --> PersistencePort
+    PersistenceAdapter ..|> PersistencePort
+    PersistenceAdapter --> Database
+    Domain ..> WebPresentation : must not depend on
+    Domain ..> Database : must not depend on
 ```
 
 A call can enter the adapter and return to the use case while business code still avoids importing the concrete implementation. That is the difference between a nice-looking diagram and a real dependency boundary.
@@ -206,18 +214,17 @@ Both can work. Layer-based organization is easy to understand in small applicati
 It is also possible to combine both: group by feature first, then separate presentation, application, domain, and infrastructure inside a module where that adds value.
 
 ```mermaid
-flowchart TD
-    subgraph Technical[Layer-based organization]
-        T1[controllers/]
-        T2[services/]
-        T3[repositories/]
-    end
-    subgraph Feature[Feature-based organization]
-        F1[orders/]
-        F2[payments/]
-        F3[identity/]
-        F4[Internal layers when useful]
-    end
+mindmap
+  root((Code organization))
+    Layer-based
+      controllers/
+      services/
+      repositories/
+    Feature-based
+      orders/
+      payments/
+      identity/
+      Internal layers when useful
 ```
 
 Choose the structure that makes code easier to discover and limits unrelated changes. There is no architectural score for the number of folders.

@@ -1,5 +1,5 @@
 ---
-title: "When Business Meets Technology: The Story Behind Dynamo 🛒⚡"
+title: "When Business Meets Technology: The Story Behind Dynamo"
 description: "How a shopping cart that could not go down led Amazon to rethink distributed data systems, and why business priorities shape architecture."
 date: "2026-11-11"
 tags: ["dynamo", "amazon", "distributed-systems", "databases", "cap-theorem", "availability", "consistency", "architecture"]
@@ -28,15 +28,19 @@ Put another way, the business ranked two outcomes differently:
 That priority led to a practical design goal: keep accepting and serving cart operations through failures, then reconcile differences when the system recovered.
 
 ```mermaid
-flowchart TD
-    A[Customer updates cart] --> B{Can every replica be reached?}
-    B -->|Yes| C[Read or write current cart]
-    B -->|No| D{Can an available replica respond?}
-    D -->|Yes| E[Serve the cart and record the update]
-    E --> F[Reconcile replicas when connectivity returns]
-    D -->|No| G[Cart unavailable; purchase may be lost]
-    C --> H[Customer continues checkout]
-    F --> H
+sequenceDiagram
+    participant Customer
+    participant ReplicaA as Available replica
+    participant ReplicaB as Other replica
+    participant Checkout
+    Customer->>ReplicaA: Update cart
+    alt An available replica can respond
+        ReplicaA-->>Customer: Serve cart and record update
+        Note over ReplicaA,ReplicaB: Reconcile replicas when connectivity returns
+        Customer->>Checkout: Continue purchase
+    else No replica can respond
+        Customer--x ReplicaA: Request times out, cart unavailable
+    end
 ```
 
 ## Dynamo: built around the workload
@@ -84,12 +88,19 @@ Dynamo combined several techniques to make that availability target practical. T
 A distributed store needs to decide which machines are responsible for each key. Consistent hashing maps keys and nodes onto a ring, reducing how many keys need to move when machines are added or removed. Dynamo also used virtual nodes to distribute responsibility more evenly across physical machines.
 
 ```mermaid
-flowchart LR
-    K[Cart key] --> H[Hash the key]
-    H --> R[Find the next responsible position on the ring]
-    R --> N1[Node A]
-    R --> N2[Node B replica]
-    R --> N3[Node C replica]
+sequenceDiagram
+    participant Client
+    participant Hash as Key hashing
+    participant Ring as Consistent-hash ring
+    participant NodeA as Node A
+    participant NodeB as Node B replica
+    participant NodeC as Node C replica
+    Client->>Hash: Submit cart key
+    Hash->>Ring: Find next responsible position
+    Ring-->>Hash: Return position
+    Hash->>NodeA: Route to primary node
+    Hash->>NodeB: Replicate cart data
+    Hash->>NodeC: Replicate cart data
 ```
 
 Instead of one machine owning the only copy of a cart, multiple nodes could hold replicas. That improved the chance that an operation could continue if an individual node failed.

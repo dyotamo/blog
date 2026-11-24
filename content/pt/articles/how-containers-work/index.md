@@ -1,5 +1,5 @@
 ---
-title: "Containers não são máquinas virtuais: como funcionam por dentro? 🐧⚙️"
+title: "Containers não são máquinas virtuais: como funcionam por dentro?"
 description: "Uma explicação prática de processos, namespaces, cgroups, sistemas de ficheiros, rede, segurança e runtimes Linux  e do que acontece quando um container arranca."
 date: "2026-11-18"
 tags: ["containers", "linux", "docker", "kubernetes", "namespaces", "cgroups", "devops"]

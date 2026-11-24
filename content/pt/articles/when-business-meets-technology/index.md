@@ -1,5 +1,5 @@
 ---
-title: "Quando o Negócio Encontra a Tecnologia: A História do Dynamo 🛒⚡"
+title: "Quando o Negócio Encontra a Tecnologia: A História do Dynamo"
 description: "Como um carrinho de compras que não podia falhar levou a Amazon a repensar sistemas de dados distribuídos  e por que as prioridades do negócio moldam a arquitectura."
 date: "2026-11-11"
 tags: ["dynamo", "amazon", "distributed-systems", "databases", "cap-theorem", "availability", "consistency", "architecture"]
@@ -28,15 +28,19 @@ Dito de outra forma, o negócio atribuía pesos diferentes a dois resultados:
 Essa prioridade levou a um objectivo prático de design: continuar a aceitar e servir operações do carrinho durante falhas e reconciliar as diferenças quando o sistema recuperasse.
 
 ```mermaid
-flowchart TD
-    A[Cliente actualiza o carrinho] --> B{Todas as réplicas estão acessíveis?}
-    B -->|Sim| C[Ler ou guardar o carrinho actual]
-    B -->|Não| D{Uma réplica disponível pode responder?}
-    D -->|Sim| E[Servir o carrinho e registar a actualização]
-    E --> F[Reconciliar réplicas quando a ligação voltar]
-    D -->|Não| G[Carrinho indisponível; a compra pode perder-se]
-    C --> H[Cliente continua a finalizar a compra]
-    F --> H
+sequenceDiagram
+    participant Cliente
+    participant ReplicaA as Réplica disponível
+    participant ReplicaB as Outra réplica
+    participant Checkout as Finalização da compra
+    Cliente->>ReplicaA: Atualizar carrinho
+    alt Uma réplica disponível pode responder
+        ReplicaA-->>Cliente: Servir carrinho e registar atualização
+        Note over ReplicaA,ReplicaB: Reconciliar réplicas quando a ligação voltar
+        Cliente->>Checkout: Continuar compra
+    else Nenhuma réplica pode responder
+        Cliente--x ReplicaA: Pedido expirou, carrinho indisponível
+    end
 ```
 
 ## Dynamo: construído para a carga de trabalho
@@ -84,12 +88,19 @@ O Dynamo combinou várias técnicas para tornar prático esse objectivo de dispo
 Um armazenamento distribuído precisa de decidir que máquinas são responsáveis por cada chave. O hashing consistente mapeia chaves e nós num anel, reduzindo o número de chaves que precisam de ser movidas quando máquinas são adicionadas ou removidas. O Dynamo também usava nós virtuais para distribuir a responsabilidade de forma mais equilibrada pelas máquinas físicas.
 
 ```mermaid
-flowchart LR
-    K[Chave do carrinho] --> H[Aplicar hash à chave]
-    H --> R[Encontrar a posição responsável seguinte no anel]
-    R --> N1[Nó A]
-    R --> N2[Nó B réplica]
-    R --> N3[Nó C réplica]
+sequenceDiagram
+    participant Cliente
+    participant Hash as Hash da chave
+    participant Anel as Anel de hashing consistente
+    participant NodeA as Nó A
+    participant NodeB as Nó B réplica
+    participant NodeC as Nó C réplica
+    Cliente->>Hash: Enviar chave do carrinho
+    Hash->>Anel: Encontrar a próxima posição responsável
+    Anel-->>Hash: Devolver posição
+    Hash->>NodeA: Encaminhar para nó principal
+    Hash->>NodeB: Replicar dados do carrinho
+    Hash->>NodeC: Replicar dados do carrinho
 ```
 
 Em vez de uma única máquina deter a única cópia de um carrinho, vários nós podiam guardar réplicas. Isso aumentava a probabilidade de uma operação continuar caso um nó falhasse.

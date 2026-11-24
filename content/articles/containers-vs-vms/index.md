@@ -1,5 +1,5 @@
 ---
-title: "Containers are NOT Virtual Machines! 🚀🐳"
+title: "Containers are NOT Virtual Machines!"
 description: "Understand once and for all the difference between containers and VMs, and why this distinction is fundamental for your development."
 date: "2026-07-08"
 tags: ["containers", "virtual-machines", "docker", "kubernetes", "linux", "devops"]
@@ -24,16 +24,16 @@ Think of a VM as an apartment in a building:
 - You can have a neighbor running Windows 95 and another with Arch Linux; they don't even know of each other's existence.
 
 ```mermaid
-graph TD
-    subgraph VM_Architecture [VM Architecture]
-        App1[App 1] --> Bins1[Libraries/Binaries]
-        App2[App 2] --> Bins2[Libraries/Binaries]
-        Bins1 --> OS1[Guest OS 1]
-        Bins2 --> OS2[Guest OS 2]
-        OS1 --> Hypervisor[Hypervisor]
-        OS2 --> Hypervisor
-        Hypervisor --> Hardware[Physical Hardware]
-    end
+mindmap
+  root((VM Architecture))
+    Physical Hardware
+      Hypervisor
+        Guest OS 1
+          Libraries/Binaries
+            App 1
+        Guest OS 2
+          Libraries/Binaries
+            App 2
 ```
 
 ## Containers: The Efficiency Revolution
@@ -50,15 +50,17 @@ Containers are like a modern co-living:
 - It is much lighter: no one needs to carry a whole house on their back to move.
 
 ```mermaid
-graph TD
-    subgraph Container_Architecture [Container Architecture]
-        App1[App 1] --> Bins1[Libraries/Binaries]
-        App2[App 2] --> Bins2[Libraries/Binaries]
-        Bins1 --> Engine[Container Engine]
-        Bins2 --> Engine
-        Engine --> Kernel[Host OS Kernel]
-        Kernel --> Hardware[Physical Hardware]
-    end
+mindmap
+  root((Container Architecture))
+    Physical Hardware
+      Host OS Kernel
+        Container Engine
+          Container 1
+            Libraries/Binaries
+              App 1
+          Container 2
+            Libraries/Binaries
+              App 2
 ```
 
 ## The "Secret" of Linux

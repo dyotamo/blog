@@ -1,5 +1,5 @@
 ---
-title: "Observabilidade de Sistemas: Não opere às cegas! 👁️🛠️"
+title: "Observabilidade de Sistemas: Não opere às cegas!"
 description: "Saiba como métricas, logs e traces podem salvar o seu sistema do caos e garantir noites de sono tranquilas."
 date: "2026-07-08"
 tags: ["observability", "monitoring", "sre", "opentelemetry", "metrics", "logs", "traces", "devops"]
@@ -83,12 +83,19 @@ Cuidado com o *vendor lock-in* (ficar preso a uma ferramenta específica). Para 
 O OTel é um padrão *open-source* que oferece APIs e SDKs neutros para recolher e exportar dados. Ele não é o "backend" (onde vês os gráficos), mas sim o meio de transporte padronizado.
 
 ```mermaid
-graph LR
-    App[Aplicação] -->|Instrumentação| OTel[OpenTelemetry SDK]
-    OTel -->|Protocolo OTLP| Collector[OTel Collector]
-    Collector --> Backend1[Grafana/Loki]
-    Collector --> Backend2[Jaeger/Tempo]
-    Collector --> Backend3[Datadog/NewRelic]
+sequenceDiagram
+    participant App as Aplicação
+    participant SDK as OpenTelemetry SDK
+    participant Collector as OTel Collector
+    App->>SDK: Emitir métricas, logs e traces
+    SDK->>Collector: Exportar telemetria via OTLP
+    par Métricas e logs
+        Collector->>Grafana: Exportar para Grafana/Loki
+    and Traces
+        Collector->>Tracing: Exportar para Jaeger/Tempo
+    and Backends geridos
+        Collector->>Managed: Exportar para Datadog/NewRelic
+    end
 ```
 
 ## Lições Aprendidas

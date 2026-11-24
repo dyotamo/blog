@@ -1,5 +1,5 @@
 ---
-title: "A Sua Linguagem de Programação é Especial… Como Todas as Outras 💻🛠️"
+title: "A Sua Linguagem de Programação é Especial… Como Todas as Outras"
 description: "A orientação da WSO2 de Java para Go não prova que uma linguagem venceu. É um exemplo de como escolher ferramentas para as cargas de trabalho, restrições e custos de hoje."
 date: "2026-11-11"
 tags: ["programming-languages", "java", "go", "wso2", "software-architecture", "cloud-native", "engineering"]
@@ -38,15 +38,17 @@ O anúncio também descreveu escolhas diferentes para diferentes camadas do seu 
 Portanto, o título é deliberadamente provocador, mas a estratégia real é mais específica: **usar linguagens diferentes em partes diferentes do sistema e orientar a futura infraestrutura backend para Go e Python**.
 
 ```mermaid
-flowchart TD
-    A[Interface do utilizador] --> B[Camada intermédia: APIs e orquestração]
-    B --> C[Backend: serviços centrais de infraestrutura]
-    A1[Mistura existente] --> A
-    B1[Java e Ballerina] --> B
-    C1[Java, Go, Node.js, Python] --> C
-    A --> A2[Sem alteração planeada]
-    B --> B2[Orientação para Ballerina]
-    C --> C2[Orientação para Go e Python]
+mindmap
+  root((Stack de software da WSO2))
+    Frontend
+      Atual: tecnologias Web e mobile
+      Orientação: sem alterações
+    Camada intermédia
+      Atual: Java e Ballerina
+      Orientação: Ballerina
+    Infraestrutura backend
+      Atual: Java, Go, Node.js, Python
+      Orientação: Go e Python
 ```
 
 ## A carga de trabalho mudou
@@ -56,13 +58,17 @@ Durante grande parte da história da WSO2, o middleware empresarial era disponib
 As implementações cloud-native mudaram o formato do problema. Um serviço pode agora correr num container criado para tratar trabalho, escalar durante um pico de tráfego, ser reagendado depois de uma falha ou ser desligado quando a procura diminui. Neste contexto, a latência de arranque e o consumo de memória não são números abstractos de benchmarks: afectam a rapidez com que a capacidade fica disponível e a quantidade de infraestrutura necessária para a manter disponível.
 
 ```mermaid
-flowchart LR
-    subgraph LongLived[Modelo de servidor de longa duração]
-        A1[Arrancar uma vez] --> A2[Aquecer e optimizar] --> A3[Servir durante muito tempo]
-    end
-    subgraph Ephemeral[Modelo de container efémero]
-        B1[Iniciar container] --> B2[Ficar pronto rapidamente] --> B3[Tratar trabalho] --> B4[Reduzir ou reiniciar]
-    end
+mindmap
+  root((Ciclo de vida do runtime))
+    Servidor de longa duração
+      Arrancar uma vez
+      Aquecer e otimizar
+      Servir durante muito tempo
+    Container efémero
+      Iniciar container
+      Ficar pronto rapidamente
+      Tratar trabalho
+      Reduzir ou reiniciar
 ```
 
 A compilação *just-in-time* e o runtime maduro de Java podem ser uma vantagem para serviços de longa duração: o processo tem tempo para aquecer e optimizar. Em cargas de trabalho de curta duração, porém, o tempo e os recursos gastos até esse ponto podem ser mais importantes. O grafo de dependências de uma aplicação grande, a configuração do runtime e as necessidades de memória também influenciam o arranque e os custos de operação.
@@ -99,15 +105,20 @@ Não o fiz. Não por não gostar de Python, mas porque não era viável naquele 
 Essas considerações não fazem de Python uma linguagem má. Mostram que escolher uma linguagem tem consequências. Uma preferência pode ajudar-nos a explorar uma opção, mas não paga a factura da infraestrutura, não forma uma equipa e não apaga as características da carga de trabalho.
 
 ```mermaid
-flowchart TD
-    A[Começar pela carga de trabalho] --> B[Definir latência, memória, débito e disponibilidade]
-    B --> C[Avaliar competências da equipa e mercado de contratação]
-    C --> D[Medir runtime e custos operacionais]
-    D --> E[Comparar esforço de migração e manutenção]
-    E --> F{A opção respeita as restrições?}
-    F -->|Sim| G[Criar protótipo e medir no contexto real]
-    G --> H[Escolher com base em evidências e reavaliar depois]
-    F -->|Não| I[Continuar a avaliar outras opções]
+mindmap
+  root((Escolher uma linguagem))
+    Carga de trabalho
+      Latência
+      Memória
+      Débito
+      Disponibilidade
+    Equipa e contratação
+    Runtime e custos operacionais
+    Esforço de migração e manutenção
+    Avaliar restrições
+      Criar protótipo e medir
+      Escolher com base em evidências
+      Reavaliar mais tarde
 ```
 
 ## Uma forma melhor de escolher uma linguagem

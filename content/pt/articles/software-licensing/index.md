@@ -1,5 +1,5 @@
 ---
-title: "Licenciamento de Software: Uma Dependência Também é uma Decisão ⚖️📜"
+title: "Licenciamento de Software: Uma Dependência Também é uma Decisão"
 description: "MIT, BSD, GPL, LGPL e AGPL não são apenas etiquetas. Entenda permissões, obrigações de distribuição e como acompanhar as licenças das dependências."
 date: "2026-11-11"
 tags: ["software-licensing", "open-source", "copyleft", "compliance", "dependencies", "software-architecture"]
@@ -25,17 +25,19 @@ As licenças **copyleft**, como a **GPL**, procuram garantir que as liberdades c
 É por isso que se ouve dizer que o copyleft "contamina" o produto. Eu evitaria essa palavra: sugere um efeito automático e universal que não existe. A análise depende da licença e da versão exactas, do modo como os componentes são combinados, das excepções aplicáveis e de como o software é entregue ou disponibilizado.
 
 ```mermaid
-flowchart TD
-    A[Adicionar uma dependência] --> B[Identificar licença e versão exactas]
-    B --> C{Como interage com o produto?}
-    C -->|Código combinado ou ligação| D[Analisar compatibilidade e obrigações]
-    C -->|Programa separado ou serviço externo| E[Analisar limites e forma de distribuição]
-    D --> F{O produto será entregue a terceiros?}
-    E --> F
-    F -->|Sim| G[Preparar avisos, código-fonte e outros requisitos aplicáveis]
-    F -->|Não| H[Registar a análise e acompanhar mudanças]
-    G --> I[Rever com responsáveis técnicos e jurídicos]
-    H --> I
+stateDiagram-v2
+    [*] --> Dependencia
+    Dependencia --> IdentificarLicenca : Adicionar dependência
+    IdentificarLicenca --> Interacao
+    Interacao --> Combinado : Código combinado ou ligação
+    Interacao --> Separado : Programa separado ou serviço externo
+    Combinado --> Distribuicao
+    Separado --> Distribuicao
+    Distribuicao --> PrepararMateriais : Produto entregue a terceiros
+    Distribuicao --> RegistarDecisao : Uso apenas interno
+    PrepararMateriais --> Revisao
+    RegistarDecisao --> Revisao
+    Revisao --> [*]
 ```
 
 ## "Copyleft" não significa publicar tudo para toda a gente
@@ -94,15 +96,19 @@ A licença directa de cada dependência é só o início. Um inventário útil d
 Uma lista de dependências no repositório não garante que a lista corresponda ao que foi efectivamente incluído no artefacto lançado. É importante analisar o resultado do build e manter a relação entre versões, dependências e lançamentos.
 
 ```mermaid
-flowchart LR
-    A[Manifestos e lockfiles] --> D[Inventário de componentes]
-    B[Código vendorizado] --> D
-    C[Imagens e artefactos finais] --> D
-    D --> E[Identificar licença e versão]
-    E --> F[Verificar obrigações e compatibilidade]
-    F --> G[Gerar avisos e documentação de conformidade]
-    G --> H[Revisão antes do lançamento]
-    H --> I[Registar decisão e monitorizar alterações]
+mindmap
+  root((Análise de licenças de dependências))
+    Entradas
+      Manifestos e lockfiles
+      Código vendorizado
+      Imagens e artefactos finais
+    Inventário de componentes
+      Identificar licença e versão
+      Verificar obrigações e compatibilidade
+      Gerar avisos e materiais de conformidade
+    Revisão do lançamento
+      Registar decisão
+      Monitorizar alterações
 ```
 
 Ferramentas podem automatizar parte deste trabalho. Formatos e identificadores como **SPDX** ajudam a registar licenças de forma consistente; ferramentas de análise de composição de software podem identificar dependências e gerar um inventário ou SBOM. Mas um scanner não substitui a revisão: metadados podem estar errados, licenças podem ser personalizadas e a ferramenta não sabe necessariamente como o componente é combinado ou distribuído.

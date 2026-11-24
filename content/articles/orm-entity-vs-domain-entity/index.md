@@ -1,5 +1,5 @@
 ---
-title: "An ORM Entity Is Not a Domain Entity 🗄️🏛️"
+title: "An ORM Entity Is Not a Domain Entity"
 description: "They may start with the same fields, but persistence models and domain models have different jobs. Learn where they diverge and when keeping them apart pays off."
 date: "2026-11-11"
 tags: ["orm", "domain-driven-design", "software-architecture", "persistence", "domain-model", "clean-architecture"]
@@ -21,15 +21,18 @@ A **domain entity** represents a concept the business cares about. It has identi
 The same `Order` class can represent both in a small application. The distinction is about responsibility, not naming. A class called `Order` is not automatically a domain model just because it has a meaningful name.
 
 ```mermaid
-flowchart LR
-    A[Database row or document] --> B[ORM entity]
-    B --> C[Mapping boundary]
-    C --> D[Domain entity]
-    D --> E[Business rules and behavior]
-    E --> D
-    D --> C
-    C --> B
-    B --> F[Database row or document]
+sequenceDiagram
+    participant DB as Database
+    participant ORM as ORM entity
+    participant Mapper as Mapping boundary
+    participant Domain as Domain entity
+    DB->>ORM: Load stored record
+    ORM->>Mapper: Convert persistence data
+    Mapper->>Domain: Create domain entity
+    Domain->>Domain: Apply business rules
+    Domain->>Mapper: Return updated domain state
+    Mapper->>ORM: Convert for persistence
+    ORM->>DB: Save updated record
 ```
 
 ## The persistence model follows storage concerns
@@ -115,14 +118,22 @@ This is where a shared model starts to become awkward. Persistence-only fields l
 A useful boundary is to let application code use the domain model and a repository abstraction, while an infrastructure adapter handles ORM and database details. The repository translates between domain objects and persistence representations.
 
 ```mermaid
-flowchart TD
-    U[Application use case] --> D[Domain model]
-    U --> R[Repository interface]
-    R --> A[Persistence adapter]
-    A --> O[ORM entity]
-    O --> DB[(Database)]
-    A --> M[Mapping]
-    M --> D
+classDiagram
+    direction LR
+    class UseCase
+    class DomainModel
+    class RepositoryInterface
+    class PersistenceAdapter
+    class ORMEntity
+    class Database
+    class Mapping
+    UseCase --> DomainModel : applies rules
+    UseCase --> RepositoryInterface : depends on
+    PersistenceAdapter ..|> RepositoryInterface : implements
+    PersistenceAdapter --> ORMEntity : maps
+    ORMEntity --> Database : persists
+    PersistenceAdapter --> Mapping : uses
+    Mapping --> DomainModel : creates
 ```
 
 The mapping is not free. It adds code, tests, and types to maintain. But it creates a clear place for translating between two models that change for different reasons. If the ORM, schema, or storage technology changes, the adapter can absorb much of that change without making the business rules speak the language of a database.

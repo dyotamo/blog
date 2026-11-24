@@ -1,5 +1,5 @@
 ---
-title: "Container Images, Layer by Layer 📦🐳"
+title: "Container Images, Layer by Layer"
 description: "A practical guide to OCI images, filesystem layers, OverlayFS copy-on-write, and build-cache behavior."
 date: "2026-11-19"
 tags: ["containers", "docker", "oci", "overlayfs", "linux", "devops"]

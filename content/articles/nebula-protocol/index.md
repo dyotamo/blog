@@ -98,10 +98,21 @@ That control comes with responsibility. We own the correctness, security, compat
 Nebula Protocol is a Layer 7 (application-layer) protocol that uses TCP as its transport. Each layer has a different responsibility:
 
 ```mermaid
-flowchart TD
-    app["Application layer<br/>Nebula Protocol · SET / GET / DELETE / PING / AUTH"] --> tls["Security layer<br/>TLS"]
-    tls --> tcp["Transport layer<br/>TCP"]
-    tcp --> ip["Network layer<br/>IP"]
+mindmap
+  root((Protocol layers))
+    Application layer
+      Nebula Protocol
+        SET
+        GET
+        DELETE
+        PING
+        AUTH
+    Security layer
+      TLS
+    Transport layer
+      TCP
+    Network layer
+      IP
 ```
 
 TCP transports an ordered, reliable stream of bytes between endpoints. TLS can protect that communication with confidentiality, integrity, and server authentication when configured correctly. Nebula Protocol gives the bytes their meaning.
@@ -243,11 +254,19 @@ An opcode of `1` represents a client's intent to perform a `SET`. The opcode is 
 The high-level flow is:
 
 ```mermaid
-flowchart TD
-    tcp["TCP connection"] --> decoder["Frame decoder"]
-    decoder --> auth["Authentication and authorization"]
-    auth --> handler["Operation handler"]
-    handler --> core["Cache core"]
+sequenceDiagram
+    participant Client
+    participant TCP
+    participant Decoder as Frame decoder
+    participant Auth as Authentication and authorization
+    participant Handler as Operation handler
+    participant Core as Cache core
+    Client->>TCP: Send encoded frame
+    TCP->>Decoder: Deliver byte stream
+    Decoder->>Auth: Pass validated operation
+    Auth->>Handler: Authorize operation
+    Handler->>Core: Execute cache operation
+    Core-->>Handler: Operation result
 ```
 
 This keeps communication concerns separate from the cache engine. The `CacheStore` does not need to know that a `GET` arrived as opcode `2` over TCP. It receives an interpreted operation, which makes it possible to evolve the protocol without unnecessarily changing the storage core.
@@ -427,20 +446,23 @@ One of the original ambitions for NebulaCache was a highly available system with
 One of the most important design goals is to keep the protocol, transport, and application separate. Nebula Protocol should remain a specification independent of the server implementation:
 
 ```mermaid
-flowchart TD
-    sdks["Client SDKs<br/>Rust · Go · Java · JavaScript · Python"] --> transport["TCP / TLS transport"]
-    transport --> decoder["Frame decoder"]
-    subgraph protocol["Nebula Protocol"]
-        decoder
-        validation["Validation"]
-        session["Session"]
-        serialization["Serialization"]
-        decoder --> validation --> session --> serialization
-    end
-    serialization --> auth["Authentication"]
-    auth --> handler["Operation handler"]
-    handler --> core["Nebula Core"]
-    core --> storage["In-memory storage"]
+mindmap
+  root((Nebula Protocol architecture))
+    Client SDKs
+      Rust
+      Go
+      Java
+      JavaScript
+      Python
+    TCP / TLS transport
+      Frame decoder
+        Validation
+          Session
+            Serialization
+              Authentication
+                Operation handler
+                  Nebula Core
+                    In-memory storage
 ```
 
 The server can continue to use HTTP separately for administration and metrics. There is no need to make the binary protocol solve every communication problem in the product; each interface should serve its own purpose.

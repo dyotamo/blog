@@ -53,55 +53,19 @@ samp {
 }
 
 .prose .mermaid {
-  max-width: 100%;
-  overflow-x: auto;
-  margin: 1.5rem 0;
+  width: 100%;
+  max-width: 36rem;
+  margin: 1.5rem auto;
+  overflow: hidden;
   text-align: center;
 }
 
 .prose .mermaid svg {
-  max-width: 100%;
-  height: auto;
-  cursor: zoom-in;
-}
-
-.prose .mermaid.is-zoomed {
-  text-align: left;
-}
-
-.prose .mermaid.is-zoomed svg {
   display: block;
-  cursor: zoom-out;
-}
-
-.prose .mermaid-controls {
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  gap: 0.4rem;
-  margin-bottom: 0.75rem;
-}
-
-.prose .mermaid-controls button {
-  min-width: 2.25rem;
-  min-height: 2.25rem;
-  padding: 0.35rem 0.6rem;
-  border: 1px solid currentColor;
-  border-radius: 0.25rem;
-  color: inherit;
-  background: transparent;
-  cursor: pointer;
-}
-
-.prose .mermaid-controls button:disabled {
-  cursor: not-allowed;
-  opacity: 0.5;
-}
-
-.prose .mermaid-zoom-level {
-  min-width: 3.5rem;
-  font-size: 0.85em;
-  text-align: center;
+  width: 100%;
+  max-width: 100% !important;
+  height: auto;
+  margin-inline: auto;
 }
 
 :focus-visible {
