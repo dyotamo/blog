@@ -1,13 +1,13 @@
 ---
 title: "Containers não são máquinas virtuais: como funcionam por dentro?"
-description: "Uma explicação prática de processos, namespaces, cgroups, sistemas de ficheiros, rede, segurança e runtimes Linux  e do que acontece quando um container arranca."
+description: "Uma explicação prática de processos, namespaces, cgroups, sistemas de ficheiros, rede, segurança e runtimes Linux e do que acontece quando um container arranca."
 date: "2026-11-18"
 tags: ["containers", "linux", "docker", "kubernetes", "namespaces", "cgroups", "devops"]
 summary: "Containers não são sistemas operativos em miniatura. São processos Linux executados com uma visão isolada dos recursos, limites configurados e um sistema de ficheiros preparado por um runtime."
 coverAlt: "Diagrama de processos de containers isolados que partilham o kernel Linux do host."
 ---
 
-*No artigo [Containers não são máquinas virtuais](/pt/articles/containers-vs-vms/), comparámos containers com VMs. Agora vamos seguir o caminho desde um processo Linux até ao arranque de um container, para perceber o papel do kernel, do sistema de ficheiros e das ferramentas que coordenam tudo.*
+*A comparação com as VMs levanta uma questão prática: o que faz realmente o kernel Linux quando um container é iniciado?*
 
 ## A ideia central: um container é um processo com contexto
 
@@ -46,7 +46,7 @@ cat /proc/<PID>/status
 
 `/proc` é um sistema de ficheiros virtual: o kernel apresenta informação sobre os processos e o sistema, não ficheiros convencionais guardados num disco.
 
-Um processo pede serviços ao kernel através de **system calls**, ou syscalls  por exemplo, para abrir um ficheiro, criar outro processo ou enviar dados por uma socket. O programa que corre no container não tem um kernel próprio para satisfazer esses pedidos: continua a usar o kernel Linux partilhado.
+Um processo pede serviços ao kernel através de **system calls**, ou syscalls — por exemplo, para abrir um ficheiro, criar outro processo ou enviar dados por uma socket. O programa que corre no container não tem um kernel próprio para satisfazer esses pedidos: continua a usar o kernel Linux partilhado.
 
 ## 2. Namespaces: limitar o que um processo consegue ver
 
@@ -75,7 +75,7 @@ O PID 1 tem responsabilidades especiais: entre elas, receber processos órfãos 
 
 Um namespace de rede pode ter interfaces, endereços IP e tabelas de encaminhamento próprios. Assim, dois containers podem ter serviços à escuta na porta interna `8080` sem conflito entre si: estão em contextos de rede separados.
 
-Para comunicar com o host ou com outros containers, a configuração pode ligar namespaces através de pares de interfaces virtuais (*veth*), bridges e rotas. A publicação de uma porta no host  por exemplo, encaminhar uma porta do host para um serviço do container  é uma configuração adicional feita pelo runtime ou por ferramentas de rede; não acontece apenas por existir um namespace.
+Para comunicar com o host ou com outros containers, a configuração pode ligar namespaces através de pares de interfaces virtuais (*veth*), bridges e rotas. A publicação de uma porta no host — por exemplo, encaminhar uma porta do host para um serviço do container — é uma configuração adicional feita pelo runtime ou por ferramentas de rede; não acontece apenas por existir um namespace.
 
 ### Mount: uma vista própria do sistema de ficheiros
 
@@ -93,7 +93,7 @@ Por isso, "root dentro do container" não significa necessariamente "root no hos
 
 **Control groups (cgroups)** organizam processos numa hierarquia que permite ao kernel contabilizar e, conforme o controlador e a configuração, limitar ou distribuir recursos. Enquanto os namespaces se centram na visibilidade, os cgroups tratam sobretudo de **contabilidade e controlo de utilização**.
 
-Os controladores podem gerir recursos como CPU, memória, I/O e o número de tarefas. O controlador de PIDs conta tarefas do kernel  incluindo threads  e não apenas o número de programas que uma pessoa vê numa listagem simplificada.
+Os controladores podem gerir recursos como CPU, memória, I/O e o número de tarefas. O controlador de PIDs conta tarefas do kernel, incluindo threads, e não apenas o número de programas que uma pessoa vê numa listagem simplificada.
 
 Por exemplo, o Docker permite configurar alguns limites ao criar um container:
 
@@ -145,7 +145,7 @@ Com OverlayFS, uma alteração a um ficheiro que só existe numa camada inferior
 
 A camada gravável costuma pertencer ao ciclo de vida do container. Se for removida, as alterações guardadas apenas nessa camada também podem desaparecer. Para dados que precisam de sobreviver à substituição ou remoção do container, utiliza-se armazenamento persistente, como volumes ou bind mounts.
 
-**Imagem e container são coisas diferentes:** a imagem é um artefacto reutilizável; o container é uma instância em execução  ou preparada para execução  com configuração e estado próprios.
+**Imagem e container são coisas diferentes:** a imagem é um artefacto reutilizável; o container é uma instância em execução ou preparada para execução, com configuração e estado próprios.
 
 ## 5. Rede: da interface virtual à porta publicada
 
@@ -195,7 +195,7 @@ Os detalhes variam por versão e configuração. Nomes como Docker, `containerd`
 
 ## 8. O que acontece quando iniciamos um container?
 
-Consideremos `docker run nginx`. Em termos conceptuais, o caminho é semelhante a este  embora os componentes exatos variem entre ferramentas:
+Consideremos `docker run nginx`. Em termos conceptuais, o caminho é semelhante a este, embora os componentes exactos variem entre ferramentas:
 
 ```mermaid
 sequenceDiagram
@@ -245,7 +245,7 @@ O diretório `/proc/<PID>/ns/` contém referências aos namespaces do processo. 
 
 ## Conclusão: mecanismos do kernel, coordenados por ferramentas
 
-Um container Linux não arranca um kernel novo. É um processo  ou grupo de processos  que usa o kernel do host com uma combinação de isolamento de visibilidade, controlo de recursos, sistema de ficheiros e políticas de segurança.
+Um container Linux não arranca um kernel novo. É um processo ou grupo de processos que usa o kernel do host com uma combinação de isolamento de visibilidade, controlo de recursos, sistema de ficheiros e políticas de segurança.
 
 - **Namespaces** alteram a visão de determinados recursos.
 - **Cgroups** contabilizam e controlam a utilização de recursos.
@@ -255,19 +255,17 @@ Um container Linux não arranca um kernel novo. É um processo  ou grupo de proc
 
 A imagem pode fornecer um userland de distribuição Linux, mas isso não equivale a uma VM com kernel próprio. E chamar a um container "isolado" não significa que seja invulnerável: os mecanismos e a configuração concreta importam.
 
-Quando se percebe esta composição, os containers deixam de parecer caixas mágicas. São processos Linux com um contexto construído deliberadamente  e com limitações que também é importante compreender.
+Quando se percebe esta composição, os containers deixam de parecer caixas mágicas. São processos Linux com um contexto construído deliberadamente e com limitações que também é importante compreender.
 
-### Leituras adicionais
+**Artigo anterior:** [Containers não são máquinas virtuais](https://dyotamo.is-a.dev/pt/articles/containers-vs-vms/)
 
-- [Linux namespaces  man7.org](https://man7.org/linux/man-pages/man7/namespaces.7.html)
-- [Control Group v2  documentação do kernel Linux](https://docs.kernel.org/admin-guide/cgroup-v2.html)
-- [OverlayFS  documentação do kernel Linux](https://docs.kernel.org/filesystems/overlayfs.html)
-- [Linux capabilities  man7.org](https://man7.org/linux/man-pages/man7/capabilities.7.html)
-- [Seccomp filter  documentação do kernel Linux](https://docs.kernel.org/userspace-api/seccomp_filter.html)
+## Para saber mais
+
+- [Linux namespaces — man7.org](https://man7.org/linux/man-pages/man7/namespaces.7.html)
+- [Control Group v2 — documentação do kernel Linux](https://docs.kernel.org/admin-guide/cgroup-v2.html)
+- [OverlayFS — documentação do kernel Linux](https://docs.kernel.org/filesystems/overlayfs.html)
+- [Linux capabilities — man7.org](https://man7.org/linux/man-pages/man7/capabilities.7.html)
+- [Seccomp filter — documentação do kernel Linux](https://docs.kernel.org/userspace-api/seccomp_filter.html)
 - [Especificação OCI Runtime](https://github.com/opencontainers/runtime-spec)
 - [Especificação OCI Image](https://github.com/opencontainers/image-spec)
 - [Runtimes de containers no Kubernetes](https://kubernetes.io/docs/setup/production-environment/container-runtimes/)
-
----
-
-**Artigo anterior:** [Containers não são máquinas virtuais](https://dyotamo.is-a.dev/pt/articles/containers-vs-vms/)

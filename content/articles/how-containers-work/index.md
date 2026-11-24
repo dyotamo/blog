@@ -7,7 +7,7 @@ summary: "Containers are not miniature operating systems. They are Linux process
 coverAlt: "Diagram of isolated container processes sharing the host Linux kernel."
 ---
 
-*In [Containers Are Not Virtual Machines](/articles/containers-vs-vms/), we compared containers with VMs. Now let’s follow the path from a Linux process to a running container and understand the roles of the kernel, filesystem, and tools that coordinate everything.*
+*The comparison with VMs raises a practical question: what does the Linux kernel actually do when a container starts?*
 
 ## The central idea: a container is a process with context
 
@@ -257,17 +257,15 @@ The image may provide a Linux distribution’s userland, but that is not equival
 
 Once you understand how these pieces fit together, containers stop looking like magic boxes. They are Linux processes with a deliberately constructed context, and with limitations that are just as important to understand.
 
-### Further reading
+**Previous article:** [Containers Are Not Virtual Machines](https://dyotamo.is-a.dev/articles/containers-vs-vms/)
 
-- [Linux namespaces  man7.org](https://man7.org/linux/man-pages/man7/namespaces.7.html)
-- [Control Group v2  Linux kernel documentation](https://docs.kernel.org/admin-guide/cgroup-v2.html)
-- [OverlayFS  Linux kernel documentation](https://docs.kernel.org/filesystems/overlayfs.html)
-- [Linux capabilities  man7.org](https://man7.org/linux/man-pages/man7/capabilities.7.html)
-- [Seccomp filter  Linux kernel documentation](https://docs.kernel.org/userspace-api/seccomp_filter.html)
+## Further reading
+
+- [Linux namespaces — man7.org](https://man7.org/linux/man-pages/man7/namespaces.7.html)
+- [Control Group v2 — Linux kernel documentation](https://docs.kernel.org/admin-guide/cgroup-v2.html)
+- [OverlayFS — Linux kernel documentation](https://docs.kernel.org/filesystems/overlayfs.html)
+- [Linux capabilities — man7.org](https://man7.org/linux/man-pages/man7/capabilities.7.html)
+- [Seccomp filter — Linux kernel documentation](https://docs.kernel.org/userspace-api/seccomp_filter.html)
 - [OCI Runtime Specification](https://github.com/opencontainers/runtime-spec)
 - [OCI Image Specification](https://github.com/opencontainers/image-spec)
 - [Kubernetes container runtimes](https://kubernetes.io/docs/setup/production-environment/container-runtimes/)
-
----
-
-**Previous article:** [Containers Are Not Virtual Machines](https://dyotamo.is-a.dev/articles/containers-vs-vms/)

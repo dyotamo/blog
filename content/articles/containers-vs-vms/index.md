@@ -1,27 +1,23 @@
 ---
-title: "Containers are NOT Virtual Machines!"
-description: "Understand once and for all the difference between containers and VMs, and why this distinction is fundamental for your development."
+title: "Containers vs. Virtual Machines: What Actually Differs"
+description: "Understand how containers and virtual machines isolate workloads, what they share, and which trade-offs matter when choosing between them."
 date: "2026-07-08"
 tags: ["containers", "virtual-machines", "docker", "kubernetes", "linux", "devops"]
-summary: "Understand once and for all the difference between containers and VMs, and why this distinction is fundamental for your development."
-coverAlt: "Illustration comparing containers and virtual machines."
+summary: "This article explains the kernel and hardware boundaries behind containers and VMs, then compares their isolation, resource, and operational trade-offs."
+coverAlt: "A virtual machine stack with a guest operating system and hypervisor beside containers sharing a host kernel through a container engine."
 aliases: ["/blog/containers-vs-vms/"]
 ---
 
-If you still think containers and virtual machines (VMs) are the same thing, sit down. In this article, we are going to demystify these concepts in a simple and direct way.
+Containers and virtual machines both isolate workloads, but they do so at different layers. Understanding that boundary clarifies their security properties, resource costs, and operational trade-offs.
 
-## Virtual Machines (VMs): The Traditional Model
+## Virtual machines (VMs): the traditional model
 
-Virtual machines, known as "guests", operate on a "host" (the physical operating system). They use a **hypervisor** (such as VMware or VirtualBox) to virtualize the **hardware**.
+A virtual machine runs a guest operating system on virtual hardware provided by a **hypervisor**. Depending on the design, the hypervisor runs directly on the physical machine or on top of a host operating system.
 
 ### How does it work?
-The hypervisor creates an abstraction layer that manages access to the CPU, memory, and storage. It "fools" the VM, making it believe it has exclusive physical resources.
+The hypervisor presents virtual CPUs, memory, storage, and devices to each guest, then schedules and mediates their access to physical resources. These resources are shared by the host and guests rather than reserved exclusively for one VM.
 
-**The Building Analogy:**
-Think of a VM as an apartment in a building:
-- Each apartment has its own walls, kitchen, and bathroom.
-- It is a completely isolated environment.
-- You can have a neighbor running Windows 95 and another with Arch Linux; they don't even know of each other's existence.
+**A useful analogy:** think of a VM as an apartment in a building. Each apartment has its own rooms and utilities, much like a guest has its own operating-system kernel and virtual devices. The separation is stronger than process isolation, but it still depends on the hypervisor and its configuration.
 
 ```mermaid
 mindmap
@@ -36,18 +32,14 @@ mindmap
             App 2
 ```
 
-## Containers: The Efficiency Revolution
+## Containers: OS-level isolation
 
-Containers raise the level of abstraction. Instead of virtualizing the hardware, they "virtualize" the **Operating System Kernel**.
+Containers provide operating-system-level isolation rather than virtualizing hardware. Linux containers use kernel features such as namespaces and cgroups to isolate process views and manage resources while sharing a Linux kernel.
 
 ### What changes in practice?
-Containers share the host's Kernel. You don't need to replicate a complete OS for each application. And pay attention: Docker or Kubernetes are not "containers" in themselves; Docker is an engine and Kubernetes is an orchestrator.
+Linux containers share the host's Linux kernel, so an image does not need a separate kernel for each application. Docker provides container tooling, while Kubernetes orchestrates containerized workloads; neither is itself a container.
 
-**The Co-living Analogy:**
-Containers are like a modern co-living:
-- Each has their private room for their things.
-- Everyone shares the kitchen, water, power, and internet (that is, the **Kernel**).
-- It is much lighter: no one needs to carry a whole house on their back to move.
+A rough analogy is separate rooms in a shared building: each process gets an isolated view of some resources, but all depend on shared infrastructure, the kernel. Unlike rooms, these boundaries are implemented by kernel features and do not give each container its own kernel.
 
 ```mermaid
 mindmap
@@ -63,53 +55,57 @@ mindmap
               App 2
 ```
 
-## The "Secret" of Linux
+## Which kernel runs?
 
-Containers are a native **Linux** technology. If you use Docker on Windows or macOS, know that there is a small Linux VM running behind the scenes. Therefore, maximum efficiency is achieved in native Linux environments.
+The kernel details depend on the container type and host. Linux containers share a Linux kernel; Docker Desktop uses a lightweight Linux VM to run Linux containers on macOS and on Windows configurations that do not provide a Linux kernel directly. Windows containers instead use a Windows kernel.
 
-Since they share the same Kernel, you can have an Ubuntu container and an Arch Linux container running side by side. The difference lies only in the utilities and package managers (apt vs pacman), but the "soul" (the Kernel) is the same.
+A Linux container image can provide an Ubuntu or Arch Linux userland, including its libraries and package manager, while both containers still use the host's Linux kernel. The distribution name in the image does not determine the kernel that runs the container.
 
-## Comparison at a Glance
+## Comparison at a glance
 
 If you need a quick summary, here is a comparison between the two:
 
 | Feature | Virtual Machines (VMs) | Containers |
 | :--- | :--- | :--- |
-| **OS** | Full Guest OS (Windows, Linux, etc.) | Shares Host OS Kernel |
-| **Isolation** | Hardware-level (Stronger) | OS-level (Process isolation) |
-| **Startup** | Minutes (Full boot) | Seconds (Process start) |
-| **Size** | Gigabytes (GB) | Megabytes (MB) |
-| **Efficiency** | Lower (High overhead) | Higher (Minimal overhead) |
+| **OS** | Guest OS runs on virtual hardware | Processes share the host kernel |
+| **Isolation** | Separate guest kernel and virtual hardware boundary | Kernel mechanisms such as namespaces and cgroups; configuration matters |
+| **Startup** | Includes guest OS boot | Starts isolated processes; timing depends on workload and setup |
+| **Image and storage** | Includes a guest OS image | Includes application userland and dependencies; size varies |
+| **Resource overhead** | Includes hypervisor and guest OS costs | Avoids a separate kernel per container; costs still depend on workload and runtime |
 
-## Security and Isolation: The Great Debate
+## Security and isolation boundaries
 
 One of the main differences between VMs and containers is the **security boundary**.
 
-- **VMs:** Provide a very strong isolation layer. A vulnerability in one VM is extremely unlikely to affect another VM or the host, as they are separated by hardware virtualization.
-- **Containers:** Use Linux features like **Namespaces** (for visibility) and **Cgroups** (for resource limits). While very effective, they share the same Kernel. If a container compromises the Kernel, it could potentially affect the entire host.
+- **VMs:** Give each guest a separate kernel and virtual hardware boundary. This is a stronger isolation boundary than process isolation in many deployments, but it still depends on the hypervisor, configuration, and threat model.
+- **Linux containers:** Use features such as **namespaces** to isolate views of system resources and **cgroups** to account for and limit resource use. Containers share the host kernel, so a kernel vulnerability or a privileged configuration can affect the host and other workloads.
 
-## Portability and the "Works on My Machine" Syndrome
+## Portability has limits
 
-Containers solved the classic problem of environment inconsistency. Since a container includes all its dependencies (libraries, binaries, configuration), it will run exactly the same way on your laptop, a testing server, or a production cluster.
+A container image can make application files and userspace dependencies more consistent across environments. It does not remove differences in CPU architecture, host kernel, runtime configuration, available resources, or external services, so it cannot guarantee identical behavior everywhere.
 
-VMs are also portable, but their large size makes moving them between environments a slow and cumbersome process.
+VM images are also portable, but they include a guest operating system and can require more storage and transfer capacity. The operational impact depends on the image format, infrastructure, and deployment process.
 
 ## Which to choose?
 
-The short answer: **It depends**.
+Choose based on the isolation boundary and operating-system requirements the workload needs.
 
 ### Use VMs when:
-- You need **total isolation** at the hardware level.
-- You need to test different operating systems or specific Kernel versions.
-- You want complete snapshots of the entire system state.
+- You need a separate guest kernel or virtual-hardware boundary.
+- You need to test different operating systems or specific kernel versions.
+- You need snapshots that include the guest operating system.
 
-### Use Containers when:
-- The priority is **agility and scalability**.
-- You want identical environments between development and production.
-- You need a high density of applications with low resource consumption.
+### Use containers when:
+- A shared host kernel is acceptable for the workload.
+- You want to package an application and its user-space dependencies consistently.
+- You want to run multiple isolated processes without a separate guest kernel for each one.
 
 ## Conclusion
 
-Sometimes it seems like we live in a simulation (hello, Matrix!), and deep down, both technologies try to simulate something. Whether simulating hardware (VMs) or the Kernel (containers), each has its place in the IT ecosystem.
+The choice depends on whether the workload needs a separate guest kernel, what isolation boundary is appropriate, and how the system will be operated.
 
-What is your favorite choice for day-to-day use? 🚀
+## Further reading
+
+- [What is a container?](https://docs.docker.com/get-started/docker-concepts/the-basics/what-is-a-container/)
+- [Linux Container Configuration](https://github.com/opencontainers/runtime-spec/blob/main/config-linux.md)
+- [The Definitive KVM API Documentation](https://docs.kernel.org/virt/kvm/api.html)

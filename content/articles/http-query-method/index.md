@@ -1,27 +1,25 @@
 ---
-title: "HTTP QUERY Method: A Safe GET... with a body!"
-description: "Discover RFC 10008: the new HTTP QUERY method that fills the gap between GET and POST, with past, present and future of the protocol, diagrams, examples and use cases."
+title: "HTTP QUERY: Safe Requests with Content"
+description: "Learn how RFC 10008 defines the HTTP QUERY method and how its semantics differ from GET and POST."
 date: "2026-07-12"
 tags: ["http", "rfc-10008", "ietf", "web", "protocols", "api", "rest", "networking"]
-summary: "Discover RFC 10008: the new HTTP QUERY method that fills the gap between GET and POST, with past, present and future of the protocol, diagrams, examples and use cases."
+summary: "This article follows the method's history and request semantics, then explains its cache key, security considerations, and implementation requirements."
 coverAlt: "Illustration of the HTTP QUERY method and its request body."
 aliases: ["/blog/http-query-method/"]
 ---
 
-For decades, HTTP offered us a clear dichotomy: `GET` for *safe* and *idempotent* reads, `POST` for everything else (including queries that needed a request body). The problem? When a search filter or query grows too large, neither of them is the perfect fit.
+HTTP `GET` requests do not define semantics for a request body, while `POST` does not signal safe, idempotent query semantics by default. RFC 10008, published by the IETF in **June 2026**, defines **`QUERY`** for requests whose content carries query input and whose intended operation is safe and idempotent.
 
-In **June 2026** the IETF published **RFC 10008**, defining a brand new standard method: the **`QUERY`** method  a safe and idempotent request that, finally, **allows a body**.
+This article explains the method's history and semantics, compares it with `GET` and `POST`, and examines caching, security, and deployment considerations.
 
-In this article we'll walk through the **past, present and future** of this specification, with diagrams, examples, and a clear comparison between `GET`, `QUERY` and `POST`.
-
-## HTTP in Context: The "Great Method Shortage"
+## Why define another HTTP method?
 
 HTTP/1.1, defined in **RFC 9110** (and historically in RFC 7231), has well-known limitations when you want to express a complex query:
 
 - **`GET`** cannot carry a request body with defined semantics. In theory it *can*, but neither proxies nor servers are required to do anything meaningful with it.
-- **`POST`** fits any content, but is **not safe**  intermediaries won't cache it, retries become dangerous, and browsers ship it behind CORS preflights.
+- **`POST`** can carry content, but is not safe or idempotent by default. A client cannot assume that repeating a POST is free of application-level effects; caching is possible only under the applicable HTTP rules and explicit response metadata.
 
-For years, the workaround was *pretend GET is POST*: send your query in the URL of a `GET`, growing the URI until it explodes; or send it as the body of a `POST`, breaking the safety contract. QUERY is the answer to this long-standing itch.
+A common workaround is to put simple filters in a `GET` URI or send complex query input in a `POST` body. The former can run into URI-length and logging concerns; the latter does not communicate safe, idempotent query semantics to HTTP intermediaries.
 
 ```mermaid
 mindmap
@@ -37,7 +35,7 @@ mindmap
       Safe
       Idempotent
       Cacheable
-      CORS preflight required
+      Cross-origin browser requests require preflight
     Ecosystem
       Search APIs
       GraphQL-like queries
@@ -46,7 +44,7 @@ mindmap
       XSLT
 ```
 
-## The Past: A Problem Long Discussed
+## History of HTTP methods with request content
 
 The need for a "GET with body" is not new. Long before RFC 10008 was published, there was already a family of methods with the *safe and idempotent* profile born out of WebDAV:
 
@@ -54,7 +52,7 @@ The need for a "GET with body" is not new. Long before RFC 10008 was published, 
 - **`REPORT`** ([RFC 3253](https://www.rfc-editor.org/info/rfc3253))
 - **`SEARCH`** ([RFC 5323](https://www.rfc-editor.org/info/rfc5323))
 
-All three share the same profile as the future QUERY: *safe*, *idempotent*, and accepting a body. The problem? They all carry a historical "smell" of **WebDAV**, an ecosystem that never reached the mainstream. The team behind RFC 10008  among them Julian Reschke (greenbytes), James M. Snell (Cloudflare) and Mike Bishop (Akamai)  tried to modernize this idea by renaming the concept from `SEARCH` (initially used in early drafts) to **`QUERY`**:
+These methods are safe and idempotent and can carry request content, but they are associated with specific WebDAV use cases. RFC 10008 defines a general-purpose `QUERY` method; its authors include Julian Reschke, James M. Snell, and Mike Bishop. Early drafts used the name `SEARCH` before adopting **`QUERY`**:
 
 > The name "QUERY" captures the relation with the URI's query component well, while detaching the new method from the WebDAV universe.
 
@@ -68,15 +66,15 @@ timeline
     2026 : QUERY (RFC 10008)
 ```
 
-## RFC 10008: The Present
+## RFC 10008 and the QUERY method
 
 ### What exactly does QUERY do?
 
 > *"The QUERY method is used to initiate a server-side query. Unlike GET, which requests a representation of the resource identified by the target URI, the QUERY method is used to ask the target resource to perform a query operation within the scope of that target resource."*
 >
->  RFC 10008, Section 2
+> RFC 10008, Section 2
 
-In a few words: **QUERY is a GET that accepts a body**  the body describes *how* the resource should be queried. The server then responds with the result.
+`QUERY` is not simply `GET` with a body: it has its own method semantics, and the request content describes how the target resource should perform the query.
 
 ```http
 QUERY /feed HTTP/1.1
@@ -87,41 +85,41 @@ Accept: application/json
 q=foo&limit=10&sort=-published
 ```
 
-### Fundamental Properties
+### QUERY semantics
 
 According to the IANA Method Registry, QUERY is registered as:
 
 | Property | Value |
 | :--- | :--- |
 | **Method Name** | `QUERY` |
-| **Safe** | ✅ yes |
-| **Idempotent** | ✅ yes |
+| **Safe** | yes |
+| **Idempotent** | yes |
 | **Specification** | Section 2 of RFC 10008 |
-| **Cacheable** | ✅ yes |
+| **Cacheable** | yes |
 
-Being **safe** means the client *does not request or expect any state change* in the target resource. Being **idempotent** means the request can be **retried or repeated** at will  including after a connection failure  without partial side-effects.
+Being **safe** means the client does not request a state change to the target resource; it does not prohibit incidental effects such as logging. Being **idempotent** means repeating the same request has the same intended effect as making it once, so clients can retry it after failures without requesting additional application-level changes.
 
-### Mandatory Content-Type
+### Mandatory content type
 
-A fundamental and sometimes forgotten rule:
+RFC 10008 requires servers to reject a request when its content type is missing or inconsistent with the content:
 
 > *"Servers MUST fail the request if the Content-Type request field is missing or is inconsistent with the request content."*
 >
->  RFC 10008, Section 2
+> RFC 10008, Section 2
 
 If the `Content-Type` is missing → **400 Bad Request**. If it is supported but inconsistent with the content → **400**. If it's not supported by the resource → **415 Unsupported Media Type**. If the content was parsed but the query is logically impossible → **422 Unprocessable Content**.
 
-## GET vs QUERY vs POST: Side by Side
+## GET vs QUERY vs POST: side by side
 
-This is the central table of RFC 10008. Memorize it:
+The table summarizes how the methods differ under HTTP semantics:
 
 | | **GET** | **QUERY** | **POST** |
 | :--- | :--- | :--- | :--- |
-| **Safe** | yes | yes | potentially **no** |
-| **Idempotent** | yes | yes | potentially **no** |
-| **URI for query itself** | yes (by definition) | optional  via `Location` | no |
-| **URI for the result** | optional  via `Content-Location` | optional  via `Content-Location` | optional |
-| **Cacheable** | yes | yes | yes, but **only** for future GET/HEAD |
+| **Safe** | yes | yes | no by default; an application may constrain effects |
+| **Idempotent** | yes | yes | no by default; an application may define repeatable behavior |
+| **URI for query itself** | yes (by definition) | optional via `Location` | no |
+| **URI for the result** | optional via `Content-Location` | optional via `Content-Location` | optional |
+| **Cacheable** | subject to HTTP cache rules | subject to HTTP cache rules and the QUERY cache key | subject to HTTP cache rules; limited to later GET/HEAD reuse |
 | **Content (body)** | *"no defined semantics"* | **expected** (semantics per resource) | expected |
 
 ```mermaid
@@ -189,7 +187,7 @@ sequenceDiagram
     Note over C,S: Strategy 3  Tentative
 ```
 
-## Detailed Example: Query on a Contact List
+## Detailed example: querying a contact list
 
 Reproducing Example A.1 of the RFC, slightly annotated:
 
@@ -211,17 +209,17 @@ HTTP/1.1 200 OK
 Content-Type: application/json
 
 [
-  { "surname": "Smith" "givenname": "John" "email": "smith@example.org" },
-  { "surname": "Jones" "givenname": "Sally" "email": "sally.jones@example.com" },
-  { "surname": "Dubois" "givenname": "Camille", "email": "camille.dubois@example.net" }
+  { "surname": "Smith", "givenname": "John", "email": "smith@example.org" },
+  { "surname": "Jones", "givenname": "Sally", "email": "sally.jones@example.com" },
+  { "surname": "Dubois", "givenname": "Camille", "email": "camille.dubois@example.net" }
 ]
 ```
 
-Notice: the server **did not change state**  it only returned a result. Because the method is safe and idempotent, this response is **fully cacheable**.
+The server returned a result without changing the target resource. `QUERY` is defined as safe and idempotent, but a particular response is cacheable only when the HTTP caching rules and response metadata allow it.
 
-## Content-Location and Location: Two Different Promises
+## Content-Location and Location: two distinct roles
 
-The spec gives the server two complementary tools to "promote" a QUERY response to a future GET:
+The server can use two response headers to let clients retrieve a query result later:
 
 - **`Content-Location`**: A URI that returns the **current result** of the query (a snapshot).
 - **`Location`**: A URI that returns a **future result** if the same query is executed again (refreshed state).
@@ -243,9 +241,9 @@ sequenceDiagram
     end
 ```
 
-This allows a beautiful pattern: the first request is sent via `QUERY`, and from then on, the client (or the cache) can use `GET`  which is much cheaper to handle.
+This permits a pattern where the first request uses `QUERY` and the server returns a stable `Location`; a later `GET` can retrieve that resource using ordinary HTTP cache rules.
 
-## Conditional Requests: Save Bandwidth
+## Conditional requests
 
 Because QUERY inherits the **selected representation** semantics of GET, conditional headers work normally:
 
@@ -254,7 +252,7 @@ Because QUERY inherits the **selected representation** semantics of GET, conditi
 - `If-Match`
 - `If-Unmodified-Since`
 
-If the data hasn't changed since the last request, the server can respond with **`304 Not Modified`**, sending no body. Bandwidth saved.
+If the selected representation hasn't changed, the server can respond with **`304 Not Modified`** and omit the response body.
 
 ```mermaid
 sequenceDiagram
@@ -284,19 +282,19 @@ Location: /contacts/stored-queries/42
 See stored query at "/contacts/stored-queries/42".
 ```
 
-This is the perfect path from a *"first-time QUERY"* to a *"subsequent GET"*.
+A client can use `QUERY` first, then retrieve the stored query result with `GET`.
 
-## Caching: The Harder Part
+## Caching: the request-content key
 
-Caching is the most delicate section of the RFC. The rule is uncompromising:
+RFC 10008 requires the cache key for a `QUERY` request to include its content and related metadata:
 
 > *"The cache key for a QUERY request MUST incorporate the request content and related metadata."*
 >
->  RFC 10008, Section 2.7
+> RFC 10008, Section 2.7
 
 In practice, this means the cache **must read the entire body** to compute the key. A simple `"URI → response"` table is not enough. To alleviate this, caches MAY normalize semantically insignificant differences (encoding, whitespace, etc.). With the directive **`no-transform`**, the client can refuse these normalizations.
 
-The good news: if the server returns a `Location`, the client can **migrate to GET** from the second request onward  and that *is* trivial to cache.
+If the server returns a stable `Location`, a client can use `GET` for later retrievals; caching those responses still depends on their cache directives and validators.
 
 ```mermaid
 sequenceDiagram
@@ -315,18 +313,16 @@ sequenceDiagram
     end
 ```
 
-> ⚠️ *"Note that caching QUERY method responses is inherently more complex than caching responses to GET."*  RFC 10008, Section 2.7
+> *"Note that caching QUERY method responses is inherently more complex than caching responses to GET."* — RFC 10008, Section 2.7
 
-## Range Requests: A Footnote
+## Range requests
 
-HTTP range requests make little sense for QUERY. Section 2.8 makes this clear: query formats (SQL, JSONPath, GraphQL) already have their own pagination mechanisms. Using HTTP `Range` headers with QUERY is legal but *"offers little value"*.
+The RFC says HTTP range requests offer little value for QUERY because query formats such as SQL, JSONPath, and GraphQL already have pagination mechanisms. Using HTTP `Range` headers with QUERY is permitted.
 
-## Security Considerations
+## Security considerations
 
-The spec is direct:
-
-- Because the body is **less likely to be logged** than the URI, **QUERY can be a leak defense** for sensitive queries.
-- If the server creates a temporary URI for the equivalent resource (`Location`), this URI MUST NOT contain the sensitive content of the query  otherwise the secret ends up in access logs all over again.
+- Request bodies may be logged by applications or infrastructure, so using a body does not by itself protect sensitive query data.
+- If the server creates a temporary URI for the equivalent resource (`Location`), that URI MUST NOT contain sensitive query content, which could otherwise appear in access logs.
 - **CORS**: `QUERY` is not in the CORS-safelisted methods. Every cross-origin request triggers a **preflight (`OPTIONS`)**.
 
 ```mermaid
@@ -339,59 +335,25 @@ sequenceDiagram
     Server-->>Browser: Query result
 ```
 
-## Advantages of QUERY  A Quick List
+## What QUERY changes for API design
 
-1. **Safety preserved**: an explicit safe + idempotent contract that GET never managed to give with a body.
-2. **Automatic retries**: no risk of partial state changes  perfect for unstable networks (mobile, IoT).
-3. **Cache friendly**: intermediaries can cache results, alleviating the origin server.
-4. **Clear semantics for proxies and middlewares**: firewalls, API gateways and CDN finally have a method that "is not POST, but has a body".
-5. **Decoupled body formats**: the URI does not need to encode JSON, SQL, JSONPath, XSLT, Form URIs, etc.  you send them in the body, the way they should be.
-6. **Less noise in logs**: URIs tend to be logged everywhere. Sensitive filters go in the body.
-7. **Optimization path to GET**: the server can return a stable `Location` and the client switches to GET on subsequent calls.
+`QUERY` gives HTTP a method for read-oriented operations whose input is carried in request content, with safe and idempotent semantics. This can be useful when criteria are too complex for a URI or when an API needs to distinguish a query from a state-changing `POST`.
 
-## Challenges and Adoption Barriers
+Those semantics permit clients to retry requests and allow compatible caches to store responses, but neither behavior is automatic: the server must honor the method contract, and caches must include the request content in their keys and follow HTTP cache directives. A request body may still be logged, so sensitive input needs the same logging and data-protection controls as other request content.
 
-Despite being a **Standards Track** document, QUERY still faces hurdles:
+## Deployment and adoption considerations
 
-- **Server frameworks** (Express, Spring, FastAPI, etc.) do not natively recognize the method. Many will respond with **405 Method Not Allowed** out of the box.
-- **CORS preflight** adds latency for browsers on the first request.
-- **Caches** need to be reevaluated; those that only inspect the URI will behave incorrectly.
-- **Documentation culture**: teams still default to `POST` for any operation with a body, by reflex.
+RFC 10008 standardizes the method, but implementations and intermediaries may add support at different times. Before using `QUERY`, verify that the selected server framework, clients, gateways, caches, API description tools, and security policies recognize it and preserve its semantics.
 
-## The Future: Where is QUERY headed?
-
-It's still early days for RFC 10008, but the trajectory is exciting:
-
-- **API design**: expect to see **"REST Search APIs"** standardized around QUERY, replacing the current *"POST /search"* pattern.
-- **GraphQL over QUERY**: since GraphQL queries are already safe and idempotent, more efficient wire-format transports may emerge that use `QUERY` instead of `POST`.
-- **Database-as-a-Service**: services exposing SQL/JSONPath directly via `QUERY`, taking advantage of the cache and conditional semantics.
-- **CDNs and Edge Computing**: edge functions can become **safe and cacheable** natively, without going down the dark POST path.
-- **OpenAPI 4 / JSON Schema**: expect updates to declare QUERY in API contracts.
-
-```mermaid
-stateDiagram-v2
-    [*] --> CurrentState : QUERY adoption begins
-    CurrentState --> APIAdoption : Documented APIs adopt QUERY
-    APIAdoption --> FrameworkSupport : Frameworks add native support
-    FrameworkSupport --> CacheOptimization : Proxies and CDNs optimize caching
-    CacheOptimization --> BrowserSupport : Browsers handle CORS efficiently
-    BrowserSupport --> EstablishedMethod : QUERY becomes first-class
-```
-
-## QUERY in One Sentence
-
-> **QUERY is the method that finally gives us, 30 years after HTTP/1.0, a way to ask the server a complex question *without* lying that we are creating a resource.**
+Cross-origin browser requests require CORS preflight because `QUERY` is not a safelisted method. A shared cache must understand the request-content cache key; a cache that keys only by method and target URI is insufficient. Teams should also document the accepted content types, query limits, caching policy, and fallback behavior for clients or infrastructure that do not support the method.
 
 ## Conclusion
 
-RFC 10008 is small (around 60 pages) but solves a problem that has been *"swept under the rug"* of POST for decades. The elegance of the approach  preserving the **safe + idempotent** contract while finally accepting a body  is what makes this specification promising.
+RFC 10008 defines a standard method for safe, idempotent queries whose input is carried in request content. It does not replace `GET` or `POST` universally: use each method according to the operation's semantics, and verify that the participating clients, servers, and intermediaries support `QUERY` correctly.
 
-For me, the immediate practical change will be: **the next time** I need a search endpoint, I will not lazily stuff it into `POST /search`. I will think carefully:
+## Further reading
 
-- *Is it a simple filter?* → **`GET`** with URL query string.
-- *Is it a complex query with body?* → **`QUERY`**.
-- *Does it create a resource?* → **`POST`**.
-
-That's the new mental map.
-
-Have you already designed an API around QUERY, or are you going to wait for framework support? 🚀
+- [RFC 10008: The HTTP QUERY Method](https://www.rfc-editor.org/info/rfc10008)
+- [RFC 9110: HTTP Semantics](https://www.rfc-editor.org/rfc/rfc9110.html)
+- [RFC 9111: HTTP Caching](https://www.rfc-editor.org/info/rfc9111)
+- [Hypertext Transfer Protocol (HTTP) Method Registry](https://www.iana.org/assignments/http-methods/http-methods.xhtml)

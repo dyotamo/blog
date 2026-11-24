@@ -8,11 +8,7 @@ coverAlt: "Diagram of a shopping cart request flowing through replicated Dynamo 
 aliases: ["/blog/when-business-meets-technology/"]
 ---
 
-At some point in the 2000s, Amazon faced a problem that sounds small until you put it in business terms: **the shopping cart could not disappear**.
-
-Not during a promotion. Not on Black Friday. Not even on an ordinary day when someone in finance was watching the numbers with their heart in their throat. A cart failure could mean a lost order, a frustrated customer, and revenue that would never come back.
-
-The word *small* deserves those quotation marks. At Amazon's scale, even a brief interruption could affect a huge number of shopping sessions.
+Amazon's Dynamo system was designed for services such as the shopping cart, where an outage could prevent customers from completing a purchase. For this workload, a temporarily stale or duplicated item could be less harmful than an unavailable cart. At Amazon's scale, even a brief interruption could affect many shopping sessions.
 
 ## Start with the business requirement
 
@@ -45,7 +41,7 @@ sequenceDiagram
 
 ## Dynamo: built around the workload
 
-Amazon described its Dynamo system in a 2007 research paper, *Dynamo: Amazon’s Highly Available Key-value Store*. It was designed as a highly available key-value storage system for services such as the shopping cart, where uninterrupted operation mattered more than always returning one globally agreed answer at that exact moment.
+Amazon described its Dynamo system in the 2007 research paper [*Dynamo: Amazon’s Highly Available Key-value Store*](https://www.amazon.science/publications/dynamo-amazons-highly-available-key-value-store). It was designed as a highly available key-value storage system for services such as the shopping cart, where uninterrupted operation mattered more than always returning one globally agreed answer at that exact moment.
 
 This was not a declaration that consistency did not matter. The design recognized that failures happen in distributed systems and gave applications mechanisms to continue operating while replicas temporarily disagreed. The system could preserve multiple versions of an item and let the application help resolve conflicts.
 
@@ -161,3 +157,9 @@ Dynamo was shaped by that business constraint. Its availability-first behavior m
 Technology helps solve technical problems. Understanding the business tells us **which problem is worth solving, which failure is acceptable, and what trade-off is actually useful**.
 
 Sometimes all of that begins with a shopping cart that simply cannot fail.
+
+## Further reading
+
+- [Dynamo: Amazon’s Highly Available Key-value Store](https://www.amazon.science/publications/dynamo-amazons-highly-available-key-value-store)
+- [Brewer’s conjecture and the feasibility of consistent, available, partition-tolerant web services](https://www.comp.nus.edu.sg/~gilbert/pubs/BrewersConjecture-SigAct.pdf)
+- [Eventually Consistent – Revisited](https://www.allthingsdistributed.com/2008/12/eventually_consistent.html)

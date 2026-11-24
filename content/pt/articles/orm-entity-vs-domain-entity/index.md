@@ -47,7 +47,7 @@ O modelo de ORM pode conhecer os detalhes de persistência. Pode precisar de:
 
 Estes detalhes podem mudar quando o esquema evolui, quando se troca o ORM ou quando a aplicação muda de tecnologia de armazenamento. Alguns são decisões úteis de implementação, mas não são automaticamente conceitos de negócio.
 
-Por exemplo, uma coluna `deleted_at` pode existir porque o sistema implementa eliminação lógica. O conceito de negócio pode ser antes "cancelada", "arquivada" ou "já não disponível"  cada um com significado e regras diferentes.
+Por exemplo, uma coluna `deleted_at` pode existir porque o sistema implementa eliminação lógica. O conceito de negócio pode ser, em vez disso, "cancelada", "arquivada" ou "já não disponível", cada um com significado e regras diferentes.
 
 ## O modelo de domínio segue o significado do negócio
 
@@ -156,7 +156,7 @@ Em sistemas que se espera que cresçam, separar os modelos desde cedo pode evita
 
 ## Uma distinção relacionada: entidade e objecto de valor
 
-"Entidade de domínio" também tem um significado específico em *domain-driven design*. Uma entidade tem uma identidade que persiste ao longo das mudanças: duas encomendas com os mesmos artigos continuam a ser encomendas diferentes se tiverem identidades diferentes. Um objecto de valor é definido pelos seus valores e é normalmente imutável  por exemplo, um valor monetário com uma moeda.
+"Entidade de domínio" também tem um significado específico em *domain-driven design*. Uma entidade tem uma identidade que persiste ao longo das mudanças: duas encomendas com os mesmos artigos continuam a ser encomendas diferentes se tiverem identidades diferentes. Um objecto de valor é definido pelos seus valores e é normalmente imutável, por exemplo, um valor monetário com uma moeda.
 
 Nenhum destes conceitos é igual a uma entidade de ORM. Um ORM pode persistir entidades e objectos de valor, por vezes na mesma tabela, em tabelas separadas ou em colunas incorporadas. O mapeamento de persistência não determina a semântica do domínio.
 
@@ -166,4 +166,11 @@ Uma entidade de ORM responde à pergunta: **Como é que estes dados são represe
 
 Uma entidade de domínio responde à pergunta: **O que significa este conceito de negócio e que operações o mantêm válido?**
 
-Por vezes, uma classe consegue responder às duas perguntas sem causar problemas. Quando a forma de armazenamento e o significado de negócio começam a mudar por razões diferentes, atribua a cada responsabilidade o seu próprio modelo. Não é abstracção pela abstracção; é uma forma de deixar a base de dados, o ORM e as regras de negócio evoluírem sem arrastarem uns aos outros.
+Uma classe pode representar as duas coisas quando isso não causa problemas. Separe os modelos quando os requisitos de armazenamento e as regras de negócio começarem a mudar de forma independente; mantenha-os juntos quando uma fronteira apenas acrescentar manutenção sem proteger nada.
+
+## Para saber mais
+
+- [Data Mapper](https://martinfowler.com/eaaCatalog/dataMapper.html)
+- [Domain Model](https://martinfowler.com/eaaCatalog/domainModel.html)
+- [Jakarta Persistence 3.2](https://jakarta.ee/specifications/persistence/3.2/)
+- [Hibernate ORM User Guide](https://docs.hibernate.org/stable/orm/userguide/html_single/)

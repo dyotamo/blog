@@ -1,26 +1,14 @@
 ---
-title: "Turning a Stream of Bytes into Meaning, and More..."
-description: "Why NebulaCache has its own Layer 7 protocol, how the current binary framing works, and what it takes to evolve a language shared by clients and servers."
+title: "Nebula Protocol: Framing Cache Requests over TCP"
+description: "Why NebulaCache has its own Layer 7 protocol, how its binary framing works, and the compatibility and security responsibilities of maintaining clients and servers."
 date: "2026-11-23"
 tags: ["nebula-cache", "protocols", "networking", "rust", "tcp", "distributed-systems"]
-summary: "Nebula Protocol gives NebulaCache control over how SDKs and the server exchange operations. Explore its TCP framing, binary request and response formats, Rust implementation, trade-offs, and next steps."
+summary: "Nebula Protocol defines how NebulaCache clients encode operations and frame messages over TCP, along with the compatibility, implementation, and security responsibilities that come with a custom protocol."
 coverAlt: "A Nebula Protocol request frame flowing over TCP from a client SDK to the NebulaCache server."
 aliases: ["/blog/nebula-protocol/"]
 ---
 
-Imagine building an in-memory cache. The goal sounds simple: let applications store and retrieve values with as little latency as possible.
-
-A client needs to look up a key:
-
-```text
-GET user:123
-```
-
-The server receives the operation, checks memory, and returns the value. We could expose this through HTTP, use gRPC, implement Redis's protocol, or adopt the Memcached protocol. Those are all reasonable options. So why build another protocol?
-
-The question that led to **Nebula Protocol** was whether we wanted full control over how clients communicate with the NebulaCache server: how operations are represented on the wire, how data is encoded, where messages end, and how the interface evolves as the product gains features.
-
-Nebula Protocol is a versioned binary application-layer protocol built on TCP. It is the communication interface between NebulaCache SDKs and the server. To understand why it exists, we first need to look at the alternatives and the problem the protocol must solve.
+An in-memory cache needs a protocol between its clients and server. A request such as `GET user:123` names an operation and key, but a TCP connection carries only a stream of bytes. Nebula Protocol defines how NebulaCache SDKs encode operations, frame messages, and handle versioning. It is a versioned binary application-layer protocol built on TCP; implementing it also leaves the project responsible for clients, compatibility, and transport security.
 
 ## Why not use an existing protocol?
 
@@ -156,7 +144,7 @@ A request has a fixed 22-byte header followed by the key and value bytes:
 
 All integers use Big Endian encoding. The header is always 22 bytes, regardless of key and value sizes. The server reads the header first, then knows how many bytes it must consume to complete the frame.
 
-### Why Big Endian?
+### Why big-endian?
 
 Systems need to agree on how numbers are represented as bytes. For example, the number `0x00000100` is represented as `00 00 01 00` in Big Endian and `00 01 00 00` in Little Endian. If the client and server disagree, they interpret different values.
 
@@ -164,7 +152,9 @@ Specifying Big Endian makes the wire format independent of the native integer re
 
 ### Why explicit lengths?
 
-Suppose we want to store the value `Hello` under the key `test`. The header can declare a key length of four and a value length of five, followed by those nine bytes.
+A useful analogy is a parcel with its contents count written on the label: the receiver knows how many items to take without searching the contents for a marker. A length field serves a similar purpose in a byte stream, though it counts bytes rather than objects. A delimiter-based format instead needs a way to handle delimiter bytes that also appear inside a value.
+
+For example, to store `Hello` under the key `test`, the header can declare a key length of four and a value length of five, followed by those nine bytes.
 
 The server does not need to search for a delimiter. It reads the lengths, then consumes the specified number of bytes. Since the payload is length-delimited, it can contain zero bytes, newlines, or any other byte sequence. Values are not restricted to UTF-8 strings.
 
@@ -325,7 +315,7 @@ That is why a protocol specification must not depend on the internal data struct
 
 Rust is the reference server's language because it offers low-level control and predictable resource use while catching many memory-safety errors at compile time. Tokio's async I/O helps it handle many connections without dedicating a thread to each one; SDKs in other languages still use the same wire format.
 
-With the steady stream of security headlines—and what can feel like an `everything4shell` season—Rust's memory-safety guarantees are especially compelling. They are no silver bullet: dependencies still need updates, and Rust cannot prevent logic bugs or every vulnerability.
+Rust's memory-safety guarantees reduce several classes of bugs in safe code, but they do not cover every failure mode. Dependencies still need updates, and the language cannot prevent logic bugs or every vulnerability.
 
 ## Why build a custom protocol?
 
@@ -398,19 +388,19 @@ A client that wants to send several operations without waiting for each response
 sequenceDiagram
     participant Client
     participant Server
-    Client->>Server: ID 101 · SET user:1
-    Client->>Server: ID 102 · GET user:1
-    Client->>Server: ID 103 · GET user:2
+    Client->>Server: ID 101: SET user:1
+    Client->>Server: ID 102: GET user:2
+    Client->>Server: ID 103: GET user:3
     par Responses may arrive out of order
-        Server-->>Client: ID 102 · value
+        Server-->>Client: ID 102: value
     and
-        Server-->>Client: ID 103 · value
+        Server-->>Client: ID 103: value
     and
-        Server-->>Client: ID 101 · OK
+        Server-->>Client: ID 101: OK
     end
 ```
 
-Each response would carry its request's identifier. The client could then correlate responses even if operations were processed concurrently and responses arrived out of order.
+Each response would carry its request's identifier. Like a claim ticket, the ID tells the client which request a response belongs to; it does not say when that response will arrive or define ordering between operations. The client could therefore correlate responses even if independent operations were processed concurrently and completed out of order.
 
 Two related ideas need to be distinguished:
 
@@ -438,8 +428,6 @@ The goal is not to let clients send as much as possible. It is to keep communica
 NebulaCache began as a single-node cache, but the protocol should not unnecessarily prevent future evolution. A multi-node deployment raises questions of node identity, cluster communication, routing, replication, and change propagation.
 
 Those are not the same problem as framing messages on the current connection. Layer 7 messages might eventually support cluster operations, but distribution, replication, and consistency are architectural concerns of their own. We do not need to solve them in the first version; we do need to avoid choices that make future evolution unnecessarily difficult.
-
-One of the original ambitions for NebulaCache was a highly available system with support for multiple nodes. We will get there eventually.
 
 ## The architecture worth preserving
 
@@ -469,15 +457,11 @@ The server can continue to use HTTP separately for administration and metrics. T
 
 ## Conclusion: a protocol means owning the communication
 
-Building a custom protocol is a decision to make with the costs in view. It is not enough to say that binary is faster or that we control every byte on the wire. Each field, operation, limit, and compatibility decision needs a reason.
-
-NebulaCache started with a relatively simple format: a 22-byte request header, a 10-byte response header, numeric opcodes, explicit lengths, and binary payloads. This lets clients written in different languages communicate with the same server.
-
-The interesting part is not only the current format, but how it can evolve around the system's real needs. Pipelining, request correlation, batch operations, capability negotiation, and flow control all offer directions to explore, and each brings new architectural decisions.
-
-Building our own technology means understanding the problems that established abstractions solve and taking responsibility for the solutions we choose. **Nebula Protocol began as a way to talk to a cache. The challenge now is to make it a robust, efficient, and evolvable communication interface without losing the simplicity that motivated it.**
+A custom protocol gives NebulaCache control over its wire format, but also makes the project responsible for framing, limits, compatibility, security, and client behavior. The current format covers core cache operations over TCP. Features such as multiplexing and batching should be added only when the system needs them and with their ordering and flow-control rules clearly defined.
 
 ## Further reading
 
 - [NebulaCache repository](https://github.com/dyotamo/nebula)
 - [Nebula Protocol implementation](https://github.com/dyotamo/nebula/tree/master/crates/nebula-protocol)
+- [Tokio codec module](https://docs.rs/tokio-util/latest/tokio_util/codec/index.html)
+- [Redis Serialization Protocol specification](https://redis.io/docs/latest/develop/reference/protocol-spec/)

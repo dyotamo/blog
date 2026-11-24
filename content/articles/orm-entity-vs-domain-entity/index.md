@@ -166,4 +166,11 @@ An ORM entity answers: **How is this data represented and retrieved by this pers
 
 A domain entity answers: **What does this business concept mean, and which operations keep it valid?**
 
-Sometimes one class can answer both questions without causing trouble. As soon as its storage shape and business meaning begin changing for different reasons, give each responsibility a model of its own. That is not abstraction for abstraction’s sake; it is a way to let the database, ORM, and business rules evolve without dragging one another along.
+One class can represent both when that causes no friction. Separate the models when storage requirements and business rules start changing independently; keep them together when a boundary would add maintenance without protecting anything.
+
+## Further reading
+
+- [Data Mapper](https://martinfowler.com/eaaCatalog/dataMapper.html)
+- [Domain Model](https://martinfowler.com/eaaCatalog/domainModel.html)
+- [Jakarta Persistence 3.2](https://jakarta.ee/specifications/persistence/3.2/)
+- [Hibernate ORM User Guide](https://docs.hibernate.org/stable/orm/userguide/html_single/)

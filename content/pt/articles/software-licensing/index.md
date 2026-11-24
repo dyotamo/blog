@@ -8,11 +8,7 @@ coverAlt: "Uma árvore de dependências de software com licenças diferentes a s
 aliases: ["/blog/software-licensing/"]
 ---
 
-Desta vez, o assunto é **licenciamento de software**.
-
-Recentemente, voltei a estudar licenças de software e fiquei alarmado com a pouca atenção que muitas equipas dedicam a este tema. Não é dos assuntos mais divertidos de uma sprint, eu sei. Mas ignorá-lo pode transformar uma escolha técnica aparentemente pequena num problema de produto, negócio ou conformidade.
-
-No universo do software livre e de código aberto, é comum começar por duas grandes famílias: **licenças permissivas** e **licenças copyleft**. Essa divisão ajuda a orientar a conversa, mas não substitui a leitura da licença concreta.
+Uma dependência de software traz mais do que código para um produto: a licença pode definir condições para modificar, combinar e distribuir esse código. Duas grandes famílias são as **licenças permissivas** e as **licenças copyleft**, mas estas categorias são apenas um ponto de partida; importa analisar a licença concreta e a forma como o componente é utilizado.
 
 ## Permissivas e copyleft, em linhas gerais
 
@@ -46,7 +42,7 @@ Este ponto merece destaque porque é onde muitos resumos simplificam demais.
 
 A GPL **não exige, em geral, que uma empresa publique ao mundo inteiro alterações que usa apenas internamente**. A obrigação de disponibilizar o código-fonte correspondente está ligada a determinadas formas de transmitir ou distribuir cópias do software abrangido. Se distribuir um binário coberto pela GPL, por exemplo, terá de cumprir as condições de disponibilização do código-fonte aplicáveis à versão da licença.
 
-Também não significa que o software tenha de ser oferecido a preço zero. A GPL permite cobrar pela cópia ou distribuição. "Livre" aqui está relacionado com as liberdades dadas aos destinatários  por exemplo, estudar, modificar e redistribuir sob os termos da licença  e não com a ausência obrigatória de preço.
+Também não significa que o software tenha de ser oferecido a preço zero. A GPL permite cobrar pela cópia ou distribuição. "Livre" aqui está relacionado com as liberdades dadas aos destinatários — por exemplo, estudar, modificar e redistribuir sob os termos da licença — e não com a ausência obrigatória de preço.
 
 Há ainda uma distinção importante para serviços online: a GPL normal não cria, por si só, a mesma obrigação de disponibilização de código apenas porque alguém usa um programa através de uma rede. A **AGPL** foi concebida para cobrir uma situação específica de versões modificadas disponibilizadas para interacção remota; nos termos da licença, os utilizadores que interagem com uma dessas versões devem ter acesso ao respectivo código-fonte. O texto exacto da licença importa.
 
@@ -69,7 +65,7 @@ A licença de uma dependência **não transforma automaticamente** todo o produt
 
 Também não existe uma regra simples de que "se estiver numa dependência transitiva, aplica-se a licença ao produto inteiro". Uma dependência transitiva continua a ter uma licença que precisa de ser respeitada, mas a obrigação concreta depende do que é copiado, combinado e entregue.
 
-Isto é especialmente relevante para componentes GPL ligados a uma aplicação. A própria Free Software Foundation explica que certas formas de ligação podem criar um trabalho combinado; também distingue esses casos de programas independentes agregados lado a lado. Ainda assim, determinar a fronteira num produto real pode exigir análise jurídica  não basta olhar para o ficheiro `package.json` ou para o nome do pacote.
+Isto é especialmente relevante para componentes GPL ligados a uma aplicação. A própria [Free Software Foundation explica](https://www.gnu.org/licenses/gpl-faq.html#MereAggregation) que certas formas de ligação podem criar um trabalho combinado; também distingue esses casos de programas independentes agregados lado a lado. Ainda assim, determinar a fronteira num produto real pode exigir análise jurídica — não basta olhar para o ficheiro `package.json` ou para o nome do pacote.
 
 ## Porque MIT, BSD e GPL fazem compromissos diferentes
 
@@ -130,7 +126,7 @@ Se houver dúvidas sobre um componente copyleft numa aplicação proprietária o
 
 ## O copyleft também pode ser uma escolha estratégica
 
-Não estou a defender que se evitem dependências copyleft. O kernel Linux usa a GPL, e a decisão de manter certas liberdades para quem recebe e modifica o kernel foi central para a forma como esse projecto evoluiu. Há muitos contextos em que o copyleft é uma mais-valia: promove reciprocidade, permite que melhorias regressem à comunidade e dá aos destinatários direitos que uma licença permissiva não exige preservar.
+O copyleft não é inerentemente indesejável. O kernel Linux usa a GPL, cujas condições ajudam a preservar certas liberdades de quem recebe e modifica o kernel. Dependendo do projeto, essas obrigações recíprocas podem ser uma vantagem: podem ajudar a devolver melhorias à comunidade e preservar direitos dos destinatários que as licenças permissivas não exigem que os utilizadores seguintes mantenham.
 
 Uma licença permissiva também pode ser a escolha certa: facilita a adopção em ecossistemas diversos e permite que código seja incorporado em produtos com outras licenças, desde que os avisos e demais condições sejam cumpridos.
 
@@ -138,9 +134,7 @@ A decisão não é "qual licença é boa e qual é má?". É: **que direitos que
 
 ## Licenciamento é parte da engenharia do produto
 
-Licenças não são apenas um assunto jurídico para resolver na véspera do lançamento. São parte das decisões de dependências, arquitectura, distribuição e estratégia do produto.
-
-Uma equipa que conhece as licenças que utiliza consegue escolher componentes conscientemente, respeitar quem os criou e evitar surpresas quando o produto muda de escala ou de modelo de negócio. Não se trata de ter medo do open source; trata-se de saber o que estamos a usar e quais são as condições.
+As obrigações das licenças influenciam a escolha de dependências, a arquitetura, a distribuição e a estratégia do produto. Analisá-las antes de adotar um componente dá à equipa tempo para escolher opções adequadas e cumprir as respetivas condições à medida que o produto evolui.
 
 > Este artigo é uma introdução geral, não aconselhamento jurídico. As obrigações dependem da licença e versão exactas, da jurisdição e de como os componentes são combinados e distribuídos. Para decisões de produto com impacto legal, consulte profissionais qualificados.
 

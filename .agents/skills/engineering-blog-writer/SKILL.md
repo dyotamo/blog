@@ -90,6 +90,35 @@ Avoid presenting one technology or architecture as universally superior.
 
 Recommendations must consider the problem, requirements, and constraints involved.
 
+### 2.7 Human voice and natural prose
+
+Write in a clear, considered voice that sounds like an engineer explaining what they learned about a system to another engineer. Ground the article in a concrete question, debugging situation, design decision, or observable behavior when that helps the reader understand why the subject matters.
+
+Vary sentence length, paragraph shape, transitions, and section structure according to the material. Let the explanation carry the article; do not add personality through forced jokes, fake anecdotes, or a uniform conversational script. Never invent personal experience, testing, or results.
+
+Avoid recognizable filler and formulaic phrasing, including generic scene-setting, repeated “let's explore” transitions, canned summaries, hype, and claims that a technology is “revolutionary,” “seamless,” or a “game changer” without precise evidence. Do not add decorative emoji or symbols, excessive bold or italic emphasis, or repeated em dashes as a substitute for clear punctuation. Keep legitimate technical notation, Unicode characters, and punctuation when they serve meaning or are part of code, standards, quotations, or the author's natural voice. The goal is authentic, readable writing, not mechanical removal of particular characters or an attempt to evade AI detection.
+
+### 2.8 Analogies that clarify
+
+Consider an analogy when it makes an unfamiliar mechanism easier to picture, especially at the point where the concept is introduced. Choose familiar comparisons that fit the reader and explain which parts of the system map to which parts of the analogy.
+
+Follow an analogy with the literal technical explanation. State its limits when readers might otherwise infer a false equivalence. Prefer one short, useful analogy over an extended metaphor; avoid stacking metaphors, turning every section into an analogy, or using comparisons that obscure implementation details. An analogy is optional: use one only when it improves understanding.
+
+### 2.9 Review for generic AI-like writing patterns
+
+Use [Wikipedia's signs of AI writing](https://en.wikipedia.org/wiki/Wikipedia:Signs_of_AI_writing) as an editorial checklist of possible patterns, not as a test of authorship or a set of rules to mechanically enforce. The page itself warns that these signs are descriptive, can occur in human writing, and should point reviewers toward the underlying content problem. Do not use AI detectors or rewrite prose to evade them.
+
+Review for clusters and context, especially:
+
+- Unsupported claims about a technology's importance, legacy, broad influence, or future prospects; remove generic significance statements and predictions that add no technical information.
+- Superficial analysis, vague attribution or relationships, and disclaimers about missing sources that do not support a concrete point. State the sourced fact directly, qualify genuine uncertainty, and do not invent consensus or infer more than the evidence supports.
+- Repeated stock transitions, canned conclusions, abstract promotional language, and dense clusters of fashionable vocabulary. Replace them with specific mechanisms, evidence, constraints, or a direct explanation; do not ban individual words that are accurate in context.
+- Repeated negative contrasts, forced groups of three, or sentence patterns that make unrelated ideas sound parallel. Keep contrast when it explains a real technical distinction and keep three-part lists when the items are genuinely useful.
+- Stylistic over-formatting, including unnecessary title case in headings, excessive bolding, decorative symbols, and inline-label lists where prose or a table would read better. Follow this project's Markdown conventions and use consistent sentence-case headings unless a project-specific convention calls for otherwise.
+- Placeholder text, broken or irrelevant links, unsupported citations, and tracking parameters such as `utm_source` that do not belong in a published reference. Verify references and destinations where practical; never fabricate or silently repair a source.
+
+Apply these checks to engineering articles, not Wikipedia markup conventions. Ordinary Markdown, technical symbols, standards notation, code, necessary cautions, and the author's natural voice are not warning signs by themselves. Prefer fixing unsupported claims, filler, repetition, or unclear reasoning over merely changing a phrase or deleting a punctuation mark.
+
 ## 3. Audience
 
 The primary audience includes:
@@ -510,8 +539,10 @@ Before delivering an article, verify the following.
 - [ ] The explanation progresses naturally.
 - [ ] Terminology is precise and understandable.
 - [ ] The content is comprehensive without unnecessary verbosity.
-- [ ] The article has a coherent narrative.
-- [ ] There is no unnecessary repetition or filler.
+- [ ] The article has a coherent narrative and a natural, subject-appropriate voice.
+- [ ] Sentence patterns and transitions do not feel mechanically repeated.
+- [ ] There is no unnecessary repetition, generic filler, decorative styling, or unsupported hype.
+- [ ] Any analogy improves understanding, maps clearly to the technical concept, and does not imply a false equivalence.
 
 ### Technical quality
 

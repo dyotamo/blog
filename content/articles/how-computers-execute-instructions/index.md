@@ -9,23 +9,23 @@ coverAlt: "A visual path from source code through machine instructions and logic
 
 When you write `a + b`, it feels as if the computer simply understands what you mean and adds the numbers. In a way, it does—but only after your code has passed through several layers of translation. The processor does not read Rust keywords or the `+` sign. It fetches machine instructions encoded as bits, and transistor-based circuits turn those instructions into electrical changes.
 
-Let’s follow one small addition all the way through. We’ll use it as a guided tour, and we’ll be careful to separate what the source code says from what a particular CPU might actually do:
+Here is the Rust example. The type and build settings affect what a particular CPU eventually executes:
 
 ```rust
 fn main() {
-    let a = 90;
+    let a = -90;
     let b = 12;
     let c = a + b;
 }
 ```
 
-The answer is `102`. Nothing about the arithmetic is complicated; the interesting part is how many layers make that answer happen. We’ll trace it from Rust, through compiled instructions and CPU hardware, down to logic gates and transistors.
+The result is `-78`. We’ll use it to trace which work the compiler can do ahead of time and what the hardware does when an addition remains at runtime.
 
 ## 1. High-level code describes an intention
 
 The code says what we want: create two integer values, add them, and bind the result to `c`. It does not say where those values must live, which CPU register to use, or how to build an adder circuit.
 
-In this Rust example, the compiler infers the integer literals as `i32` because we do not specify a type. That is a 32-bit signed integer type. The values are positive, so their bit patterns are the same whether we view them as ordinary positive binary numbers or as two's-complement signed integers.
+In this Rust example, the compiler infers the integer literals as `i32` because we do not specify a type. That is a 32-bit signed integer type. Signed integers use two's-complement representation: `-90` is represented by the bit pattern `0xFFFFFFA6`, while `12` is `0x0000000C`. The processor adds these bit patterns; interpreting the result as an `i32` gives `-78`.
 
 A name such as `a` is mainly useful to us and to the compiler. It does not promise that a permanent memory cell named `a` will exist in the finished program.
 
@@ -60,7 +60,7 @@ These are useful conceptual stages, not a promise that every compiler version us
 
 ### Optimization can remove the addition
 
-Our example uses constants. The compiler can calculate `90 + 12` while compiling and replace the expression with `102`. Because `c` is not used, it may even remove the whole calculation. In a real compiled program, the CPU might execute no addition for this snippet.
+Our example uses constants. The compiler can calculate `-90 + 12` while compiling and replace the expression with `-78`. Because `c` is not used, it may even remove the whole calculation. In a real compiled program, the CPU might execute no addition for this snippet.
 
 This is called **constant folding**: if the compiler can determine a result ahead of time, it can pre-compute it. Optimization is one reason source code and executed instructions do not correspond one-to-one.
 
@@ -90,7 +90,7 @@ A CPU instruction can say, in effect, “add the value in this register to the v
 add eax, esi
 ```
 
-Read it as: add `esi` to `eax`, then put the result in `eax`. These names are CPU registers, not Rust variables. Imagine that earlier instructions have put `90` in `eax` and `12` in `esi`. This instruction changes `eax` to `102`. We’re skipping those setup instructions so we can focus on the addition itself. A real Rust function may use different registers or a different instruction; this is a concrete illustration, not a promise about what every compiler emits.
+Read it as: add `esi` to `eax`, then put the result in `eax`. These names are CPU registers, not Rust variables. Imagine that earlier instructions have put the 32-bit representation of `-90` in `eax` and `12` in `esi`. This instruction changes `eax` to the bit pattern for `-78`. The `ADD` instruction performs the same bitwise addition regardless of whether we interpret the values as signed or unsigned; the signed interpretation tells us what result those bits represent. We’re skipping those setup instructions so we can focus on the addition itself. A real Rust function may use different registers or a different instruction; this is a concrete illustration, not a promise about what every compiler emits.
 
 ### What does that instruction look like in binary?
 
@@ -112,22 +112,24 @@ In that second byte, `mod = 11` means both operands are registers; `reg = 110` s
 
 Other CPU architectures encode addition differently, and x86 can encode equivalent operations in more than one way. Assembly is the human-readable spelling; machine code is the architecture-specific bit pattern the processor decodes.
 
-Now let’s look at the values being added. Written with just eight bits, they are:
+Now let’s look at the values being added. In eight-bit two's-complement form, they are:
 
 ```text
-90  = 01011010
-12  = 00001100
-102 = 01100110
+-90 = 10100110
+ 12 = 00001100
+-78 = 10110010
 ```
 
-Our Rust values are `i32`, so they are 32-bit values; the eight-bit version is just easier to read on the page. For these positive numbers, the extra bits to the left are all zero. Binary addition works column by column, just like decimal addition, but each column is base 2:
+Our Rust values are `i32`, so they are 32-bit values; the eight-bit version is just easier to read on the page. Negative numbers use two's-complement representation, which lets the same binary adder handle both positive and negative values. Binary addition works column by column, just like decimal addition, but each column is base 2:
 
 ```text
-  01011010
+  10100110
 + 00001100
 ----------
-  01100110
+  10110010
 ```
+
+The leftmost bit is 1 in the result, so as an eight-bit signed two's-complement value it represents `-78`.
 
 The CPU does not follow this drawing as a little recipe. The instruction tells its arithmetic hardware which operation to perform and which values to use; the hardware combines the bits and produces the result.
 
@@ -169,7 +171,7 @@ At the very bottom of this explanation, the addition is not a magical operation 
 
 ## 8. What happens to `c`?
 
-After the addition, the result `102` is available in the processor's state, often in a register to be used by the next instruction. If later code needs it in memory, the compiler can generate an instruction to store it. If we print it, there is much more work: formatting the number as characters, passing output to the operating system, and eventually sending it to a terminal or another destination.
+After the addition, the result `-78` is available in the processor's state, often in a register to be used by the next instruction. If later code needs it in memory, the compiler can generate an instruction to store it. If we print it, there is much more work: formatting the number as characters, passing output to the operating system, and eventually sending it to a terminal or another destination.
 
 In our original example, `c` is never read, and the addition has no observable side effects. The compiler can discard the binding and calculation. That means asking "where is `c` stored?” may have no concrete answer in the final machine code: it may not exist at runtime at all.
 
@@ -177,7 +179,7 @@ In our original example, `c` is never read, and the addition has no observable s
 
 ```mermaid
 mindmap
-  root((One addition: 90 + 12 = 102))
+  root((One addition: -90 + 12 = -78))
     Source code
       Rust expresses the operation
     Compiler
@@ -192,9 +194,14 @@ mindmap
       Logic gates
       Transistors switch signals
     Result
-      102 in processor state
+      -78 in processor state
 ```
 
-Each layer offers a useful abstraction. A high-level language lets us express intent without designing a circuit. The compiler translates and optimizes that intent. Machine instructions describe operations for a processor architecture. CPU circuits carry them out using electrical signals in transistors.
+Each layer hides detail: Rust expresses intent, the compiler translates and optimizes it, and architecture-specific instructions describe operations for the CPU circuits to carry out. In this example, the compiler may calculate `-78` in advance and remove the addition, so the processor may never execute one.
 
-When your source code says `a + b`, it is not directly commanding electricity. It describes an operation through a stack of abstractions, and those abstractions eventually guide electrical changes that produce `102`—unless the compiler can prove the answer ahead of time and skip the addition altogether.
+## Further reading
+
+- [The LLVM Target-Independent Code Generator](https://llvm.org/docs/CodeGenerator.html)
+- [Intel 64 and IA-32 Architectures Software Developer’s Manual](https://cdrdv2-public.intel.com/819712/253666-sdm-vol-2a.pdf)
+- [ELF Object File Format](https://gabi.xinuos.com/elf/)
+- [CMOS Technology](https://ocw.mit.edu/courses/6-004-computation-structures-spring-2009/resources/mit6_004s09_lec03/)

@@ -1,27 +1,14 @@
 ---
-title: "A Sua Linguagem de Programação é Especial… Como Todas as Outras"
-description: "A orientação da WSO2 de Java para Go não prova que uma linguagem venceu. É um exemplo de como escolher ferramentas para as cargas de trabalho, restrições e custos de hoje."
+title: "Escolher uma Linguagem de Programação para a Carga de Trabalho"
+description: "O que a orientação da WSO2 para Go e Python revela sobre a escolha de linguagens e runtimes face à carga de trabalho, à equipa e às restrições operacionais."
 date: "2026-11-11"
 tags: ["programming-languages", "java", "go", "wso2", "software-architecture", "cloud-native", "engineering"]
-summary: "O anúncio ‘Goodbye Java, Hello Go’ da WSO2 gerou reacções emocionais. A lição útil não é que Go seja melhor, mas que a escolha da linguagem deve seguir a carga de trabalho e as restrições do negócio."
-coverAlt: "Java e Go representadas como ferramentas diferentes em torno de um serviço cloud, com a carga de trabalho a orientar a escolha em vez da lealdade a uma linguagem."
+summary: "A orientação da WSO2 de Java para Go mostra como a escolha de uma linguagem depende da carga de trabalho, das restrições operacionais e dos custos de manutenção do sistema."
+coverAlt: "Java e Go aparecem em cartões de ferramentas acima de uma indicação para escolher a linguagem adequada à carga de trabalho."
 aliases: ["/blog/your-language-is-special/"]
 ---
 
-A sua linguagem de programação é especial…
-
-Claro que é. Como todas as outras.
-
-Quando a WSO2 anunciou **"Goodbye Java, Hello Go!"**, algumas reacções trataram o assunto menos como uma decisão de engenharia e mais como um desgosto amoroso:
-
-- "Como assim, deixar Java?"
-- "E os mais de vinte anos de maturidade?"
-- "E o ecossistema?"
-- "E o meu curso de Java 21?"
-
-Calma. Ninguém matou Java. Ninguém queimou os livros de design patterns. A WSO2 olhou para os problemas que espera resolver nos próximos anos e escolheu uma direcção para a futura infraestrutura backend.
-
-É uma decisão importante. Não é um veredicto universal sobre linguagens de programação.
+O anúncio da WSO2 **"Goodbye Java, Hello Go!"** levanta uma questão prática: escolher uma nova linguagem significa que Java deixou de ser a ferramenta certa? Não. A empresa descreveu uma orientação para novos produtos e plataformas, não um veredicto sobre todas as cargas de trabalho nem uma reescrita dos produtos existentes.
 
 ## O que a WSO2 anunciou realmente
 
@@ -77,7 +64,7 @@ Isto **não** significa que Java seja inerentemente lento ou inadequado para con
 
 ## Porque Go pode encaixar neste trabalho específico
 
-O anúncio da WSO2 destaca a combinação de arranque rápido, uma pegada de runtime relativamente compacta, recolha de lixo, primitivas de concorrência e compilação nativa de Go. Refere também a experiência anterior da empresa: Go já era usado em projectos como OpenChoreo, a reescrita do compilador Ballerina, Thunder e ferramentas de linha de comandos.
+O artigo da WSO2 destaca a compilação nativa e as primitivas de concorrência de Go e descreve como eficaz a sua gestão de memória. Separadamente, refere que o Thunder usou Go para cumprir objectivos de tempo de arranque e de consumo de memória. O artigo também menciona a experiência anterior da empresa: Go já era usado em projectos como OpenChoreo, a reescrita do compilador Ballerina e ferramentas de linha de comandos.
 
 Estas propriedades podem ser úteis em serviços de infraestrutura iniciados frequentemente, executados em containers e escalados. Podem ajudar a reduzir o tempo até à prontidão e os recursos computacionais necessários para executar um serviço. O ecossistema de Go também está bem estabelecido na infraestrutura cloud, com ferramentas como Kubernetes e Docker entre os exemplos mais conhecidos.
 
@@ -88,7 +75,7 @@ Mas não há almoço grátis escondido no comando `go build`:
 - Mudar de linguagem implica custos de formação, contratação, ferramentas, testes e manutenção a longo prazo.
 - O melhor resultado depende da aplicação, das dependências, do tráfego e da forma como o serviço é operado.
 
-A escolha faz sentido quando os benefícios medidos na implementação real superam os custos de migração e de ciclo de vida  não porque uma linguagem venceu um concurso de popularidade.
+A escolha faz sentido quando os benefícios medidos na implementação real superam os custos de migração e de ciclo de vida, não porque uma linguagem venceu um concurso de popularidade.
 
 ## Porque não Rust? Porque não outra coisa?
 
@@ -141,8 +128,12 @@ Num produto existente, também há uma diferença entre **escolher uma linguagem
 
 A lição não é **"Go é melhor que Java"**. Uma linguagem de programação é uma parte de um sistema de engenharia que também inclui a carga de trabalho, o runtime, as bibliotecas, a equipa, o modelo de implementação e as restrições do negócio.
 
-As boas organizações de engenharia não perguntam qual é a linguagem mais adorada. Perguntam qual opção cria menos atrito para o problema que têm hoje  e que evidências as fariam reconsiderar amanhã.
+Escolha a linguagem de acordo com a carga de trabalho, a experiência da equipa, o ecossistema e os custos operacionais. Reavalie a decisão quando essas condições mudarem ou os dados de produção mostrarem que a opção atual já não é adequada.
 
-E sim, daqui a alguns anos alguém poderá escrever: **"Goodbye Go, Hello Outra Coisa."** O ciclo continuará, como sempre.
+## Para saber mais
 
-Relaxe. A sua linguagem continua a ser óptima. Só não é eterna. Nem especial.
+- [Goodbye Java, Hello Go](https://wso2.com/library/blogs/goodbye-java-hello-go/)
+- [Frequently Asked Questions](https://go.dev/doc/faq)
+- [Go at Google: Language Design in the Service of Software Engineering](https://go.dev/talks/2012/splash.article)
+- [The Java Language Environment](https://www.oracle.com/java/technologies/language-environment.html)
+- [Growing a Language](https://link.springer.com/article/10.1023/A:1010085415024)

@@ -8,11 +8,7 @@ coverAlt: "A software dependency tree with different licenses being reviewed bef
 aliases: ["/blog/software-licensing/"]
 ---
 
-This time, the subject is **software licensing**.
-
-I recently revisited software licenses and was alarmed by how little attention many teams give to this topic. I know, it is not the most exciting part of a sprint. But ignoring it can turn an apparently small technical choice into a product, business, or compliance problem.
-
-In the free and open-source software world, it is common to start with two broad families: **permissive licenses** and **copyleft licenses**. That distinction helps frame the conversation, but it is no substitute for reading the specific license.
+A software dependency brings more than code into a product: its license can set conditions on how that code is modified, combined, and distributed. Two broad families are **permissive licenses** and **copyleft licenses**, but those labels are only a starting point; the exact license and how the component is used matter.
 
 ## Permissive and copyleft, in broad strokes
 
@@ -130,7 +126,7 @@ If there are questions about a copyleft component in a proprietary application o
 
 ## Copyleft can also be a strategic choice
 
-I am not arguing that copyleft dependencies should be avoided. The Linux kernel uses the GPL, and the decision to preserve certain freedoms for people who receive and modify the kernel was central to the project’s evolution. There are many contexts where copyleft is valuable: it promotes reciprocity, helps improvements flow back to the community, and gives recipients rights that permissive licenses do not require downstream users to preserve.
+Copyleft is not inherently undesirable. The Linux kernel uses the GPL, whose conditions help preserve certain freedoms for people who receive and modify the kernel. Depending on the project, those reciprocal obligations can be a benefit: they can help improvements flow back to the community and preserve rights for recipients that permissive licenses do not require downstream users to retain.
 
 A permissive license can also be the right choice: it makes adoption across diverse ecosystems easier and allows code to be incorporated into products under other licenses, as long as notices and other conditions are followed.
 
@@ -138,9 +134,7 @@ The question is not "Which license is good and which is bad?" It is: **What righ
 
 ## Licensing is part of product engineering
 
-Licenses are not just a legal topic to deal with on the eve of a release. They are part of dependency, architecture, distribution, and product-strategy decisions.
-
-A team that understands the licenses it uses can choose components deliberately, respect their creators, and avoid surprises when the product or business model changes. This is not about being afraid of open source; it is about knowing what we use and the conditions that come with it.
+License obligations affect dependency selection, architecture, distribution, and product strategy. Reviewing them before adoption gives a team time to choose suitable components and meet their conditions as the product changes.
 
 > This article is a general introduction, not legal advice. Obligations depend on the exact license and version, jurisdiction, and how components are combined and conveyed. Consult qualified counsel for product decisions with legal impact.
 

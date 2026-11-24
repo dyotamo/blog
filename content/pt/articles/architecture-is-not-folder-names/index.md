@@ -8,15 +8,7 @@ coverAlt: "Um diagrama que distingue nomes de pastas da arquitectura real, repre
 aliases: ["/blog/architecture-is-not-folder-names/"]
 ---
 
-No universo do design e da arquitectura de software, tenho observado um erro recorrente: assumir que criar e nomear pastas, pacotes ou módulos equivale a implementar correctamente uma arquitectura.
-
-Cria-se `domain`, `application`, `infrastructure`, `services` e `repositories`… e pronto, temos Clean Architecture. Certo?
-
-Não necessariamente.
-
-> **Não é o nome que define a camada ou o padrão. É a responsabilidade que o código implementa  e as dependências que respeita.**
-
-Os nomes ajudam pessoas a navegar e a comunicar. Mas são uma promessa, não uma garantia. A arquitectura real está no que os componentes fazem, no que conhecem e nas mudanças que conseguem absorver sem arrastar o resto do sistema.
+Pastas chamadas `domain`, `application` e `infrastructure` podem dar a um projeto o aspeto de Clean Architecture, mas a árvore de diretórios não mostra se o domínio importa código de persistência, onde são aplicadas as regras de negócio ou que fronteiras o build impõe. Essas responsabilidades e dependências constituem a arquitetura; os nomes das pastas servem apenas para orientar a navegação.
 
 ## Uma árvore de pastas não é um mapa de dependências
 
@@ -50,7 +42,7 @@ A árvore é uma pista. A direcção das dependências e o comportamento do cód
 
 Uma arquitectura em camadas separa responsabilidades que mudam por razões diferentes. Uma divisão comum pode ter:
 
-- **Apresentação**: recebe interacções externas  HTTP, interface gráfica, CLI ou mensagens  e traduz os dados de entrada e saída.
+- **Apresentação**: recebe interacções externas — HTTP, interface gráfica, CLI ou mensagens — e traduz os dados de entrada e saída.
 - **Aplicação**: coordena casos de uso, controla a sequência de operações e define a fronteira transaccional.
 - **Domínio**: representa conceitos de negócio e protege as regras e invariantes do sistema.
 - **Infraestrutura**: liga o sistema a tecnologias externas, como bases de dados, filas, serviços de terceiros, ficheiros e frameworks.
@@ -207,7 +199,7 @@ Não é necessário que todos os sistemas tenham exactamente estas quatro classe
 Há duas formas comuns de organizar o código:
 
 - **Por camada técnica**: todos os controladores juntos, todos os serviços juntos, todos os repositórios juntos.
-- **Por funcionalidade ou contexto**: encomendas, pagamentos, identidade, notificações  cada área reúne o código que lhe pertence.
+- **Por funcionalidade ou contexto**: encomendas, pagamentos, identidade e notificações; cada área reúne o código que lhe pertence.
 
 Ambas podem funcionar. A organização por camada é simples de compreender em aplicações pequenas, mas num sistema grande pode obrigar a percorrer muitas pastas para perceber uma funcionalidade. A organização por funcionalidade aproxima as peças que mudam em conjunto, mas pode criar duplicação ou fronteiras erradas se cada módulo inventar as suas próprias regras.
 
@@ -240,7 +232,7 @@ Algumas ferramentas e escolhas de linguagem podem tornar as fronteiras mais dif�
 - **Testes de arquitectura**: ferramentas como ArchUnit podem verificar regras de dependência no CI.
 - **Revisão do grafo de dependências**: builds e ferramentas de análise podem revelar ciclos e caminhos inesperados.
 
-Uma convenção como "o domínio não importa infraestrutura" só é útil quando a equipa consegue detectar e corrigir violações. Se depende apenas da memória colectiva, mais cedo ou mais tarde alguém vai atravessá-la para resolver um problema urgente  e a excepção torna-se padrão.
+Uma convenção como "o domínio não importa infraestrutura" só é útil quando a equipa consegue detectar e corrigir violações. Se depende apenas da memória colectiva, mais cedo ou mais tarde alguém vai atravessá-la para resolver um problema urgente — e a excepção torna-se padrão.
 
 ## Como reconhecer uma camada que só existe no nome
 
@@ -264,8 +256,12 @@ Uma ferramenta CRUD pequena pode beneficiar de uma estrutura simples, mesmo que 
 
 O custo aparece quando responsabilidades diferentes começam a mudar por razões diferentes. É aí que uma separação deliberada reduz acoplamento e permite que o sistema evolua. A arquitectura deve responder a riscos reais de mudança, não satisfazer uma checklist de padrões.
 
-## A arquitectura está no comportamento das fronteiras
+## Conclusão: os nomes não impõem fronteiras
 
-Criar pacotes chamados `domain`, `application`, `infrastructure`, `services` e `repositories` pode ser um excelente começo para a organização. Mas não prova que as responsabilidades estejam separadas nem que as dependências estejam correctas.
+Os nomes das pastas ajudam a organizar o código, mas não impõem a separação. Alinhe as fronteiras com responsabilidades e dependências reais e use módulos, testes de arquitetura ou regras de build para tornar as restrições importantes verificáveis.
 
-A arquitectura emerge daquilo que cada componente faz, do que conhece e da direcção em que o sistema permite que as mudanças se propaguem. Os nomes podem explicar a intenção. A implementação é que tem de a cumprir  e os módulos, testes e processo de build devem ajudar a manter essa promessa.
+## Para saber mais
+
+- [The Hexagonal (Ports & Adapters) Architecture](https://alistair.cockburn.us/hexagonal-architecture/)
+- [The Clean Architecture](https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html)
+- [ArchUnit User Guide](https://www.archunit.org/userguide/html/000_Index.html)

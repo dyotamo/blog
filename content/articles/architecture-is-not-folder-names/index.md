@@ -8,15 +8,7 @@ coverAlt: "A diagram distinguishes folder names from real architecture, shown as
 aliases: ["/blog/architecture-is-not-folder-names/"]
 ---
 
-In software design and architecture, I keep seeing a recurring mistake: assuming that creating and naming folders, packages, or modules is the same as implementing an architecture correctly.
-
-Create `domain`, `application`, `infrastructure`, `services`, and `repositories`… and now we have Clean Architecture. Right?
-
-Not necessarily.
-
-> **A layer or pattern is not defined by its name. It is defined by the responsibility the code implements, and the dependencies it respects.**
-
-Names help people navigate and communicate. But they are a promise, not a guarantee. Real architecture lies in what components do, what they know about, and which changes they can absorb without dragging the rest of the system along.
+Folders named `domain`, `application`, and `infrastructure` can make a project look like Clean Architecture, but the directory tree cannot show whether the domain imports persistence code, where business rules run, or which boundaries the build enforces. Those responsibilities and dependencies are the architecture; folder names are only a navigation aid.
 
 ## A folder tree is not a dependency map
 
@@ -264,8 +256,12 @@ A small CRUD tool can benefit from a simple structure, even if its JPA class is 
 
 The cost appears when different responsibilities start changing for different reasons. That is when deliberate separation reduces coupling and helps the system evolve. Architecture should respond to real change risks, not satisfy a pattern checklist.
 
-## Architecture lives in the behavior of boundaries
+## Conclusion: names do not enforce boundaries
 
-Creating packages called `domain`, `application`, `infrastructure`, `services`, and `repositories` can be an excellent start for organizing code. But it does not prove that responsibilities are separated or dependencies are correct.
+Folder names help organize code, but they do not enforce separation. Keep boundaries aligned with real responsibilities and dependencies, and use modules, architecture tests, or build rules to make important constraints enforceable.
 
-Architecture emerges from what each component does, what it knows about, and which direction the system allows changes to propagate. Names can explain intent. The implementation has to fulfil it, and modules, tests, and the build process should help keep that promise.
+## Further reading
+
+- [The Hexagonal (Ports & Adapters) Architecture](https://alistair.cockburn.us/hexagonal-architecture/)
+- [The Clean Architecture](https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html)
+- [ArchUnit User Guide](https://www.archunit.org/userguide/html/000_Index.html)

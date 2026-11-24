@@ -2,30 +2,30 @@
 title: "Como os computadores executam instruções: do código aos transístores"
 description: "Acompanhe uma soma simples desde o código de alto nível pela compilação, instruções de máquina, registos da CPU, portas lógicas e comutação de transístores."
 date: "2026-11-23"
-tags: ["arquitectura-de-computadores", "compiladores", "cpu", "codigo-de-maquina", "transistores", "rust"]
+tags: ["computer-architecture", "compilers", "cpu", "machine-code", "transistors", "rust"]
 summary: "Uma explicação acessível de como uma operação de alto nível se transforma em instruções de máquina, dados binários e sinais eléctricos dentro de uma CPU."
 coverAlt: "Percurso visual do código-fonte pelas instruções de máquina e portas lógicas até aos transístores."
 ---
 
 Quando escrevemos `a + b`, parece que o computador percebe simplesmente o que queremos e soma os números. De certa forma, sim, mas só depois de o código passar por várias camadas de tradução. O processador não lê as palavras-chave do Rust nem o sinal `+`. Obtém instruções de máquina codificadas em bits, e circuitos baseados em transístores transformam essas instruções em alterações eléctricas.
 
-Vamos acompanhar uma pequena soma de princípio a fim. Será o nosso fio condutor, e vamos distinguir o que o código-fonte exprime daquilo que uma CPU específica poderá realmente fazer:
+Eis o exemplo em Rust. O tipo e as opções de compilação influenciam o que uma CPU específica executa:
 
 ```rust
 fn main() {
-    let a = 90;
+    let a = -90;
     let b = 12;
     let c = a + b;
 }
 ```
 
-O resultado é `102`. A conta é simples; o interessante é perceber quantas camadas tornam essa resposta possível. Vamos acompanhá-la desde o Rust, passando pelas instruções compiladas e pelo hardware da CPU, até às portas lógicas e aos transístores.
+O resultado é `-78`. Vamos seguir o trabalho que o compilador pode antecipar e o que o hardware faz quando a soma continua a ser executada em tempo de execução.
 
 ## 1. O código de alto nível descreve uma intenção
 
 O código diz o que queremos: criar dois valores inteiros, somá-los e associar o resultado a `c`. Não especifica onde os valores têm de ficar, que registo da CPU utilizar, nem como construir um circuito somador.
 
-Neste exemplo em Rust, o compilador infere os literais inteiros como `i32`, porque não indicamos um tipo. É um tipo inteiro com sinal de 32 bits. Os valores são positivos, pelo que a sua representação em bits é igual quer os interpretemos como números binários positivos, quer como inteiros com sinal em complemento para dois.
+Neste exemplo em Rust, o compilador infere os literais inteiros como `i32`, porque não indicamos um tipo. É um tipo inteiro com sinal de 32 bits. Os inteiros com sinal usam a representação em complemento para dois: `-90` é representado pelo padrão de bits `0xFFFFFFA6`, enquanto `12` é `0x0000000C`. O processador soma estes padrões de bits; interpretando o resultado como `i32`, obtemos `-78`.
 
 Um nome como `a` é sobretudo útil para nós e para o compilador. Não garante que exista uma célula de memória permanente chamada `a` no programa final.
 
@@ -60,7 +60,7 @@ Estas etapas são um modelo conceptual útil, não uma garantia de que todas as 
 
 ### A optimização pode eliminar a soma
 
-O nosso exemplo usa constantes. O compilador pode calcular `90 + 12` durante a compilação e substituir a expressão por `102`. Como `c` não é usado, pode até eliminar todo o cálculo. Num programa compilado real, a CPU talvez não execute soma nenhuma para este trecho.
+O nosso exemplo usa constantes. O compilador pode calcular `-90 + 12` durante a compilação e substituir a expressão por `-78`. Como `c` não é usado, pode até eliminar todo o cálculo. Num programa compilado real, a CPU talvez não execute soma nenhuma para este trecho.
 
 A isto chama-se **constant folding**: se o compilador conseguir determinar o resultado antecipadamente, pode calculá-lo durante a compilação. A optimização é uma das razões pelas quais o código-fonte e as instruções executadas não correspondem um para um.
 
@@ -90,7 +90,7 @@ Uma instrução da CPU pode dizer, em termos simples: «soma o valor deste regis
 add eax, esi
 ```
 
-Lê-se assim: soma `esi` a `eax` e guarda o resultado em `eax`. Estes nomes são registos da CPU, não variáveis Rust. Imagina que instruções anteriores colocaram `90` em `eax` e `12` em `esi`. Esta instrução altera `eax` para `102`. Estamos a omitir as instruções de preparação para nos concentrarmos na soma. Uma função Rust real pode usar outros registos ou outra instrução; este é um exemplo concreto, não uma promessa sobre o que qualquer compilador vai gerar.
+Lê-se assim: soma `esi` a `eax` e guarda o resultado em `eax`. Estes nomes são registos da CPU, não variáveis Rust. Imagina que instruções anteriores colocaram a representação de 32 bits de `-90` em `eax` e `12` em `esi`. Esta instrução altera `eax` para o padrão de bits que representa `-78`. A instrução `ADD` efectua a mesma soma binária, quer interpretemos os valores como números com sinal ou sem sinal; é a interpretação com sinal que nos diz que número esses bits representam. Estamos a omitir as instruções de preparação para nos concentrarmos na soma. Uma função Rust real pode usar outros registos ou outra instrução; este é um exemplo concreto, não uma promessa sobre o que qualquer compilador vai gerar.
 
 ### Como fica esta instrução em binário?
 
@@ -112,22 +112,24 @@ Nesse segundo byte, `mod = 11` significa que ambos os operandos são registos; `
 
 Outras arquitecturas de CPU codificam a soma de forma diferente, e o x86 também pode codificar operações equivalentes de mais do que uma maneira. O assembly é a forma legível por humanos; o código de máquina é o padrão de bits específico da arquitectura que o processador descodifica.
 
-Agora vejamos os valores que estão a ser somados. Escritos com apenas oito bits, ficam assim:
+Agora vejamos os valores que estão a ser somados. Em complemento para dois de oito bits, ficam assim:
 
 ```text
-90  = 01011010
-12  = 00001100
-102 = 01100110
+-90 = 10100110
+ 12 = 00001100
+-78 = 10110010
 ```
 
-Os valores Rust são `i32`, ou seja, têm 32 bits; a versão de oito bits é apenas mais fácil de ler. Como estes números são positivos, os bits adicionais à esquerda são todos zeros. A soma binária funciona coluna a coluna, como a soma decimal, mas cada coluna usa a base 2:
+Os valores Rust são `i32`, ou seja, têm 32 bits; a versão de oito bits é apenas mais fácil de ler. Os números negativos usam a representação em complemento para dois, que permite ao mesmo somador binário lidar com valores positivos e negativos. A soma binária funciona coluna a coluna, como a soma decimal, mas cada coluna usa a base 2:
 
 ```text
-  01011010
+  10100110
 + 00001100
 ----------
-  01100110
+  10110010
 ```
+
+Como o bit mais à esquerda do resultado é 1, este padrão representa `-78` como inteiro com sinal de oito bits em complemento para dois.
 
 A CPU não segue este desenho como se fosse uma receita. A instrução indica ao hardware aritmético que operação deve realizar e que valores deve usar; o hardware combina os bits e produz o resultado.
 
@@ -169,7 +171,7 @@ No nível mais baixo desta explicação, a soma não é uma operação mágica f
 
 ## 8. O que acontece a `c`?
 
-Depois da soma, o resultado `102` fica disponível no estado do processador, muitas vezes num registo, para ser utilizado pela instrução seguinte. Se o código precisar dele na memória, o compilador pode gerar uma instrução para o guardar. Se o imprimirmos, há muito mais trabalho: formatar o número como caracteres, enviar a saída ao sistema operativo e, por fim, encaminhá-la para um terminal ou outro destino.
+Depois da soma, o resultado `-78` fica disponível no estado do processador, muitas vezes num registo, para ser utilizado pela instrução seguinte. Se o código precisar dele na memória, o compilador pode gerar uma instrução para o guardar. Se o imprimirmos, há muito mais trabalho: formatar o número como caracteres, enviar a saída ao sistema operativo e, por fim, encaminhá-la para um terminal ou outro destino.
 
 No nosso exemplo original, `c` nunca é lido e a soma não tem efeitos observáveis. O compilador pode eliminar a variável e o cálculo. Por isso, perguntar «onde fica guardado o `c`?» pode não ter uma resposta concreta no código de máquina final: a variável pode nem existir durante a execução.
 
@@ -177,7 +179,7 @@ No nosso exemplo original, `c` nunca é lido e a soma não tem efeitos observáv
 
 ```mermaid
 mindmap
-  root((Uma soma: 90 + 12 = 102))
+  root((Uma soma: -90 + 12 = -78))
     Código-fonte
       Rust exprime a operação
     Compilador
@@ -192,9 +194,14 @@ mindmap
       Portas lógicas
       Transístores comutam sinais
     Resultado
-      102 no estado do processador
+      -78 no estado do processador
 ```
 
-Cada camada oferece uma abstracção útil. Uma linguagem de alto nível permite-nos exprimir uma intenção sem desenhar um circuito. O compilador traduz e optimiza essa intenção. As instruções de máquina descrevem operações para uma arquitectura de processador. Os circuitos da CPU executam-nas usando sinais eléctricos nos transístores.
+Cada camada esconde alguns detalhes: Rust exprime a intenção, o compilador traduz e optimiza-a, e as instruções específicas da arquitectura descrevem operações que os circuitos da CPU executam. Neste exemplo, o compilador pode calcular `-78` antecipadamente e eliminar a soma, pelo que o processador talvez nem chegue a executá-la.
 
-Quando o teu código diz `a + b`, não está a dar uma ordem directa à electricidade. Descreve uma operação através de várias camadas de abstracção, que acabam por orientar alterações eléctricas que produzem `102`, a menos que o compilador consiga provar o resultado antecipadamente e elimine a soma.
+## Para saber mais
+
+- [The LLVM Target-Independent Code Generator](https://llvm.org/docs/CodeGenerator.html)
+- [Intel 64 and IA-32 Architectures Software Developer’s Manual](https://cdrdv2-public.intel.com/819712/253666-sdm-vol-2a.pdf)
+- [ELF Object File Format](https://gabi.xinuos.com/elf/)
+- [CMOS Technology](https://ocw.mit.edu/courses/6-004-computation-structures-spring-2009/resources/mit6_004s09_lec03/)

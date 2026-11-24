@@ -1,26 +1,14 @@
 ---
-title: "Transformar um Fluxo de Bytes em Significado, e Muito Mais..."
-description: "Porque o NebulaCache tem um protocolo próprio de camada 7, como funciona o framing binário atual e o que é preciso para evoluir uma linguagem partilhada por clientes e servidores."
+title: "Nebula Protocol: enquadrar pedidos de cache sobre TCP"
+description: "Porque o NebulaCache tem um protocolo próprio de camada 7, como funciona o framing binário e as responsabilidades de compatibilidade e segurança na manutenção de clientes e servidores."
 date: "2026-11-23"
 tags: ["nebula-cache", "protocols", "networking", "rust", "tcp", "distributed-systems"]
-summary: "O Nebula Protocol dá ao NebulaCache controlo sobre a comunicação entre os SDKs e o servidor. Explore o framing TCP, os formatos binários de pedidos e respostas, a implementação em Rust, as vantagens, os custos e os próximos passos."
+summary: "O Nebula Protocol define como os clientes do NebulaCache codificam operações e delimitam mensagens sobre TCP, além das responsabilidades de compatibilidade, implementação e segurança de um protocolo próprio."
 coverAlt: "Um frame de pedido do Nebula Protocol percorre TCP desde um SDK cliente até ao servidor NebulaCache."
 aliases: ["/blog/nebula-protocol/"]
 ---
 
-Imagina que estamos a construir um sistema de cache em memória. O objetivo parece simples: permitir que as aplicações armazenem e recuperem valores com a menor latência possível.
-
-Uma aplicação precisa de consultar uma chave:
-
-```text
-GET user:123
-```
-
-O servidor recebe a operação, consulta a memória e devolve o valor. Podíamos disponibilizar esta funcionalidade através de HTTP, utilizar gRPC, implementar o protocolo do Redis ou adotar o protocolo do Memcached. Todas são opções razoáveis. Então, porque criar outro protocolo?
-
-A questão que levou ao **Nebula Protocol** foi perceber se queríamos ter controlo total sobre a forma como os clientes comunicam com o servidor NebulaCache: como as operações são representadas na rede, como os dados são codificados, onde terminam as mensagens e como a interface evolui à medida que o produto ganha funcionalidades.
-
-O Nebula Protocol é um protocolo binário, versionado e de camada de aplicação, construído sobre TCP. É a interface de comunicação entre os SDKs e o servidor NebulaCache. Para perceber porque existe, precisamos primeiro de analisar as alternativas e o problema que o protocolo tem de resolver.
+Uma cache em memória precisa de um protocolo para a comunicação entre clientes e servidor. Um pedido como `GET user:123` identifica uma operação e uma chave, mas uma ligação TCP transporta apenas um fluxo de bytes. O Nebula Protocol define como os SDKs do NebulaCache codificam operações, delimitam mensagens e tratam o versionamento. É um protocolo binário de camada de aplicação, construído sobre TCP; ao criá-lo, o projecto também assume a responsabilidade pelos clientes, pela compatibilidade e pela segurança do transporte.
 
 ## Porque não utilizar um protocolo existente?
 
@@ -156,7 +144,7 @@ Um pedido tem um header fixo de 22 bytes, seguido pelos bytes da chave e do valo
 
 Todos os inteiros utilizam codificação Big Endian. O header tem sempre 22 bytes, independentemente do tamanho da chave e do valor. O servidor lê primeiro o header e, em seguida, sabe quantos bytes tem de consumir para completar o frame.
 
-### Porque utilizar Big Endian?
+### Porque utilizar big-endian?
 
 Os sistemas têm de concordar sobre a representação dos números em bytes. Por exemplo, o número `0x00000100` é representado por `00 00 01 00` em Big Endian e por `00 01 00 00` em Little Endian. Se o cliente e o servidor não estiverem de acordo, vão interpretar valores diferentes.
 
@@ -164,7 +152,9 @@ Definir Big Endian torna o formato na rede independente da representação nativ
 
 ### Porque utilizar comprimentos explícitos?
 
-Imagina que queremos guardar o valor `Hello` com a chave `test`. O header pode declarar um comprimento de chave igual a quatro e um comprimento de valor igual a cinco, seguidos desses nove bytes.
+Uma analogia útil é a de uma encomenda cuja etiqueta indica quantos itens contém: quem a recebe sabe quantos retirar sem procurar um marcador no conteúdo. Um campo de comprimento tem uma função semelhante num fluxo de bytes, embora conte bytes e não objetos. Num formato delimitado, é preciso também definir como tratar os bytes delimitadores que aparecem dentro de um valor.
+
+Por exemplo, para guardar `Hello` com a chave `test`, o header pode declarar quatro bytes para a chave e cinco para o valor, seguidos desses nove bytes.
 
 O servidor não precisa de procurar um delimitador. Lê os comprimentos e consome o número de bytes indicado. Como o payload é delimitado pelo comprimento, pode conter zeros, novas linhas ou qualquer outra sequência de bytes. Os valores não estão limitados a strings UTF-8.
 
@@ -325,7 +315,7 @@ A linguagem de programação não importa; o formato na rede, sim. Rust pode uti
 
 Rust é a linguagem do servidor de referência porque oferece controlo de baixo nível e utilização previsível de recursos, detetando muitos erros de segurança de memória durante a compilação. O I/O assíncrono do Tokio ajuda a gerir muitas ligações sem dedicar uma thread a cada uma; os SDKs noutras linguagens continuam a utilizar o mesmo formato na rede.
 
-Com o fluxo constante de notícias sobre vulnerabilidades — e a sensação de estarmos numa época de `everything4shell` — as garantias de segurança de memória do Rust são especialmente convincentes. Não são uma solução milagrosa: as dependências continuam a precisar de atualizações, e Rust não impede erros de lógica nem todas as vulnerabilidades.
+As garantias de segurança de memória do Rust reduzem várias classes de erros no código seguro, mas não cobrem todos os modos de falha. As dependências continuam a precisar de atualizações, e a linguagem não impede erros de lógica nem todas as vulnerabilidades.
 
 ## Porque construir um protocolo próprio?
 
@@ -398,19 +388,19 @@ Um cliente que queira enviar várias operações sem esperar por cada resposta p
 sequenceDiagram
     participant Cliente
     participant Servidor
-    Cliente->>Servidor: ID 101 · SET user:1
-    Cliente->>Servidor: ID 102 · GET user:1
-    Cliente->>Servidor: ID 103 · GET user:2
+    Cliente->>Servidor: ID 101: SET user:1
+    Cliente->>Servidor: ID 102: GET user:2
+    Cliente->>Servidor: ID 103: GET user:3
     par As respostas podem chegar fora de ordem
-        Servidor-->>Cliente: ID 102 · valor
+        Servidor-->>Cliente: ID 102: valor
     and
-        Servidor-->>Cliente: ID 103 · valor
+        Servidor-->>Cliente: ID 103: valor
     and
-        Servidor-->>Cliente: ID 101 · OK
+        Servidor-->>Cliente: ID 101: OK
     end
 ```
 
-Cada resposta incluiria o identificador do pedido correspondente. Assim, o cliente poderia associar as respostas às operações, mesmo que estas fossem processadas concorrentemente e as respostas chegassem fora da ordem de envio.
+Cada resposta incluiria o identificador do pedido correspondente. Como o número de um talão, o ID indica a que pedido pertence a resposta; não indica quando chegará nem define a ordem entre operações. Assim, o cliente poderia associar respostas mesmo que operações independentes fossem processadas concorrentemente e terminassem fora da ordem de envio.
 
 É importante distinguir duas ideias relacionadas:
 
@@ -438,8 +428,6 @@ O objetivo não é permitir que os clientes enviem o máximo possível. É mante
 O NebulaCache começou como uma cache de nó único, mas o protocolo não deve impedir desnecessariamente uma evolução futura. Uma implementação com vários nós levanta questões de identificação de nós, comunicação de cluster, encaminhamento, replicação e propagação de alterações.
 
 Estes desafios não são o mesmo que definir o framing das mensagens na ligação atual. A camada 7 poderá vir a suportar mensagens adicionais para operações de cluster, mas distribuição, replicação e consistência são problemas arquiteturais distintos. Não precisamos de os resolver na primeira versão; precisamos de evitar decisões que tornem a evolução futura desnecessariamente difícil.
-
-Uma das ambições iniciais do NebulaCache era criar um sistema altamente disponível, com suporte para vários nós. Lá chegaremos.
 
 ## A arquitetura que queremos preservar
 
@@ -469,15 +457,11 @@ O servidor pode continuar a utilizar HTTP separadamente para administração e m
 
 ## Conclusão: criar um protocolo é assumir o controlo da comunicação
 
-Criar um protocolo próprio é uma decisão que deve ser tomada com consciência dos custos. Não basta dizer que um formato binário é mais rápido ou que controlamos todos os bytes enviados pela rede. Cada campo, operação, limite e decisão de compatibilidade precisa de uma justificação.
-
-O NebulaCache começou com um formato relativamente simples: um header de pedido de 22 bytes, um header de resposta de 10 bytes, opcodes numéricos, comprimentos explícitos e payloads binários. Isto permite que clientes desenvolvidos em diferentes linguagens comuniquem com o mesmo servidor.
-
-O mais interessante não é apenas o formato atual, mas a possibilidade de evoluir a comunicação de acordo com as necessidades reais do sistema. Pipelining, correlação de pedidos, operações em lote, negociação de capacidades e controlo de fluxo são algumas das direções que podemos explorar. Cada uma traz novos problemas e decisões arquiteturais.
-
-Construir tecnologia própria significa compreender os problemas que as abstrações estabelecidas resolvem e assumir a responsabilidade pelas soluções que escolhemos implementar. **O Nebula Protocol começou por ser uma forma de comunicar com uma cache. O desafio agora é transformá-lo numa interface de comunicação robusta, eficiente e evolutiva, sem perder a simplicidade que motivou a sua criação.**
+Um protocolo próprio dá ao NebulaCache controlo sobre o formato na rede, mas também torna o projeto responsável pelo framing, limites, compatibilidade, segurança e comportamento dos clientes. O formato atual cobre as operações essenciais da cache sobre TCP. Funcionalidades como multiplexing e operações em lote só devem ser acrescentadas quando forem necessárias e com regras de ordenação e controlo de fluxo bem definidas.
 
 ## Para saber mais
 
 - [Repositório do NebulaCache](https://github.com/dyotamo/nebula)
 - [Implementação do Nebula Protocol](https://github.com/dyotamo/nebula/tree/master/crates/nebula-protocol)
+- [Tokio codec module](https://docs.rs/tokio-util/latest/tokio_util/codec/index.html)
+- [Redis Serialization Protocol specification](https://redis.io/docs/latest/develop/reference/protocol-spec/)

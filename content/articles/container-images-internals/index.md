@@ -9,19 +9,19 @@ coverAlt: "A container image manifest points to reusable filesystem layers that 
 
 A Dockerfile looks like a list of commands. Build it, and you get an image that can be pulled, tagged, and started. But what is that image made of, and why can changing one line make a build slow, or leave an unexpected file in the final image?
 
-Let’s follow an image from its published format to the filesystem a running container sees.
+An image’s published representation and the filesystem a container sees at runtime are related but distinct. That difference matters for layers, caching, and writable state.
 
-## An image is a recipe plus immutable filesystem changes
+## What a container image contains
 
 A **container image** is a packaged, versioned artifact: metadata describing how to run a workload, plus filesystem content such as executables, libraries, and configuration. It does not include a booted machine or its own Linux kernel. A container runtime uses the image to prepare a filesystem and start a process with the image’s default settings, which can be overridden at run time.
 
-As an analogy to OOP, think of the relationship like this: a **Dockerfile is like the class definition**, an **image is like the built class or blueprint**, and a **container is like an object created from that class**. It is an analogy, not a one-to-one match: a Dockerfile is build input, while the image is the packaged result.
+The terms describe different stages of the process:
 
-- A **Dockerfile** describes the steps for building the artifact, much like source code defines a class.
-- An **image** is the reusable template produced by those steps, including metadata and filesystem content.
-- A **container** is an instance created from that image, with runtime settings and usually a writable filesystem layer of its own.
+- A **Dockerfile** describes build steps.
+- An **image** packages the resulting filesystem content and metadata.
+- A **container** is created from an image with runtime configuration and, usually, its own writable layer.
 
-Just as multiple objects can be created from one class, multiple containers can be created from one image. They share the image’s read-only starting point, but each has its own runtime state.
+Several containers can use the same image layers, while keeping their runtime configuration and writable state separate.
 
 Images are usually described as a stack of layers, but they are not simply a stack of complete directory snapshots. Each filesystem layer records changes, files added or changed, and sometimes markers for files removed, relative to what came before. Layer content is immutable once built; a later change adds a new layer rather than editing an existing one.
 
@@ -97,6 +97,8 @@ The image layers stay unchanged when a running container modifies its filesystem
 - Changing a file that exists in a lower layer can trigger **copy-up**: OverlayFS copies the file into the upper layer, then applies the change there.
 - Removing a lower-layer file is represented by a marker (a *whiteout*) in the upper layer, so the merged view hides it without editing the image.
 
+A whiteout is a little like a deletion note added to a later copy of a document: the original remains intact, but readers of the combined copies treat the marked entry as absent. The comparison is limited; a whiteout is a filesystem marker with defined rules, not a physical deletion.
+
 The copy-up behavior can make writes to large lower-layer files more expensive than expected. More importantly, container-layer changes are usually tied to that container’s lifecycle. Replacing the container does not turn those changes into a new image, and removing it can discard them. Use a volume or bind mount for data that needs to outlive a container.
 
 ## Build cache: why instruction order matters
@@ -132,7 +134,7 @@ Do not copy a secret into an image and then delete it in a later instruction. Ke
 
 A container image is a content-addressed artifact with metadata and reusable filesystem changes. At runtime, those read-only changes are combined with a separate writable layer; copy-on-write keeps a container’s edits out of the image. During a build, cache reuse depends on instructions and their inputs, so step ordering and a clean build context matter.
 
-Once you see images as immutable layers with explicit inputs, Dockerfile design becomes less mysterious: keep stable work reusable, keep unnecessary files and secrets out, and store persistent application data somewhere other than a disposable container layer.
+Keep build inputs narrow, order steps to reuse stable cache entries, and store persistent application data outside the container’s writable layer.
 
 ## Further reading
 
