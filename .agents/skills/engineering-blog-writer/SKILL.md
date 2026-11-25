@@ -405,7 +405,9 @@ coverAlt: "A meaningful description of the article cover image."
 
 **Summary:** Explain the article's central idea and what the reader will understand.
 
-**CoverAlt:** Describe the actual cover image. Never invent image content or claim an image exists when it has not been supplied or created.
+**Banner:** Every article version must include a `cover.svg` banner alongside its `index.md`. Use a 1200×630 viewBox, make the banner language match the article, and keep the English and Portuguese banners visually consistent while translating any visible text. Create the banner before describing it in metadata; do not claim a banner exists before the file has been created.
+
+**CoverAlt:** Describe the actual banner clearly and concisely. Keep the description in the article's language and do not repeat decorative text that is already visible in the banner.
 
 ### Markdown conventions
 
@@ -558,6 +560,8 @@ Before delivering an article, verify the following.
 
 - [ ] YAML frontmatter is valid.
 - [ ] Metadata is complete.
+- [ ] Each article version has a `cover.svg` banner beside its `index.md` with a 1200×630 viewBox.
+- [ ] Each `coverAlt` describes its actual banner in the article's language.
 - [ ] Markdown is clean and portable.
 - [ ] The article has meaningful section headings.
 - [ ] Further reading is the final section.
@@ -570,6 +574,7 @@ Before delivering an article, verify the following.
 - [ ] Both versions have equivalent technical depth.
 - [ ] Technical terminology is consistent.
 - [ ] Diagrams and code are equivalent.
+- [ ] Banners are visually consistent and any visible text is localized.
 - [ ] Both versions contain complete metadata and further reading.
 
 ## 16. Editorial Philosophy
