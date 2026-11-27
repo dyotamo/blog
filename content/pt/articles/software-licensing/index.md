@@ -42,7 +42,7 @@ Este ponto merece destaque porque é onde muitos resumos simplificam demais.
 
 A GPL **não exige, em geral, que uma empresa publique ao mundo inteiro alterações que usa apenas internamente**. A obrigação de disponibilizar o código-fonte correspondente está ligada a determinadas formas de transmitir ou distribuir cópias do software abrangido. Se distribuir um binário coberto pela GPL, por exemplo, terá de cumprir as condições de disponibilização do código-fonte aplicáveis à versão da licença.
 
-Também não significa que o software tenha de ser oferecido a preço zero. A GPL permite cobrar pela cópia ou distribuição. "Livre" aqui está relacionado com as liberdades dadas aos destinatários — por exemplo, estudar, modificar e redistribuir sob os termos da licença — e não com a ausência obrigatória de preço.
+Também não significa que o software tenha de ser oferecido a preço zero. A GPL permite cobrar pela cópia ou distribuição. "Livre" aqui está relacionado com as liberdades dadas aos destinatários, por exemplo, estudar, modificar e redistribuir sob os termos da licença, e não com a ausência obrigatória de preço.
 
 Há ainda uma distinção importante para serviços online: a GPL normal não cria, por si só, a mesma obrigação de disponibilização de código apenas porque alguém usa um programa através de uma rede. A **AGPL** foi concebida para cobrir uma situação específica de versões modificadas disponibilizadas para interacção remota; nos termos da licença, os utilizadores que interagem com uma dessas versões devem ter acesso ao respectivo código-fonte. O texto exacto da licença importa.
 
@@ -65,7 +65,7 @@ A licença de uma dependência **não transforma automaticamente** todo o produt
 
 Também não existe uma regra simples de que "se estiver numa dependência transitiva, aplica-se a licença ao produto inteiro". Uma dependência transitiva continua a ter uma licença que precisa de ser respeitada, mas a obrigação concreta depende do que é copiado, combinado e entregue.
 
-Isto é especialmente relevante para componentes GPL ligados a uma aplicação. A própria [Free Software Foundation explica](https://www.gnu.org/licenses/gpl-faq.html#MereAggregation) que certas formas de ligação podem criar um trabalho combinado; também distingue esses casos de programas independentes agregados lado a lado. Ainda assim, determinar a fronteira num produto real pode exigir análise jurídica — não basta olhar para o ficheiro `package.json` ou para o nome do pacote.
+Isto é especialmente relevante para componentes GPL ligados a uma aplicação. A própria [Free Software Foundation explica](https://www.gnu.org/licenses/gpl-faq.html#MereAggregation) que certas formas de ligação podem criar um trabalho combinado; também distingue esses casos de programas independentes agregados lado a lado. Ainda assim, determinar a fronteira num produto real pode exigir análise jurídica, não basta olhar para o ficheiro `package.json` ou para o nome do pacote.
 
 ## Porque MIT, BSD e GPL fazem compromissos diferentes
 

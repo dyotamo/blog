@@ -42,7 +42,7 @@ A árvore é uma pista. A direcção das dependências e o comportamento do cód
 
 Uma arquitectura em camadas separa responsabilidades que mudam por razões diferentes. Uma divisão comum pode ter:
 
-- **Apresentação**: recebe interacções externas — HTTP, interface gráfica, CLI ou mensagens — e traduz os dados de entrada e saída.
+- **Apresentação**: recebe interacções externas, HTTP, interface gráfica, CLI ou mensagens, e traduz os dados de entrada e saída.
 - **Aplicação**: coordena casos de uso, controla a sequência de operações e define a fronteira transaccional.
 - **Domínio**: representa conceitos de negócio e protege as regras e invariantes do sistema.
 - **Infraestrutura**: liga o sistema a tecnologias externas, como bases de dados, filas, serviços de terceiros, ficheiros e frameworks.
@@ -232,7 +232,7 @@ Algumas ferramentas e escolhas de linguagem podem tornar as fronteiras mais dif�
 - **Testes de arquitectura**: ferramentas como ArchUnit podem verificar regras de dependência no CI.
 - **Revisão do grafo de dependências**: builds e ferramentas de análise podem revelar ciclos e caminhos inesperados.
 
-Uma convenção como "o domínio não importa infraestrutura" só é útil quando a equipa consegue detectar e corrigir violações. Se depende apenas da memória colectiva, mais cedo ou mais tarde alguém vai atravessá-la para resolver um problema urgente — e a excepção torna-se padrão.
+Uma convenção como "o domínio não importa infraestrutura" só é útil quando a equipa consegue detectar e corrigir violações. Se depende apenas da memória colectiva, mais cedo ou mais tarde alguém vai atravessá-la para resolver um problema urgente, e a excepção torna-se padrão.
 
 ## Como reconhecer uma camada que só existe no nome
 

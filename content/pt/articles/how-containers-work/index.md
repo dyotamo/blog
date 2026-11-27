@@ -46,7 +46,7 @@ cat /proc/<PID>/status
 
 `/proc` é um sistema de ficheiros virtual: o kernel apresenta informação sobre os processos e o sistema, não ficheiros convencionais guardados num disco.
 
-Um processo pede serviços ao kernel através de **system calls**, ou syscalls — por exemplo, para abrir um ficheiro, criar outro processo ou enviar dados por uma socket. O programa que corre no container não tem um kernel próprio para satisfazer esses pedidos: continua a usar o kernel Linux partilhado.
+Um processo pede serviços ao kernel através de **system calls**, ou syscalls, por exemplo, para abrir um ficheiro, criar outro processo ou enviar dados por uma socket. O programa que corre no container não tem um kernel próprio para satisfazer esses pedidos: continua a usar o kernel Linux partilhado.
 
 ## 2. Namespaces: limitar o que um processo consegue ver
 
@@ -75,7 +75,7 @@ O PID 1 tem responsabilidades especiais: entre elas, receber processos órfãos 
 
 Um namespace de rede pode ter interfaces, endereços IP e tabelas de encaminhamento próprios. Assim, dois containers podem ter serviços à escuta na porta interna `8080` sem conflito entre si: estão em contextos de rede separados.
 
-Para comunicar com o host ou com outros containers, a configuração pode ligar namespaces através de pares de interfaces virtuais (*veth*), bridges e rotas. A publicação de uma porta no host — por exemplo, encaminhar uma porta do host para um serviço do container — é uma configuração adicional feita pelo runtime ou por ferramentas de rede; não acontece apenas por existir um namespace.
+Para comunicar com o host ou com outros containers, a configuração pode ligar namespaces através de pares de interfaces virtuais (*veth*), bridges e rotas. A publicação de uma porta no host, por exemplo, encaminhar uma porta do host para um serviço do container, é uma configuração adicional feita pelo runtime ou por ferramentas de rede; não acontece apenas por existir um namespace.
 
 ### Mount: uma vista própria do sistema de ficheiros
 

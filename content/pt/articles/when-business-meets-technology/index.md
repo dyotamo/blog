@@ -14,7 +14,7 @@ O sistema Dynamo da Amazon foi concebido para serviços como o carrinho de compr
 
 Os engenheiros da Amazon estavam a construir serviços que precisavam de continuar a funcionar em muitas máquinas e centros de dados. As bases de dados relacionais ofereciam garantias importantes, incluindo transacções com propriedades ACID, mas uma única configuração de base de dados não era necessariamente a escolha certa para todas as cargas de trabalho ou todos os objectivos de disponibilidade.
 
-O carrinho tinha uma tolerância particular a erros. Um cliente podia ver temporariamente um artigo antigo, ou até duplicado, enquanto o sistema reconciliava actualizações. Era indesejável, mas muitas vezes menos prejudicial do que mostrar um carrinho vazio — ou nenhum carrinho — porque um componente estava inacessível.
+O carrinho tinha uma tolerância particular a erros. Um cliente podia ver temporariamente um artigo antigo, ou até duplicado, enquanto o sistema reconciliava actualizações. Era indesejável, mas muitas vezes menos prejudicial do que mostrar um carrinho vazio, ou nenhum carrinho, porque um componente estava inacessível.
 
 Dito de outra forma, o negócio atribuía pesos diferentes a dois resultados:
 
@@ -140,13 +140,13 @@ Uma conversa útil sobre o design começa com perguntas como estas:
 4. Qual é o custo de rejeitar um pedido em comparação com aceitar um valor potencialmente desactualizado?
 5. Como é que o sistema vai detectar e reparar divergências?
 
-## O que o Dynamo influenciou — e o que isso não significa
+## O que o Dynamo influenciou, e o que isso não significa
 
 O Dynamo tornou-se uma referência importante para o armazenamento distribuído. Mais tarde, a Amazon lançou o DynamoDB, mas o DynamoDB é um serviço de base de dados gerido, não simplesmente o artigo original do Dynamo exposto sem alterações como serviço.
 
 Outros sistemas recorreram a ideias relacionadas de formas diferentes. O Cassandra combinou ideias associadas à arquitectura distribuída do Dynamo com conceitos de modelação de dados associados ao Bigtable da Google. O ScyllaDB é uma implementação compatível com Cassandra. O próprio Bigtable foi um sistema separado da Google, descrito no seu próprio artigo; não deve ser tratado como descendente do Dynamo.
 
-O impacto mais amplo não foi um único modelo de base de dados. Foi um conjunto de padrões práticos — particionamento, replicação, coordenação configurável e tratamento de conflitos — que as equipas podiam adaptar aos seus próprios requisitos.
+O impacto mais amplo não foi um único modelo de base de dados. Foi um conjunto de padrões práticos, particionamento, replicação, coordenação configurável e tratamento de conflitos, que as equipas podiam adaptar aos seus próprios requisitos.
 
 ## A lição: a arquitectura começa pelas prioridades
 

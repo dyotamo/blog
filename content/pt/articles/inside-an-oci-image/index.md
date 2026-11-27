@@ -15,7 +15,7 @@ Perceber essa estrutura ajuda a explicar por que imagens podem partilhar conteú
 
 ## Uma imagem não é um container
 
-Uma imagem reúne os ficheiros de espaço de utilizador de que uma aplicação precisa — por exemplo, executáveis, bibliotecas e configuração — e metadados com valores predefinidos para a execução. Não é, por si só, um processo em execução nem uma máquina virtual com kernel próprio.
+Uma imagem reúne os ficheiros de espaço de utilizador de que uma aplicação precisa, por exemplo, executáveis, bibliotecas e configuração, e metadados com valores predefinidos para a execução. Não é, por si só, um processo em execução nem uma máquina virtual com kernel próprio.
 
 Um container é uma instância criada a partir da imagem. O runtime prepara o filesystem e as definições do processo; em muitos ambientes Linux, também associa uma camada gravável específica dessa instância. A imagem original continua inalterada.
 
@@ -42,7 +42,7 @@ Aplicadas da base para o topo, estas alterações produzem o filesystem visível
 
 As remoções também têm de ser representadas sem alterar uma layer imutável. No formato OCI, uma layer pode incluir um ficheiro especial chamado *whiteout*, que assinala um caminho de uma layer inferior como removido. Por exemplo, `.wh.old-config` indica que `old-config` não deve aparecer no filesystem final.
 
-Isto tem uma consequência prática: se um build acrescentar um ficheiro numa layer e o remover numa layer posterior, a remoção não apaga os bytes do blob anterior. A imagem ainda inclui a layer que os contém. Para evitar esse desperdício, convém não deixar artefactos desnecessários em layers anteriores — ou usar uma estratégia de build que não os inclua na imagem final.
+Isto tem uma consequência prática: se um build acrescentar um ficheiro numa layer e o remover numa layer posterior, a remoção não apaga os bytes do blob anterior. A imagem ainda inclui a layer que os contém. Para evitar esse desperdício, convém não deixar artefactos desnecessários em layers anteriores, ou usar uma estratégia de build que não os inclua na imagem final.
 
 ## Do Dockerfile à imagem
 
@@ -63,7 +63,7 @@ Ao executar:
 docker build -t dyotamo/minha-app:v1 .
 ```
 
-O builder lê o Dockerfile e o contexto, resolve a imagem base, executa as instruções e produz os conteúdos e metadados do resultado. O contexto de build — os ficheiros disponibilizados ao builder — também pode afetar o resultado e a reutilização da cache.
+O builder lê o Dockerfile e o contexto, resolve a imagem base, executa as instruções e produz os conteúdos e metadados do resultado. O contexto de build, os ficheiros disponibilizados ao builder, também pode afetar o resultado e a reutilização da cache.
 
 ### Cache de build não é o mesmo que uma layer da imagem
 
@@ -130,7 +130,7 @@ Os valores são ilustrativos. Um digest identifica o conteúdo através de um ha
 
 O blob de configuração descreve a plataforma e inclui valores predefinidos que o runtime pode usar ao criar um container, como variáveis de ambiente, diretório de trabalho, utilizador, `Entrypoint` e `Cmd`. Estes valores podem ser substituídos por opções fornecidas no momento da criação do container.
 
-A configuração também regista os `diff_ids` das layers e, opcionalmente, o histórico das instruções de build. Um `diff_id` é o digest do arquivo tar da layer **descomprimido**. Não é necessariamente igual ao digest do descriptor no manifest, que identifica o blob distribuído — por exemplo, o conteúdo comprimido com gzip.
+A configuração também regista os `diff_ids` das layers e, opcionalmente, o histórico das instruções de build. Um `diff_id` é o digest do arquivo tar da layer **descomprimido**. Não é necessariamente igual ao digest do descriptor no manifest, que identifica o blob distribuído, por exemplo, o conteúdo comprimido com gzip.
 
 ### Layers: blobs com alterações
 

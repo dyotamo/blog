@@ -15,7 +15,7 @@ Understanding that structure helps explain why images can share content, how fil
 
 ## An image is not a container
 
-An image bundles the userspace files an application needs — such as executables, libraries, and configuration — along with metadata that provides defaults for execution. It is not, by itself, a running process or a virtual machine with its own kernel.
+An image bundles the userspace files an application needs, such as executables, libraries, and configuration, along with metadata that provides defaults for execution. It is not, by itself, a running process or a virtual machine with its own kernel.
 
 A container is an instance created from the image. The runtime prepares its filesystem and process settings; in many Linux environments, it also associates a writable layer with that instance. The original image remains unchanged.
 
@@ -63,7 +63,7 @@ When we run:
 docker build -t dyotamo/my-app:v1 .
 ```
 
-the builder reads the Dockerfile and build context, resolves the base image, executes the instructions, and produces the resulting content and metadata. The build context — the files made available to the builder — can also affect the result and whether cache can be reused.
+the builder reads the Dockerfile and build context, resolves the base image, executes the instructions, and produces the resulting content and metadata. The build context, the files made available to the builder, can also affect the result and whether cache can be reused.
 
 ### Build cache is not the same as an image layer
 
@@ -130,7 +130,7 @@ The values are illustrative. A digest identifies content using a cryptographic h
 
 The configuration blob describes the platform and contains defaults that a runtime can use when creating a container, such as environment variables, a working directory, a user, `Entrypoint`, and `Cmd`. These defaults can be overridden by options provided when the container is created.
 
-The configuration also records the layers' `diff_ids` and, optionally, build history. A `diff_id` is the digest of the **uncompressed** layer tar archive. It is not necessarily the same as the digest in the manifest descriptor, which identifies the distributed blob — for example, content compressed with gzip.
+The configuration also records the layers' `diff_ids` and, optionally, build history. A `diff_id` is the digest of the **uncompressed** layer tar archive. It is not necessarily the same as the digest in the manifest descriptor, which identifies the distributed blob, for example, content compressed with gzip.
 
 ### Layers: blobs containing changes
 
