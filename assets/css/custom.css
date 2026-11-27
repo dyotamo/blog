@@ -1061,6 +1061,16 @@ html.dark #main-content > article .prose .mermaid svg .edgeLabel .labelBkg {
   box-shadow: 0 0.8rem 2rem rgb(9 28 36 / 10%);
 }
 
+#main-content > article .prose pre.mermaid,
+#main-content > section.prose pre.mermaid,
+#main-content > header + section.prose pre.mermaid {
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
 #main-content > article .prose table,
 #main-content > section.prose table,
 #main-content > header + section.prose table {
