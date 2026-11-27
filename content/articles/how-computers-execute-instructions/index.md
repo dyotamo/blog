@@ -5,6 +5,7 @@ date: "2026-11-23"
 tags: ["computer-architecture", "compilers", "cpu", "machine-code", "transistors", "rust"]
 summary: "A friendly end-to-end tour of how a high-level operation becomes machine instructions, binary data, and changing electrical signals inside a CPU."
 coverAlt: "A visual path from source code through machine instructions and logic gates to transistors."
+draft: true
 ---
 
 When you write `a + b`, it feels as if the computer simply understands what you mean and adds the numbers. In a way, it does, but only after your code has passed through several layers of translation. The processor does not read Rust keywords or the `+` sign. It fetches machine instructions encoded as bits, and transistor-based circuits turn those instructions into electrical changes.

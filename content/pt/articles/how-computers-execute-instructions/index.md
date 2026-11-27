@@ -5,6 +5,7 @@ date: "2026-11-23"
 tags: ["computer-architecture", "compilers", "cpu", "machine-code", "transistors", "rust"]
 summary: "Uma explicação acessível de como uma operação de alto nível se transforma em instruções de máquina, dados binários e sinais eléctricos dentro de uma CPU."
 coverAlt: "Percurso visual do código-fonte pelas instruções de máquina e portas lógicas até aos transístores."
+draft: true
 ---
 
 Quando escrevemos `a + b`, parece que o computador percebe simplesmente o que queremos e soma os números. De certa forma, sim, mas só depois de o código passar por várias camadas de tradução. O processador não lê as palavras-chave do Rust nem o sinal `+`. Obtém instruções de máquina codificadas em bits, e circuitos baseados em transístores transformam essas instruções em alterações eléctricas.
