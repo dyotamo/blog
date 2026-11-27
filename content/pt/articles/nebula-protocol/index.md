@@ -1,14 +1,16 @@
 ---
 title: "Nebula Protocol: enquadrar pedidos de cache sobre TCP"
-description: "Porque criei um protocolo de camada 7 para o NebulaCache, o meu projeto de cache em memória, como funciona o framing binário e as responsabilidades de compatibilidade e segurança envolvidas."
+description: "Como criei um protocolo TCP binário e versionado para o NebulaCache, a minha cache de chave-valor em memória e de nó único, e as responsabilidades de framing, compatibilidade e segurança que isso implica."
 date: "2026-11-23"
 tags: ["nebula-cache", "protocols", "networking", "rust", "tcp", "distributed-systems"]
-summary: "O NebulaCache é o meu projeto de cache em memória, e o Nebula Protocol é o protocolo próprio que criei para os seus clientes e servidor trocarem operações sobre TCP."
+summary: "O NebulaCache é o meu projecto de cache de chave-valor em memória e de nó único, com TTL, memória limitada e SDKs em cinco linguagens. Criei o Nebula Protocol para ligar esses clientes ao servidor através de TCP."
 coverAlt: "Um frame de pedido do Nebula Protocol percorre TCP desde um SDK cliente até ao servidor NebulaCache."
 aliases: ["/blog/nebula-protocol/"]
 ---
 
-O NebulaCache é o meu projeto de cache em memória. Criei o Nebula Protocol, um protocolo binário próprio e versionado de camada de aplicação, para permitir a comunicação entre os seus clientes e servidor através de TCP. Um pedido como `GET user:123` identifica uma operação e uma chave, mas o TCP transporta apenas um fluxo de bytes; o protocolo define como os SDKs codificam operações, delimitam mensagens e tratam o versionamento. Manter este protocolo também me torna responsável pelos clientes, pela compatibilidade e pela segurança do transporte.
+O NebulaCache é o meu projecto de cache de chave-valor em memória, executada num único nó. O servidor em Rust armazena valores como sequências de bytes, sem exigir um formato específico, e disponibiliza operações como `SET`, `GET` e `DELETE`; cada entrada pode ter um tempo de vida (TTL) configurado, e um limite de memória pode levar à expulsão de entradas segundo uma política LRU, LFU ou FIFO. Existem SDKs para Rust, Go, Java, JavaScript e Python. O sistema também suporta TLS e autenticação por token opcionais, recuperação através de snapshots, métricas Prometheus e monitorização da saúde dos componentes, além de uma consola web de administração opcional. É um serviço de nó único, não uma cache distribuída.
+
+Criei o Nebula Protocol como protocolo binário versionado de camada de aplicação para permitir que esses clientes comuniquem com o servidor através de TCP. Um pedido como `GET user:123` identifica uma operação e uma chave, mas o TCP transporta apenas um fluxo de bytes; o protocolo define como os SDKs codificam operações, delimitam mensagens e tratam o versionamento. Manter este protocolo também me torna responsável pelos clientes, pela compatibilidade e pela segurança do transporte.
 
 ## Porque não utilizar um protocolo existente?
 

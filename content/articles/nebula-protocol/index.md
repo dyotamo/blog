@@ -1,14 +1,16 @@
 ---
 title: "Nebula Protocol: Framing Cache Requests over TCP"
-description: "Why I designed a Layer 7 protocol for NebulaCache, my in-memory cache project, how its binary framing works, and the compatibility and security responsibilities involved."
+description: "How I designed a versioned binary TCP protocol for NebulaCache, my single-node in-memory key/value cache, and the framing, compatibility, and security responsibilities it brings."
 date: "2026-11-23"
 tags: ["nebula-cache", "protocols", "networking", "rust", "tcp", "distributed-systems"]
-summary: "NebulaCache is my in-memory cache project, and Nebula Protocol is the custom protocol I designed for its clients and server to exchange operations over TCP."
+summary: "NebulaCache is my single-node in-memory key/value cache project, with TTLs, bounded memory, and SDKs in five languages. I designed Nebula Protocol to connect those clients to the server over TCP."
 coverAlt: "A Nebula Protocol request frame flowing over TCP from a client SDK to the NebulaCache server."
 aliases: ["/blog/nebula-protocol/"]
 ---
 
-NebulaCache is my in-memory cache project. I designed Nebula Protocol, a custom, versioned binary application-layer protocol, for its clients and server to communicate over TCP. A request such as `GET user:123` names an operation and key, but TCP carries only a stream of bytes; the protocol defines how the SDKs encode operations, frame messages, and handle versioning. Maintaining it also makes me responsible for clients, compatibility, and transport security.
+NebulaCache is my single-node, in-memory key/value cache project. Its Rust server stores values as opaque bytes and handles operations such as `SET`, `GET`, and `DELETE`; entries can expire after a per-key TTL, and a configurable memory cap can evict entries using LRU, LFU, or FIFO. Client SDKs are available for Rust, Go, Java, JavaScript, and Python. The system also supports optional TLS and token authentication, snapshot-based recovery, Prometheus metrics and component health monitoring, and an optional web administration console. It is a single-node service, not a distributed cache.
+
+I designed Nebula Protocol as the versioned binary application-layer protocol that lets those clients communicate with the server over TCP. A request such as `GET user:123` names an operation and key, but TCP carries only a stream of bytes; the protocol defines how the SDKs encode operations, frame messages, and handle versioning. Maintaining it also makes me responsible for clients, compatibility, and transport security.
 
 ## Why not use an existing protocol?
 
