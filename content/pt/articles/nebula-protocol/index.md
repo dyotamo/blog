@@ -1,18 +1,18 @@
 ---
 title: "Nebula Protocol: enquadrar pedidos de cache sobre TCP"
-description: "Porque o NebulaCache tem um protocolo próprio de camada 7, como funciona o framing binário e as responsabilidades de compatibilidade e segurança na manutenção de clientes e servidores."
+description: "Porque criei um protocolo de camada 7 para o NebulaCache, o meu projeto de cache em memória, como funciona o framing binário e as responsabilidades de compatibilidade e segurança envolvidas."
 date: "2026-11-23"
 tags: ["nebula-cache", "protocols", "networking", "rust", "tcp", "distributed-systems"]
-summary: "O Nebula Protocol define como os clientes do NebulaCache codificam operações e delimitam mensagens sobre TCP, além das responsabilidades de compatibilidade, implementação e segurança de um protocolo próprio."
+summary: "O NebulaCache é o meu projeto de cache em memória, e o Nebula Protocol é o protocolo próprio que criei para os seus clientes e servidor trocarem operações sobre TCP."
 coverAlt: "Um frame de pedido do Nebula Protocol percorre TCP desde um SDK cliente até ao servidor NebulaCache."
 aliases: ["/blog/nebula-protocol/"]
 ---
 
-Uma cache em memória precisa de um protocolo para a comunicação entre clientes e servidor. Um pedido como `GET user:123` identifica uma operação e uma chave, mas uma ligação TCP transporta apenas um fluxo de bytes. O Nebula Protocol define como os SDKs do NebulaCache codificam operações, delimitam mensagens e tratam o versionamento. É um protocolo binário de camada de aplicação, construído sobre TCP; ao criá-lo, o projecto também assume a responsabilidade pelos clientes, pela compatibilidade e pela segurança do transporte.
+O NebulaCache é o meu projeto de cache em memória. Criei o Nebula Protocol, um protocolo binário próprio e versionado de camada de aplicação, para permitir a comunicação entre os seus clientes e servidor através de TCP. Um pedido como `GET user:123` identifica uma operação e uma chave, mas o TCP transporta apenas um fluxo de bytes; o protocolo define como os SDKs codificam operações, delimitam mensagens e tratam o versionamento. Manter este protocolo também me torna responsável pelos clientes, pela compatibilidade e pela segurança do transporte.
 
 ## Porque não utilizar um protocolo existente?
 
-Antes de desenhar um protocolo, vale a pena compreender o que as opções já estabelecidas oferecem.
+Antes de criar o Nebula Protocol, considerei o que as opções já estabelecidas oferecem.
 
 ### REST sobre HTTP
 
@@ -33,7 +33,7 @@ GET /cache/user:123
 
 HTTP é conhecido, tem amplo suporte e está integrado num ecossistema enorme. Também foi o meu primeiro instinto, especialmente num mundo em que tantos serviços são concebidos em torno de REST.
 
-HTTP traz consigo uma estrutura de mensagens própria e um modelo orientado a recursos. Num workload de cache composto por operações pequenas e frequentes, essa estrutura pode representar mais do que a própria operação necessita. Isto não significa que HTTP seja inerentemente lento ou inadequado; HTTP/1.1 e HTTP/2 podem ter um excelente desempenho. A questão é se queremos que a interface principal deste cache dependa da semântica de HTTP.
+HTTP traz consigo uma estrutura de mensagens própria e um modelo orientado a recursos. Num workload de cache composto por operações pequenas e frequentes, essa estrutura pode representar mais do que a própria operação necessita. Isto não significa que HTTP seja inerentemente lento ou inadequado; HTTP/1.1 e HTTP/2 podem ter um excelente desempenho. No meu projeto, a questão era se queria que a interface principal desta cache dependesse da semântica de HTTP.
 
 ### gRPC e Protocol Buffers
 
@@ -60,26 +60,26 @@ message GetResponse {
 
 O gRPC oferece contratos explícitos, geração de código, suporte para várias linguagens, streaming e mecanismos de comunicação maduros. É uma excelente opção para comunicação entre serviços.
 
-Utilizá-lo também significaria adotar o seu modelo RPC, a infraestrutura HTTP/2 e as decisões de framing e serialização associadas. Não seria necessariamente uma má escolha; simplesmente estaríamos a aceitar uma abstração mais abrangente do que aquela que pretendemos construir para o NebulaCache.
+Utilizá-lo também significaria adotar o seu modelo RPC, a infraestrutura HTTP/2 e as decisões de framing e serialização associadas. Não seria necessariamente uma má escolha; simplesmente seria uma abstração mais abrangente do que aquela que eu pretendia construir para o NebulaCache.
 
 ### RESP e o protocolo do Memcached
 
-Também podíamos utilizar protocolos especializados em cache. O Redis utiliza RESP (Redis Serialization Protocol), enquanto o Memcached tem os seus próprios protocolos textuais e binários. Ambos resolvem muitos dos problemas de comunicação que estamos a tentar resolver.
+Também podia ter utilizado protocolos especializados em cache. O Redis utiliza RESP (Redis Serialization Protocol), enquanto o Memcached tem os seus próprios protocolos textuais e binários. Ambos resolvem muitos dos mesmos problemas de comunicação.
 
-Existe, contudo, uma diferença entre criar um produto compatível com um protocolo existente e desenvolver um produto em torno de um protocolo concebido para as suas próprias necessidades. O NebulaCache é uma oportunidade para explorar esta segunda opção.
+Existe, contudo, uma diferença entre criar um produto compatível com um protocolo existente e desenvolver um produto em torno de um protocolo concebido para as suas próprias necessidades. Com o NebulaCache, escolhi explorar esta segunda opção.
 
 ### A decisão
 
 Não se trata de provar que um protocolo próprio é melhor do que REST, gRPC, RESP ou Memcached. Cada opção incorpora decisões de design e disponibiliza abstrações úteis.
 
-Com o Nebula Protocol, escolhemos controlar:
+Criei o Nebula Protocol para poder definir:
 
 - O formato binário na rede e a representação das operações.
 - A estrutura dos headers e o framing das mensagens.
 - O versionamento e os limites dos payloads.
 - A semântica das respostas e as futuras funcionalidades de comunicação.
 
-Esse controlo também traz responsabilidades. Cabe-nos garantir a correção, a segurança, a compatibilidade e a manutenção que, de outra forma, seriam asseguradas por um protocolo estabelecido.
+Esse controlo também traz responsabilidades. Sou responsável pela correção, segurança, compatibilidade e manutenção do protocolo, tarefas que, de outra forma, seriam asseguradas por um protocolo estabelecido.
 
 ## As camadas: o que o TCP faz e não faz
 
@@ -160,7 +160,7 @@ O servidor não precisa de procurar um delimitador. Lê os comprimentos e consom
 
 ## Descodificar um pedido em Rust
 
-Com o formato do frame definido, podemos implementar o descodificador. A biblioteca Tokio, em Rust, oferece abstrações de I/O assíncrono para trabalhar com streams TCP. Uma versão simplificada do descodificador seria:
+Com o formato do frame definido, posso implementar o descodificador. A biblioteca Tokio, em Rust, oferece abstrações de I/O assíncrono para trabalhar com streams TCP. Uma versão simplificada do descodificador seria:
 
 ```rust
 use std::io::{self, ErrorKind};
@@ -317,19 +317,19 @@ Rust é a linguagem do servidor de referência porque oferece controlo de baixo 
 
 As garantias de segurança de memória do Rust reduzem várias classes de erros no código seguro, mas não cobrem todos os modos de falha. As dependências continuam a precisar de atualizações, e a linguagem não impede erros de lógica nem todas as vulnerabilidades.
 
-## Porque construir um protocolo próprio?
+## Porque criei um protocolo próprio
 
-Depois de implementar uma primeira versão, algumas vantagens arquiteturais tornam-se mais claras.
+Depois de implementar uma primeira versão, algumas vantagens arquiteturais tornaram-se mais claras.
 
 ### Controlo sobre o formato na rede
 
-Não precisamos de adaptar as operações da cache à estrutura de mensagens de outro protocolo. Escolhemos os campos a transmitir e a forma de os representar.
+Não preciso de adaptar as operações da cache à estrutura de mensagens de outro protocolo. Escolho os campos a transmitir e a forma de os representar.
 
 ### Uma representação eficiente, quando as medições o confirmam
 
 Um opcode ocupa um byte e os comprimentos são representados como inteiros binários, em vez de texto decimal. O formato evita estruturas que não são necessárias para a operação.
 
-Um protocolo binário **não é automaticamente mais rápido** do que um protocolo textual. O desempenho depende da implementação, do tamanho das mensagens, das alocações, das operações de I/O e dos padrões de utilização. A vantagem é controlar o formato e poder otimizá-lo com base em medições reais.
+Um protocolo binário **não é automaticamente mais rápido** do que um protocolo textual. O desempenho depende da implementação, do tamanho das mensagens, das alocações, das operações de I/O e dos padrões de utilização. A vantagem é controlar o formato, o que me permite otimizá-lo com base em medições reais.
 
 ### Independência tecnológica
 
@@ -337,7 +337,7 @@ O servidor pode ser implementado em Rust, enquanto os clientes utilizam outras l
 
 ### Evolução controlada e especialização
 
-Podemos evoluir o protocolo de acordo com as necessidades do NebulaCache, introduzindo novos opcodes ou operações como `MGET`, `MSET`, `EXPIRE` e `INCR`, desde que definamos e respeitemos as regras de compatibilidade.
+Posso evoluir o protocolo de acordo com as necessidades do NebulaCache, introduzindo novos opcodes ou operações como `MGET`, `MSET`, `EXPIRE` e `INCR`, desde que defina e respeite as regras de compatibilidade.
 
 ## O custo de controlar tudo
 
@@ -345,7 +345,7 @@ Podemos evoluir o protocolo de acordo com as necessidades do NebulaCache, introd
 
 ### Compatibilidade entre versões
 
-O que acontece quando um cliente desenvolvido para uma versão antiga se liga a um servidor mais recente, ou vice-versa? Precisamos de uma política de compatibilidade. A versão atual é identificada pelo valor `1`, e o servidor rejeita versões desconhecidas. É um começo, mas ainda não existe um mecanismo completo para negociar versões ou capacidades.
+O que acontece quando um cliente desenvolvido para uma versão antiga se liga a um servidor mais recente, ou vice-versa? Preciso de uma política de compatibilidade. A versão atual é identificada pelo valor `1`, e o servidor rejeita versões desconhecidas. É um começo, mas ainda não existe um mecanismo completo para negociar versões ou capacidades.
 
 Um handshake futuro poderia permitir que ambos os lados anunciassem as versões e capacidades suportadas, selecionassem uma versão comum e só depois iniciassem a sessão.
 
@@ -411,7 +411,7 @@ Adicionar um campo ao header não é suficiente para suportar multiplexing. Tamb
 
 ### Operações em lote
 
-Um pedido em lote poderia consultar várias chaves de uma só vez, reduzindo o número de viagens de ida e volta em workloads com muitas operações pequenas. Mas teríamos de especificar se um lote é simplesmente um grupo de operações ou se oferece alguma garantia de atomicidade. Um lote não deve ser confundido com uma transação.
+Um pedido em lote poderia consultar várias chaves de uma só vez, reduzindo o número de viagens de ida e volta em workloads com muitas operações pequenas. Mas teria de especificar se um lote é simplesmente um grupo de operações ou se oferece alguma garantia de atomicidade. Um lote não deve ser confundido com uma transação.
 
 ### Negociação de capacidades
 
@@ -419,7 +419,7 @@ A negociação de capacidades poderia permitir ao cliente descobrir que funciona
 
 ### Controlo de fluxo e backpressure
 
-Se um cliente enviar trabalho mais depressa do que o servidor consegue processá-lo, filas, tarefas ou buffers sem limites podem comprometer a estabilidade. Teremos de definir limites para operações pendentes, filas limitadas, quotas por ligação e um comportamento explícito de backpressure.
+Se um cliente enviar trabalho mais depressa do que o servidor consegue processá-lo, filas, tarefas ou buffers sem limites podem comprometer a estabilidade. Terei de definir limites para operações pendentes, filas limitadas, quotas por ligação e um comportamento explícito de backpressure.
 
 O objetivo não é permitir que os clientes enviem o máximo possível. É manter a comunicação estável quando a quantidade de pedidos recebidos excede a capacidade de processamento do servidor.
 
@@ -427,11 +427,11 @@ O objetivo não é permitir que os clientes enviem o máximo possível. É mante
 
 O NebulaCache começou como uma cache de nó único, mas o protocolo não deve impedir desnecessariamente uma evolução futura. Uma implementação com vários nós levanta questões de identificação de nós, comunicação de cluster, encaminhamento, replicação e propagação de alterações.
 
-Estes desafios não são o mesmo que definir o framing das mensagens na ligação atual. A camada 7 poderá vir a suportar mensagens adicionais para operações de cluster, mas distribuição, replicação e consistência são problemas arquiteturais distintos. Não precisamos de os resolver na primeira versão; precisamos de evitar decisões que tornem a evolução futura desnecessariamente difícil.
+Estes desafios não são o mesmo que definir o framing das mensagens na ligação atual. A camada 7 poderá vir a suportar mensagens adicionais para operações de cluster, mas distribuição, replicação e consistência são problemas arquiteturais distintos. Não preciso de os resolver na primeira versão, mas preciso de evitar decisões que tornem a evolução futura desnecessariamente difícil.
 
-## A arquitetura que queremos preservar
+## A arquitetura que quero preservar
 
-Um dos objetivos de design mais importantes é manter o protocolo, o transporte e a aplicação separados. O Nebula Protocol deve continuar a ser uma especificação independente da implementação do servidor:
+Um dos meus objetivos de design mais importantes é manter o protocolo, o transporte e a aplicação separados. Quero que o Nebula Protocol continue a ser uma especificação independente da implementação do servidor:
 
 ```mermaid
 mindmap
@@ -457,7 +457,7 @@ O servidor pode continuar a utilizar HTTP separadamente para administração e m
 
 ## Conclusão: criar um protocolo é assumir o controlo da comunicação
 
-Um protocolo próprio dá ao NebulaCache controlo sobre o formato na rede, mas também torna o projeto responsável pelo framing, limites, compatibilidade, segurança e comportamento dos clientes. O formato atual cobre as operações essenciais da cache sobre TCP. Funcionalidades como multiplexing e operações em lote só devem ser acrescentadas quando forem necessárias e com regras de ordenação e controlo de fluxo bem definidas.
+Criei o Nebula Protocol para definir o formato de comunicação do NebulaCache, o meu projeto de cache em memória. Essa escolha torna-me responsável pelo framing, limites, compatibilidade, segurança e comportamento dos clientes. O formato atual cobre as operações essenciais da cache sobre TCP. Só acrescentarei funcionalidades como multiplexing e operações em lote quando forem necessárias e quando as respetivas regras de ordenação e controlo de fluxo estiverem bem definidas.
 
 ## Para saber mais
 

@@ -1,18 +1,18 @@
 ---
 title: "Nebula Protocol: Framing Cache Requests over TCP"
-description: "Why NebulaCache has its own Layer 7 protocol, how its binary framing works, and the compatibility and security responsibilities of maintaining clients and servers."
+description: "Why I designed a Layer 7 protocol for NebulaCache, my in-memory cache project, how its binary framing works, and the compatibility and security responsibilities involved."
 date: "2026-11-23"
 tags: ["nebula-cache", "protocols", "networking", "rust", "tcp", "distributed-systems"]
-summary: "Nebula Protocol defines how NebulaCache clients encode operations and frame messages over TCP, along with the compatibility, implementation, and security responsibilities that come with a custom protocol."
+summary: "NebulaCache is my in-memory cache project, and Nebula Protocol is the custom protocol I designed for its clients and server to exchange operations over TCP."
 coverAlt: "A Nebula Protocol request frame flowing over TCP from a client SDK to the NebulaCache server."
 aliases: ["/blog/nebula-protocol/"]
 ---
 
-An in-memory cache needs a protocol between its clients and server. A request such as `GET user:123` names an operation and key, but a TCP connection carries only a stream of bytes. Nebula Protocol defines how NebulaCache SDKs encode operations, frame messages, and handle versioning. It is a versioned binary application-layer protocol built on TCP; implementing it also leaves the project responsible for clients, compatibility, and transport security.
+NebulaCache is my in-memory cache project. I designed Nebula Protocol, a custom, versioned binary application-layer protocol, for its clients and server to communicate over TCP. A request such as `GET user:123` names an operation and key, but TCP carries only a stream of bytes; the protocol defines how the SDKs encode operations, frame messages, and handle versioning. Maintaining it also makes me responsible for clients, compatibility, and transport security.
 
 ## Why not use an existing protocol?
 
-Before designing a protocol, it is worth understanding what established options already provide.
+Before I designed Nebula Protocol, I considered what established options already provide.
 
 ### REST over HTTP
 
@@ -33,7 +33,7 @@ GET /cache/user:123
 
 HTTP is familiar, widely supported, and backed by a huge ecosystem. It was also my initial instinct, especially in a world where so many services are designed around REST.
 
-HTTP brings its own message structure and resource-oriented model. For a cache workload made up of small, frequent operations, that structure may be more than the operation itself needs. This does not mean HTTP is inherently slow or unsuitable; HTTP/1.1 and HTTP/2 can perform very well. The question is whether we want HTTP semantics to be the primary interface to this cache.
+HTTP brings its own message structure and resource-oriented model. For a cache workload made up of small, frequent operations, that structure may be more than the operation itself needs. This does not mean HTTP is inherently slow or unsuitable; HTTP/1.1 and HTTP/2 can perform very well. The question for my project was whether I wanted HTTP semantics to be the primary interface to this cache.
 
 ### gRPC and Protocol Buffers
 
@@ -60,26 +60,26 @@ message GetResponse {
 
 gRPC offers explicit contracts, generated code, support for many languages, streaming, and mature communication mechanisms. It is an excellent choice for service-to-service communication.
 
-Using it would also mean adopting its RPC model, HTTP/2 infrastructure, and associated framing and serialization decisions. That is not necessarily a bad trade; it is simply a broader abstraction than the one we set out to build for NebulaCache.
+Using it would also mean adopting its RPC model, HTTP/2 infrastructure, and associated framing and serialization decisions. That is not necessarily a bad trade; it is simply a broader abstraction than the one I set out to build for NebulaCache.
 
 ### RESP and the Memcached protocol
 
-We could also use protocols made for caching. Redis uses RESP (Redis Serialization Protocol), and Memcached has its own text and binary protocols. Both solve many of the same communication problems.
+I could also have used protocols made for caching. Redis uses RESP (Redis Serialization Protocol), and Memcached has its own text and binary protocols. Both solve many of the same communication problems.
 
-There is a difference, though, between implementing a product compatible with an existing protocol and building a product around a protocol shaped for its own requirements. NebulaCache is an opportunity to explore the latter.
+There is a difference, though, between implementing a product compatible with an existing protocol and building a product around a protocol shaped for its own requirements. With NebulaCache, I chose to explore the latter.
 
 ### The decision
 
 This is not an argument that a custom protocol is better than REST, gRPC, RESP, or Memcached. Each option already makes design choices and provides useful abstractions.
 
-With Nebula Protocol, we choose to control:
+I designed Nebula Protocol so I could define:
 
 - The binary wire format and operation representation.
 - Header structure and message framing.
 - Versioning and payload limits.
 - Response semantics and future communication features.
 
-That control comes with responsibility. We own the correctness, security, compatibility, and maintenance work that an established protocol would otherwise provide.
+That control comes with responsibility. I own the protocol's correctness, security, compatibility, and maintenance, the work that an established protocol would otherwise provide.
 
 ## The layers: what TCP does and does not do
 
@@ -160,7 +160,7 @@ The server does not need to search for a delimiter. It reads the lengths, then c
 
 ## Decoding a request in Rust
 
-With a frame format in place, we can implement its decoder. Rust's Tokio library provides asynchronous I/O abstractions for working with TCP streams. A simplified decoder looks like this:
+With a frame format in place, I can implement its decoder. Rust's Tokio library provides asynchronous I/O abstractions for working with TCP streams. A simplified decoder looks like this:
 
 ```rust
 use std::io::{self, ErrorKind};
@@ -317,19 +317,19 @@ Rust is the reference server's language because it offers low-level control and 
 
 Rust's memory-safety guarantees reduce several classes of bugs in safe code, but they do not cover every failure mode. Dependencies still need updates, and the language cannot prevent logic bugs or every vulnerability.
 
-## Why build a custom protocol?
+## Why I built a custom protocol
 
-After implementing a first version, some architectural advantages become clearer.
+After I implemented a first version, some architectural advantages became clearer.
 
 ### Control over the wire format
 
-We do not need to adapt cache operations to another protocol's message structure. We choose the fields to transmit and how to represent them.
+I do not need to adapt cache operations to another protocol's message structure. I choose the fields to transmit and how to represent them.
 
 ### An efficient representation, when measurement supports it
 
 An opcode takes one byte, and lengths are represented as binary integers rather than decimal text. The format avoids structures that are not needed for the operation.
 
-A binary protocol is **not automatically faster** than a text protocol. Performance depends on the implementation, message sizes, allocations, I/O, and usage patterns. The benefit is control over the format, which lets us optimize against real measurements.
+A binary protocol is **not automatically faster** than a text protocol. Performance depends on the implementation, message sizes, allocations, I/O, and usage patterns. The benefit is control over the format, which lets me optimize against real measurements.
 
 ### Technology independence
 
@@ -337,7 +337,7 @@ The server can be implemented in Rust while clients use other languages and runt
 
 ### Controlled evolution and specialization
 
-We can evolve the protocol around NebulaCache's needs, with new opcodes or operations such as `MGET`, `MSET`, `EXPIRE`, and `INCR`, provided we define and follow compatibility rules.
+I can evolve the protocol around NebulaCache's needs, with new opcodes or operations such as `MGET`, `MSET`, `EXPIRE`, and `INCR`, provided I define and follow compatibility rules.
 
 ## The cost of controlling everything
 
@@ -345,7 +345,7 @@ A binary format is easy to sketch. Keeping it correct, secure, and compatible ov
 
 ### Compatibility between versions
 
-What happens when a client built for an older version connects to a newer server, or vice versa? We need a compatibility policy. The current version field is `1`, and the server rejects unknown versions. That is a start, but there is not yet a complete negotiation mechanism for versions or capabilities.
+What happens when a client built for an older version connects to a newer server, or vice versa? I need a compatibility policy. The current version field is `1`, and the server rejects unknown versions. That is a start, but there is not yet a complete negotiation mechanism for versions or capabilities.
 
 A future handshake could let both sides announce supported versions and capabilities, select a common version, and then begin the session.
 
@@ -411,7 +411,7 @@ Adding a field to the header is not enough to support multiplexing. The server's
 
 ### Batch operations
 
-A batch request could ask for several keys at once, reducing round trips for workloads with many small operations. But we would need to specify whether a batch is simply a group of operations or provides any atomicity guarantee. A batch should not be confused with a transaction.
+A batch request could ask for several keys at once, reducing round trips for workloads with many small operations. But I would need to specify whether a batch is simply a group of operations or provides any atomicity guarantee. A batch should not be confused with a transaction.
 
 ### Capability negotiation
 
@@ -419,7 +419,7 @@ Capability negotiation could let a client discover which features a server suppo
 
 ### Flow control and backpressure
 
-If a client sends work faster than the server can process it, unbounded queues, tasks, or buffers can threaten stability. We will need to define limits on pending operations, bounded queues, per-connection quotas, and explicit backpressure behavior.
+If a client sends work faster than the server can process it, unbounded queues, tasks, or buffers can threaten stability. I will need to define limits on pending operations, bounded queues, per-connection quotas, and explicit backpressure behavior.
 
 The goal is not to let clients send as much as possible. It is to keep communication stable when incoming work exceeds the server's processing capacity.
 
@@ -427,11 +427,11 @@ The goal is not to let clients send as much as possible. It is to keep communica
 
 NebulaCache began as a single-node cache, but the protocol should not unnecessarily prevent future evolution. A multi-node deployment raises questions of node identity, cluster communication, routing, replication, and change propagation.
 
-Those are not the same problem as framing messages on the current connection. Layer 7 messages might eventually support cluster operations, but distribution, replication, and consistency are architectural concerns of their own. We do not need to solve them in the first version; we do need to avoid choices that make future evolution unnecessarily difficult.
+Those are not the same problem as framing messages on the current connection. Layer 7 messages might eventually support cluster operations, but distribution, replication, and consistency are architectural concerns of their own. I do not need to solve them in the first version, but I do need to avoid choices that make future evolution unnecessarily difficult.
 
 ## The architecture worth preserving
 
-One of the most important design goals is to keep the protocol, transport, and application separate. Nebula Protocol should remain a specification independent of the server implementation:
+One of my most important design goals is to keep the protocol, transport, and application separate. I want Nebula Protocol to remain a specification independent of the server implementation:
 
 ```mermaid
 mindmap
@@ -457,7 +457,7 @@ The server can continue to use HTTP separately for administration and metrics. T
 
 ## Conclusion: a protocol means owning the communication
 
-A custom protocol gives NebulaCache control over its wire format, but also makes the project responsible for framing, limits, compatibility, security, and client behavior. The current format covers core cache operations over TCP. Features such as multiplexing and batching should be added only when the system needs them and with their ordering and flow-control rules clearly defined.
+I designed Nebula Protocol for NebulaCache to define its own wire format, and that choice makes me responsible for framing, limits, compatibility, security, and client behavior. The current format covers core cache operations over TCP. I will add features such as multiplexing and batching only when the system needs them and when their ordering and flow-control rules are clearly defined.
 
 ## Further reading
 
